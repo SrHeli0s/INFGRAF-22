@@ -56,6 +56,6 @@ Transformation BaseChangeTransform(Vec3 bx, Vec3 by, Vec3 bz, Point p)
 
 ostream& operator << (std::ostream& os, const Transformation& t)
 {
-    os << "Transformation([" << t.m[0][0] << ", " << t.m[0][1] << ", " << t.m[0][2] << "],[" << t.m[1][0] << ", " << t.m[1][1] << ", " << t.m[1][2] << "],[" << t.m[2][0] << ", " << t.m[2][1] << ", " << t.m[2][2] << "],[" << ")";
+    os << "Transformation([" << t.m[0][0] << ", " << t.m[0][1] << ", " << t.m[0][2] << "],[" << t.m[1][0] << ", " << t.m[1][1] << ", " << t.m[1][2] << "],[" << t.m[2][0] << ", " << t.m[2][1] << ", " << t.m[2][2] << "])";
     return os;
 }
