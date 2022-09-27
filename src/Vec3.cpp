@@ -1,5 +1,5 @@
-#include "Vec3.h"
-#include "Point.h"
+#include "Vec3.hpp"
+#include "Point.hpp"
 #include <iostream>
 #include <cmath>
 
