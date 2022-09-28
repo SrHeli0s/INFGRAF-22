@@ -54,6 +54,26 @@ Transformation BaseChangeTransform(Vec3 bx, Vec3 by, Vec3 bz, Point p)
     return Transformation(bx.c[0],by.c[0],bz.c[0],p.c[0],bx.c[1],by.c[1],bz.c[1],p.c[1],bx.c[2],by.c[2],bz.c[2],p.c[2],0,0,0,1);
 }
 
+const Transformation Transformation::operator* (const Transformation &t) const
+{
+    return Transformation(this->m[0][0]*t.m[0][0] + this->m[0][1]+t.m[1][0] + this->m[0][2]+t.m[2][0] + this->m[0][3]+t.m[3][0],
+                          this->m[0][0]*t.m[0][1] + this->m[0][1]+t.m[1][1] + this->m[0][2]+t.m[2][1] + this->m[0][3]+t.m[3][1],
+                          this->m[0][0]*t.m[0][2] + this->m[0][1]+t.m[1][2] + this->m[0][2]+t.m[2][2] + this->m[0][3]+t.m[3][2],
+                          this->m[0][0]*t.m[0][3] + this->m[0][1]+t.m[1][3] + this->m[0][2]+t.m[2][3] + this->m[0][3]+t.m[3][3],
+                          this->m[1][0]*t.m[0][0] + this->m[1][1]+t.m[1][0] + this->m[1][2]+t.m[2][0] + this->m[1][3]+t.m[3][0],
+                          this->m[1][0]*t.m[0][1] + this->m[1][1]+t.m[1][1] + this->m[1][2]+t.m[2][1] + this->m[1][3]+t.m[3][1],
+                          this->m[1][0]*t.m[0][2] + this->m[1][1]+t.m[1][2] + this->m[1][2]+t.m[2][2] + this->m[1][3]+t.m[3][2],
+                          this->m[1][0]*t.m[0][3] + this->m[1][1]+t.m[1][3] + this->m[1][2]+t.m[2][3] + this->m[1][3]+t.m[3][3],
+                          this->m[2][0]*t.m[0][0] + this->m[2][1]+t.m[1][0] + this->m[2][2]+t.m[2][0] + this->m[2][3]+t.m[3][0],
+                          this->m[2][0]*t.m[0][1] + this->m[2][1]+t.m[1][1] + this->m[2][2]+t.m[2][1] + this->m[2][3]+t.m[3][1],
+                          this->m[2][0]*t.m[0][2] + this->m[2][1]+t.m[1][2] + this->m[2][2]+t.m[2][2] + this->m[2][3]+t.m[3][2],
+                          this->m[2][0]*t.m[0][3] + this->m[2][1]+t.m[1][3] + this->m[2][2]+t.m[2][3] + this->m[2][3]+t.m[3][3],
+                          this->m[3][0]*t.m[0][0] + this->m[3][1]+t.m[1][0] + this->m[3][2]+t.m[2][0] + this->m[3][3]+t.m[3][0],
+                          this->m[3][0]*t.m[0][1] + this->m[3][1]+t.m[1][1] + this->m[3][2]+t.m[2][1] + this->m[3][3]+t.m[3][1],
+                          this->m[3][0]*t.m[0][2] + this->m[3][1]+t.m[1][2] + this->m[3][2]+t.m[2][2] + this->m[3][3]+t.m[3][2],
+                          this->m[3][0]*t.m[0][3] + this->m[3][1]+t.m[1][3] + this->m[3][2]+t.m[2][3] + this->m[3][3]+t.m[3][3]);
+}
+
 ostream& operator << (std::ostream& os, const Transformation& t)
 {
     os << "Transformation([" << t.m[0][0] << ", " << t.m[0][1] << ", " << t.m[0][2] << "],[" << t.m[1][0] << ", " << t.m[1][1] << ", " << t.m[1][2] << "],[" << t.m[2][0] << ", " << t.m[2][1] << ", " << t.m[2][2] << "])";

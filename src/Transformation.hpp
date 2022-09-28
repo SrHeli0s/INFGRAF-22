@@ -16,6 +16,8 @@ class Transformation {
                    float i, float j, float k, float l,
                    float m, float n, float o, float p);
 
+    const Transformation operator* (const Transformation &t) const;
+
 };
 
 // Constructor helpers
@@ -27,3 +29,4 @@ Transformation ZRotationTransform(float rad);
 Transformation BaseChangeTransform(Vec3 bx, Vec3 by, Vec3 bz, Point p);
 
 ostream& operator << (std::ostream& os, const Transformation& t);
+
