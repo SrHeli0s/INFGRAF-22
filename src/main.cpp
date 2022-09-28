@@ -8,11 +8,12 @@ int main() {
 
     Point p1 = Point(1,0,0);
     Point p2 = Point(1,1,0);
-    Vec3 v1 = Vec3(2,0,0);
+    Vec3 v1 = Vec3(2,1,1);
     Transformation t = ScaleTransform(1,2,1);
+    v1.applyTransformation(t);
 
 
-    cout << t << " " << v1+p1 << endl;
+    cout << v1 << " " << p2 << endl;
 
     return 0;
 }

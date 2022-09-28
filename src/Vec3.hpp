@@ -4,6 +4,7 @@
 using namespace std;
 
 class Point;
+class Transformation;
 
 class Vec3 {
     public:
@@ -17,7 +18,8 @@ class Vec3 {
     const float operator* (const Vec3 &v) const;
     const Vec3 operator*(float t) const;
     const Vec3 operator/(float t) const;
-   
+
+    void applyTransformation(Transformation t);
 };
 
 ostream& operator << (std::ostream& os, const Vec3& v);

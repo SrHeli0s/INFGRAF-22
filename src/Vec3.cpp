@@ -1,5 +1,6 @@
 #include "Vec3.hpp"
 #include "Point.hpp"
+#include "Transformation.hpp"
 #include <iostream>
 #include <cmath>
 
@@ -46,6 +47,13 @@ ostream& operator << (std::ostream& os, const Vec3& v)
 {
     os << "Vec3(" << v.c[0] << ", " << v.c[1] << ", " << v.c[2] << ")";
     return os;
+}
+
+void Vec3::applyTransformation(Transformation t)
+{
+    c[0] = c[0]*t.m[0][0] + c[1]*t.m[1][0] + c[2]*t.m[2][0] + 1*t.m[3][0];
+    c[1] = c[0]*t.m[0][1] + c[1]*t.m[1][1] + c[2]*t.m[2][1] + 1*t.m[3][1];
+    c[2] = c[0]*t.m[0][2] + c[1]*t.m[1][2] + c[2]*t.m[2][2] + 1*t.m[3][2];
 }
 
 Vec3 cross(Vec3 v1, Vec3 v2)
