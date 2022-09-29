@@ -13,7 +13,7 @@ int main() {
     v1.applyTransformation(t);
 
 
-    cout << v1 << " " << p2 << endl;
+    cout << v1 << " " << p2 <<  " " << t << endl;
 
     return 0;
 }

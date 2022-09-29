@@ -76,6 +76,6 @@ const Transformation Transformation::operator* (const Transformation &t) const
 
 ostream& operator << (std::ostream& os, const Transformation& t)
 {
-    os << "Transformation([" << t.m[0][0] << ", " << t.m[0][1] << ", " << t.m[0][2] << "],[" << t.m[1][0] << ", " << t.m[1][1] << ", " << t.m[1][2] << "],[" << t.m[2][0] << ", " << t.m[2][1] << ", " << t.m[2][2] << "])";
+    os << "Transformation([" << t.m[0][0] << "," << t.m[0][1] << "," << t.m[0][2] << "," << t.m[0][3] << "], [" << t.m[1][0] << "," << t.m[1][1] << "," << t.m[1][2] << "," << t.m[1][3] << "], [" << t.m[2][0] << "," << t.m[2][1] << "," << t.m[2][2] << "," << t.m[2][3] << "], [" << t.m[3][0] << "," << t.m[3][1] << "," << t.m[3][2] << "," << t.m[3][3] << "])";
     return os;
 }
