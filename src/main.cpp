@@ -16,7 +16,7 @@ int main() {
     Sphere s = Sphere(p1,v1,p2);
 
 
-    cout << v1 << " " << p2 <<  " " << t << endl;
+    cout << v1 << " " << p2 <<  "\n" << t << "\n" << t.inverse() << endl;
 
     return 0;
 }
