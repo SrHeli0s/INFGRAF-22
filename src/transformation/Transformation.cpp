@@ -82,116 +82,116 @@ Transformation Transformation::inverse()
     int i, j;
 
     inv[0][0] = this->m[1][1]  * this->m[2][2] * this->m[3][3] - 
-             this->m[1][1]  * this->m[2][3] * this->m[3][2] - 
-             this->m[2][1]  * this->m[1][2]  * this->m[3][3] + 
-             this->m[2][1]  * this->m[1][3]  * this->m[3][2] +
-             this->m[3][1] * this->m[1][2]  * this->m[2][3] - 
-             this->m[3][1] * this->m[1][3]  * this->m[2][2];
+                this->m[1][1]  * this->m[2][3] * this->m[3][2] - 
+                this->m[2][1]  * this->m[1][2]  * this->m[3][3] + 
+                this->m[2][1]  * this->m[1][3]  * this->m[3][2] +
+                this->m[3][1] * this->m[1][2]  * this->m[2][3] - 
+                this->m[3][1] * this->m[1][3]  * this->m[2][2];
 
     inv[1][0] = -this->m[1][0]  * this->m[2][2] * this->m[3][3] + 
-              this->m[1][0]  * this->m[2][3] * this->m[3][2] + 
-              this->m[2][0]  * this->m[1][2]  * this->m[3][3] - 
-              this->m[2][0]  * this->m[1][3]  * this->m[3][2] - 
-              this->m[3][0] * this->m[1][2]  * this->m[2][3] + 
-              this->m[3][0] * this->m[1][3]  * this->m[2][2];
+                this->m[1][0]  * this->m[2][3] * this->m[3][2] + 
+                this->m[2][0]  * this->m[1][2]  * this->m[3][3] - 
+                this->m[2][0]  * this->m[1][3]  * this->m[3][2] - 
+                this->m[3][0] * this->m[1][2]  * this->m[2][3] + 
+                this->m[3][0] * this->m[1][3]  * this->m[2][2];
 
     inv[2][0] = this->m[1][0]  * this->m[2][1] * this->m[3][3] - 
-             this->m[1][0]  * this->m[2][3] * this->m[3][1] - 
-             this->m[2][0]  * this->m[1][1] * this->m[3][3] + 
-             this->m[2][0]  * this->m[1][3] * this->m[3][1] + 
-             this->m[3][0] * this->m[1][1] * this->m[2][3] - 
-             this->m[3][0] * this->m[1][3] * this->m[2][1];
+                this->m[1][0]  * this->m[2][3] * this->m[3][1] - 
+                this->m[2][0]  * this->m[1][1] * this->m[3][3] + 
+                this->m[2][0]  * this->m[1][3] * this->m[3][1] + 
+                this->m[3][0] * this->m[1][1] * this->m[2][3] - 
+                this->m[3][0] * this->m[1][3] * this->m[2][1];
 
     inv[3][0] = -this->m[1][0]  * this->m[2][1] * this->m[3][2] + 
-               this->m[1][0]  * this->m[2][2] * this->m[3][1] +
-               this->m[2][0]  * this->m[1][1] * this->m[3][2] - 
-               this->m[2][0]  * this->m[1][2] * this->m[3][1] - 
-               this->m[3][0] * this->m[1][1] * this->m[2][2] + 
-               this->m[3][0] * this->m[1][2] * this->m[2][1];
+                this->m[1][0]  * this->m[2][2] * this->m[3][1] +
+                this->m[2][0]  * this->m[1][1] * this->m[3][2] - 
+                this->m[2][0]  * this->m[1][2] * this->m[3][1] - 
+                this->m[3][0] * this->m[1][1] * this->m[2][2] + 
+                this->m[3][0] * this->m[1][2] * this->m[2][1];
 
     inv[0][1] = -this->m[0][1]  * this->m[2][2] * this->m[3][3] + 
-              this->m[0][1]  * this->m[2][3] * this->m[3][2] + 
-              this->m[2][1]  * this->m[0][2] * this->m[3][3] - 
-              this->m[2][1]  * this->m[0][3] * this->m[3][2] - 
-              this->m[3][1] * this->m[0][2] * this->m[2][3] + 
-              this->m[3][1] * this->m[0][3] * this->m[2][2];
+                this->m[0][1]  * this->m[2][3] * this->m[3][2] + 
+                this->m[2][1]  * this->m[0][2] * this->m[3][3] - 
+                this->m[2][1]  * this->m[0][3] * this->m[3][2] - 
+                this->m[3][1] * this->m[0][2] * this->m[2][3] + 
+                this->m[3][1] * this->m[0][3] * this->m[2][2];
 
     inv[1][1] = this->m[0][0]  * this->m[2][2] * this->m[3][3] - 
-             this->m[0][0]  * this->m[2][3] * this->m[3][2] - 
-             this->m[2][0]  * this->m[0][2] * this->m[3][3] + 
-             this->m[2][0]  * this->m[0][3] * this->m[3][2] + 
-             this->m[3][0] * this->m[0][2] * this->m[2][3] - 
-             this->m[3][0] * this->m[0][3] * this->m[2][2];
+                this->m[0][0]  * this->m[2][3] * this->m[3][2] - 
+                this->m[2][0]  * this->m[0][2] * this->m[3][3] + 
+                this->m[2][0]  * this->m[0][3] * this->m[3][2] + 
+                this->m[3][0] * this->m[0][2] * this->m[2][3] - 
+                this->m[3][0] * this->m[0][3] * this->m[2][2];
 
     inv[2][1] = -this->m[0][0]  * this->m[2][1] * this->m[3][3] + 
-              this->m[0][0]  * this->m[2][3] * this->m[3][1] + 
-              this->m[2][0]  * this->m[0][1] * this->m[3][3] - 
-              this->m[2][0]  * this->m[0][3] * this->m[3][1] - 
-              this->m[3][0] * this->m[0][1] * this->m[2][3] + 
-              this->m[3][0] * this->m[0][3] * this->m[2][1];
+                this->m[0][0]  * this->m[2][3] * this->m[3][1] + 
+                this->m[2][0]  * this->m[0][1] * this->m[3][3] - 
+                this->m[2][0]  * this->m[0][3] * this->m[3][1] - 
+                this->m[3][0] * this->m[0][1] * this->m[2][3] + 
+                this->m[3][0] * this->m[0][3] * this->m[2][1];
 
     inv[3][1] = this->m[0][0]  * this->m[2][1] * this->m[3][2] - 
-              this->m[0][0]  * this->m[2][2] * this->m[3][1] - 
-              this->m[2][0]  * this->m[0][1] * this->m[3][2] + 
-              this->m[2][0]  * this->m[0][2] * this->m[3][1] + 
-              this->m[3][0] * this->m[0][1] * this->m[2][2] - 
-              this->m[3][0] * this->m[0][2] * this->m[2][1];
+                this->m[0][0]  * this->m[2][2] * this->m[3][1] - 
+                this->m[2][0]  * this->m[0][1] * this->m[3][2] + 
+                this->m[2][0]  * this->m[0][2] * this->m[3][1] + 
+                this->m[3][0] * this->m[0][1] * this->m[2][2] - 
+                this->m[3][0] * this->m[0][2] * this->m[2][1];
 
     inv[0][2] = this->m[0][1]  * this->m[1][2] * this->m[3][3] - 
-             this->m[0][1]  * this->m[1][3] * this->m[3][2] - 
-             this->m[1][1]  * this->m[0][2] * this->m[3][3] + 
-             this->m[1][1]  * this->m[0][3] * this->m[3][2] + 
-             this->m[3][1] * this->m[0][2] * this->m[1][3] - 
-             this->m[3][1] * this->m[0][3] * this->m[1][2];
+                this->m[0][1]  * this->m[1][3] * this->m[3][2] - 
+                this->m[1][1]  * this->m[0][2] * this->m[3][3] + 
+                this->m[1][1]  * this->m[0][3] * this->m[3][2] + 
+                this->m[3][1] * this->m[0][2] * this->m[1][3] - 
+                this->m[3][1] * this->m[0][3] * this->m[1][2];
 
     inv[1][2] = -this->m[0][0]  * this->m[1][2] * this->m[3][3] + 
-              this->m[0][0]  * this->m[1][3] * this->m[3][2] + 
-              this->m[1][0]  * this->m[0][2] * this->m[3][3] - 
-              this->m[1][0]  * this->m[0][3] * this->m[3][2] - 
-              this->m[3][0] * this->m[0][2] * this->m[1][3] + 
-              this->m[3][0] * this->m[0][3] * this->m[1][2];
+                this->m[0][0]  * this->m[1][3] * this->m[3][2] + 
+                this->m[1][0]  * this->m[0][2] * this->m[3][3] - 
+                this->m[1][0]  * this->m[0][3] * this->m[3][2] - 
+                this->m[3][0] * this->m[0][2] * this->m[1][3] + 
+                this->m[3][0] * this->m[0][3] * this->m[1][2];
 
     inv[2][2] = this->m[0][0]  * this->m[1][1] * this->m[3][3] - 
-              this->m[0][0]  * this->m[1][3] * this->m[3][1] - 
-              this->m[1][0]  * this->m[0][1] * this->m[3][3] + 
-              this->m[1][0]  * this->m[0][3] * this->m[3][1] + 
-              this->m[3][0] * this->m[0][1] * this->m[1][3] - 
-              this->m[3][0] * this->m[0][3] * this->m[1][1];
+                this->m[0][0]  * this->m[1][3] * this->m[3][1] - 
+                this->m[1][0]  * this->m[0][1] * this->m[3][3] + 
+                this->m[1][0]  * this->m[0][3] * this->m[3][1] + 
+                this->m[3][0] * this->m[0][1] * this->m[1][3] - 
+                this->m[3][0] * this->m[0][3] * this->m[1][1];
 
     inv[3][2] = -this->m[0][0]  * this->m[1][1] * this->m[3][2] + 
-               this->m[0][0]  * this->m[1][2] * this->m[3][1] + 
-               this->m[1][0]  * this->m[0][1] * this->m[3][2] - 
-               this->m[1][0]  * this->m[0][2] * this->m[3][1] - 
-               this->m[3][0] * this->m[0][1] * this->m[1][2] + 
-               this->m[3][0] * this->m[0][2] * this->m[1][1];
+                this->m[0][0]  * this->m[1][2] * this->m[3][1] + 
+                this->m[1][0]  * this->m[0][1] * this->m[3][2] - 
+                this->m[1][0]  * this->m[0][2] * this->m[3][1] - 
+                this->m[3][0] * this->m[0][1] * this->m[1][2] + 
+                this->m[3][0] * this->m[0][2] * this->m[1][1];
 
     inv[0][3] = -this->m[0][1] * this->m[1][2] * this->m[2][3] + 
-              this->m[0][1] * this->m[1][3] * this->m[2][2] + 
-              this->m[1][1] * this->m[0][2] * this->m[2][3] - 
-              this->m[1][1] * this->m[0][3] * this->m[2][2] - 
-              this->m[2][1] * this->m[0][2] * this->m[1][3] + 
-              this->m[2][1] * this->m[0][3] * this->m[1][2];
+                this->m[0][1] * this->m[1][3] * this->m[2][2] + 
+                this->m[1][1] * this->m[0][2] * this->m[2][3] - 
+                this->m[1][1] * this->m[0][3] * this->m[2][2] - 
+                this->m[2][1] * this->m[0][2] * this->m[1][3] + 
+                this->m[2][1] * this->m[0][3] * this->m[1][2];
 
     inv[1][3] = this->m[0][0] * this->m[1][2] * this->m[2][3] - 
-             this->m[0][0] * this->m[1][3] * this->m[2][2] - 
-             this->m[1][0] * this->m[0][2] * this->m[2][3] + 
-             this->m[1][0] * this->m[0][3] * this->m[2][2] + 
-             this->m[2][0] * this->m[0][2] * this->m[1][3] - 
-             this->m[2][0] * this->m[0][3] * this->m[1][2];
+                this->m[0][0] * this->m[1][3] * this->m[2][2] - 
+                this->m[1][0] * this->m[0][2] * this->m[2][3] + 
+                this->m[1][0] * this->m[0][3] * this->m[2][2] + 
+                this->m[2][0] * this->m[0][2] * this->m[1][3] - 
+                this->m[2][0] * this->m[0][3] * this->m[1][2];
 
     inv[2][3] = -this->m[0][0] * this->m[1][1] * this->m[2][3] + 
-               this->m[0][0] * this->m[1][3] * this->m[2][1] + 
-               this->m[1][0] * this->m[0][1] * this->m[2][3] - 
-               this->m[1][0] * this->m[0][3] * this->m[2][1] - 
-               this->m[2][0] * this->m[0][1] * this->m[1][3] + 
-               this->m[2][0] * this->m[0][3] * this->m[1][1];
+                this->m[0][0] * this->m[1][3] * this->m[2][1] + 
+                this->m[1][0] * this->m[0][1] * this->m[2][3] - 
+                this->m[1][0] * this->m[0][3] * this->m[2][1] - 
+                this->m[2][0] * this->m[0][1] * this->m[1][3] + 
+                this->m[2][0] * this->m[0][3] * this->m[1][1];
 
     inv[3][3] = this->m[0][0] * this->m[1][1] * this->m[2][2] - 
-              this->m[0][0] * this->m[1][2] * this->m[2][1] - 
-              this->m[1][0] * this->m[0][1] * this->m[2][2] + 
-              this->m[1][0] * this->m[0][2] * this->m[2][1] + 
-              this->m[2][0] * this->m[0][1] * this->m[1][2] - 
-              this->m[2][0] * this->m[0][2] * this->m[1][1];
+                this->m[0][0] * this->m[1][2] * this->m[2][1] - 
+                this->m[1][0] * this->m[0][1] * this->m[2][2] + 
+                this->m[1][0] * this->m[0][2] * this->m[2][1] + 
+                this->m[2][0] * this->m[0][1] * this->m[1][2] - 
+                this->m[2][0] * this->m[0][2] * this->m[1][1];
 
     det = this->m[0][0] * inv[0][0] + this->m[0][1] * inv[1][0] + this->m[0][2] * inv[2][0] + this->m[0][3] * inv[3][0];
 

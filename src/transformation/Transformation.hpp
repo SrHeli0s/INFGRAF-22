@@ -19,7 +19,6 @@ class Transformation {
     const Transformation operator* (const Transformation &t) const;
 
     Transformation inverse();
-
 };
 
 // Constructor helpers
