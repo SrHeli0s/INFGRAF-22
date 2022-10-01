@@ -49,4 +49,4 @@ ${TRANSFORMATION}.o: ${TRANSFORMATION}.hpp ${TRANSFORMATION}.cpp
 # Cuidado con lo que se pone aquí, que se borra sin preguntar
 clean:
 	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${TRANSFORMATION}.o
-	$(RM) ${MAIN}
+	$(RM) ${PROGRAM}
