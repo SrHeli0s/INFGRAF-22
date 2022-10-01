@@ -1,10 +1,12 @@
 #include "Transformation.hpp"
-#include "Vec3.hpp"
-#include "Point.hpp"
+#include "../vec3/Vec3.hpp"
+#include "../point/Point.hpp"
 #include <cmath>
 #include <iostream>
 
 using namespace std;
+
+Transformation::Transformation() {}
 
 Transformation::Transformation(float _a, float _b, float _c, float _d, 
                                float _e, float _f, float _g, float _h, 

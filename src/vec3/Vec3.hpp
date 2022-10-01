@@ -1,8 +1,6 @@
 #pragma once
 #include <iostream>
 
-using namespace std;
-
 class Point;
 class Transformation;
 
@@ -11,6 +9,7 @@ class Vec3 {
         float c[3];
 
     Vec3(float x, float y, float z);
+    Vec3();
 
     const Vec3 operator+ (const Vec3 &v) const;
     const Point operator+ (const Point &p) const;
@@ -22,7 +21,7 @@ class Vec3 {
     void applyTransformation(Transformation t);
 };
 
-ostream& operator << (std::ostream& os, const Vec3& v);
+std::ostream& operator << (std::ostream& os, const Vec3& v);
 
 Vec3 cross(Vec3 v1, Vec3 v2);
 

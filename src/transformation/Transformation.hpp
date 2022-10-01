@@ -4,13 +4,13 @@
 using namespace std;
 
 class Vec3;
-
 class Point;
 
 class Transformation {
     public :
         float m[4][4] {};
 
+    Transformation();
     Transformation(float a, float b, float c, float d,
                    float e, float f, float g, float h,
                    float i, float j, float k, float l,
@@ -28,5 +28,5 @@ Transformation YRotationTransform(float rad);
 Transformation ZRotationTransform(float rad);
 Transformation BaseChangeTransform(Vec3 bx, Vec3 by, Vec3 bz, Point p);
 
-ostream& operator << (std::ostream& os, const Transformation& t);
+std::ostream& operator << (std::ostream& os, const Transformation& t);
 

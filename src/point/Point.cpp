@@ -1,9 +1,11 @@
 #include "Point.hpp"
-#include "Vec3.hpp"
-#include "Transformation.hpp"
+#include "../vec3/Vec3.hpp"
+#include "../transformation/Transformation.hpp"
 #include <iostream>
 
 using namespace std;
+
+Point::Point() {}
 
 Point::Point(float x, float y, float z)
 {
