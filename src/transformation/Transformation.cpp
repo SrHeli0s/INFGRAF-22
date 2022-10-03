@@ -197,7 +197,7 @@ Transformation Transformation::inverse()
 
     if (det == 0) {
         cerr << "Transformation " << *this 
-        << " cant be inverted. Did anything explode?" << endl;
+        << " cant be inverted. Did anything explode?\n" << endl;
         return *this;
     }
 
