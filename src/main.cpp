@@ -13,10 +13,11 @@ int main() {
     Transformation t = ScaleTransform(1,2,1);
     v1.applyTransformation(t);
 
-    Sphere s = Sphere(p1,v1,p2);
+    cout << v1 << " " << p2 <<  "\n" << t << "\n" << t.inverse() << "\n" << endl;
 
+    Sphere s = Sphere(Point(0,0,0),Vec3(0,2,0),Point(1,0,0));
 
-    cout << v1 << " " << p2 <<  "\n" << t << "\n" << t.inverse() << endl;
+    cout << s.surfacePoint(M_PI/2, 0) << " " << s.surfacePoint(M_PI/2, M_PI/2) << endl;
 
     return 0;
 }

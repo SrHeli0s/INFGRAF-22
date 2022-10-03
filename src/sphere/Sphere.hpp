@@ -11,6 +11,7 @@ class Sphere {
         Point center;
         Vec3 axis;
         Point reference;
+        float radius;
         
     Sphere();
     Sphere(Point center, Vec3 axis, Point reference);
