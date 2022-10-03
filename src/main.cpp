@@ -15,9 +15,9 @@ int main() {
 
     cout << v1 << " " << p2 <<  "\n" << t << "\n" << t.inverse() << "\n" << endl;
 
-    Sphere s = Sphere(Point(0,0,0),Vec3(0,2,0),Point(1,0,0));
+    Sphere s = Sphere(Point(1,1,1),Vec3(0,2,0),Point(2,1,1));
 
-    cout << s.surfacePoint(M_PI/2, 0) << " " << s.surfacePoint(M_PI/2, M_PI/2) << endl;
+    cout << s.surfacePoint(M_PI/2, 0) << " " << s.surfacePoint(M_PI/2, M_PI/2) << "\n" << endl;
 
     return 0;
 }
