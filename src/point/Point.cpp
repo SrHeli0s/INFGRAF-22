@@ -24,11 +24,12 @@ const Point Point::operator+ (const Vec3 &v) const
     return Point(this->c[0]+v.c[0], this->c[1]+v.c[1], this->c[2]+v.c[2]);
 }
 
-void Point::applyTransformation(Transformation t)
+Point Point::applyTransformation(Transformation t)
 {
-    c[0] = c[0]*t.m[0][0] + c[1]*t.m[1][0] + c[2]*t.m[2][0] + 1*t.m[3][0];
-    c[1] = c[0]*t.m[0][1] + c[1]*t.m[1][1] + c[2]*t.m[2][1] + 1*t.m[3][1];
-    c[2] = c[0]*t.m[0][2] + c[1]*t.m[1][2] + c[2]*t.m[2][2] + 1*t.m[3][2];
+    float x = c[0]*t.m[0][0] + c[1]*t.m[0][1] + c[2]*t.m[0][2] + 1*t.m[0][3];
+    float y = c[0]*t.m[1][0] + c[1]*t.m[1][1] + c[2]*t.m[1][2] + 1*t.m[1][3];
+    float z = c[0]*t.m[2][0] + c[1]*t.m[2][1] + c[2]*t.m[2][2] + 1*t.m[2][3];
+    return Point(x,y,z);
 }
 
 ostream& operator << (std::ostream& os, const Point& p)
