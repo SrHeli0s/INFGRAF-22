@@ -14,7 +14,7 @@ class Point {
     const Vec3 operator- (const Point &p) const;
     const Point operator+ (const Vec3 &v) const;
 
-    void applyTransformation(Transformation t);
+    Point applyTransformation(Transformation t);
 };
 
 std::ostream& operator << (std::ostream& os, const Point& p);
