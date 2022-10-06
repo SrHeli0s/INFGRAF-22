@@ -11,3 +11,9 @@ RGB::RGB(float red, float green, float blue) {
     this->g = green;
     this->b = blue;
 }
+
+ostream& operator << (std::ostream& os, const RGB& p)
+{
+    os << "RGB(" << p.r << ", " << p.g << ", " << p.b << ")";
+    return os;
+}

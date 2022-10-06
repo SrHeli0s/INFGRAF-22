@@ -8,3 +8,5 @@ class RGB {
     RGB();
     RGB(float r,float g,float b);
 };
+
+std::ostream& operator << (std::ostream& os, const RGB& p);
