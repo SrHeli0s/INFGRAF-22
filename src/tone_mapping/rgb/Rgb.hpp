@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <vector>
 
 class RGB {
     public:
@@ -10,3 +11,5 @@ class RGB {
 };
 
 std::ostream& operator << (std::ostream& os, const RGB& p);
+
+std::vector<std::vector<RGB>> clamp(std::vector<std::vector<RGB>> p, float max_value = 255);
