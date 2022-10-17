@@ -13,13 +13,13 @@ RGB::RGB(float red, float green, float blue)
     this->b = blue;
 }
 
-ostream& operator << (std::ostream& os, const RGB& p)
+ostream& operator << (ostream& os, const RGB& p)
 {
     os << "RGB(" << p.r << ", " << p.g << ", " << p.b << ")";
     return os;
 }
 
-std::vector<std::vector<RGB>> clamp(std::vector<std::vector<RGB>> p, float max_value)
+vector<vector<RGB>> clamp(vector<vector<RGB>> p, float max_value)
 {
     for (int i = p.size()-1; i>=0; i--) {
         for(int j = p[i].size(); j>=0; j--) {

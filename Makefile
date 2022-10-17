@@ -25,14 +25,14 @@ VEC3=${SRC}/vec3/Vec3
 SPHERE =${SRC}/sphere/Sphere
 TRANSFORMATION = ${SRC}/transformation/Transformation
 RGB = ${SRC}/tone_mapping/rgb/Rgb
-PPMREADER = ${SRC}/tone_mapping/ppm/PPMreader
-PPMWRITER = ${SRC}/tone_mapping/ppm/PPMwriter
+PPM = ${SRC}/tone_mapping/ppm/PPM
+IMAGE = ${SRC}/tone_mapping/image/Image
 
 all: ${MAIN}
 #---------------------------------------------------------
 # "linkar"
-${MAIN}:  ${POINT}.o ${VEC3}.o ${SPHERE}.o ${TRANSFORMATION}.o ${RGB}.o ${PPMREADER}.o ${PPMWRITER}.o ${MAIN}.cpp
-	${CC} -g ${MAIN}.cpp ${POINT}.o ${VEC3}.o ${SPHERE}.o ${TRANSFORMATION}.o ${RGB}.o ${PPMREADER}.o ${PPMWRITER}.o -o ${PROGRAM} ${CPPFLAGS} -pthread
+${MAIN}:  ${POINT}.o ${VEC3}.o ${SPHERE}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${MAIN}.cpp
+	${CC} -g ${MAIN}.cpp ${POINT}.o ${VEC3}.o ${SPHERE}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o -o ${PROGRAM} ${CPPFLAGS} -pthread
 
 #---------------------------------------------------------
 # compilar
@@ -51,14 +51,14 @@ ${TRANSFORMATION}.o: ${TRANSFORMATION}.hpp ${TRANSFORMATION}.cpp
 ${RGB}.o: ${RGB}.hpp ${RGB}.cpp
 	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${RGB}.cpp -o ${RGB}.o
 
-${PPMREADER}.o: ${PPMREADER}.hpp ${PPMREADER}.cpp
-	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${PPMREADER}.cpp -o ${PPMREADER}.o
+${PPM}.o: ${PPM}.hpp ${PPM}.cpp
+	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${PPM}.cpp -o ${PPM}.o
 
-${PPMWRITER}.o: ${PPMWRITER}.hpp ${PPMWRITER}.cpp
-	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${PPMWRITER}.cpp -o ${PPMWRITER}.o
+${IMAGE}.o: ${IMAGE}.hpp ${IMAGE}.cpp
+	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${IMAGE}.cpp -o ${IMAGE}.o
 
 #---------------------------------------------------------
 # Cuidado con lo que se pone aquí, que se borra sin preguntar
 clean:
-	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${TRANSFORMATION}.o ${RGB}.o ${PPMREADER}.o ${PPMWRITER}.o
+	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o
 	$(RM) ${PROGRAM}

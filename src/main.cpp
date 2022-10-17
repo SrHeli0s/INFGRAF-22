@@ -1,8 +1,8 @@
 #include "point/Point.hpp"
 #include "vec3/Vec3.hpp"
 #include "transformation/Transformation.hpp"
-#include "tone_mapping/ppm/PPMreader.hpp"
-#include "tone_mapping/ppm/PPMwriter.hpp"
+#include "tone_mapping/ppm/PPM.hpp"
+#include "tone_mapping/image/Image.hpp"
 #include "tone_mapping/rgb/Rgb.hpp"
 #include "sphere/Sphere.hpp"
 #include <iostream>
@@ -10,14 +10,14 @@ using namespace std;
 
 int main() {
 
-    PPMreader p = PPMreader("/home/yo/Escritorio/GRAF/HDR PPM files/test.ppm");
-    cout << "Pixeles antes: \n" << p << "\n\n";
+    PPM p = PPM();
+    Image antes = p.read("/home/yo/Escritorio/GRAF/HDR PPM files/test.ppm");
+    cout << "Pixeles antes: \n" << antes << "\n\n";
 
-    std::vector<std::vector<RGB>> test = clamp(p.p,7);
-    p.p = test;
+    Image despues = equalize(antes);
 
-    cout << "Pixeles despues: \n" << p;
+    cout << "Pixeles despues: \n" << despues;
 
-    // PPMwriter writer = PPMwriter("/home/yo/Escritorio/GRAF/HDR PPM files/parquepolla.ppm", p.w, p.h, p.max_value, p.color_res, p.p);
+    p.write("/home/yo/Escritorio/GRAF/HDR PPM files/test2.ppm",despues);
     return 0;
 }
