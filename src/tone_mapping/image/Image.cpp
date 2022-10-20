@@ -12,14 +12,14 @@ Image::Image(vector<vector<RGB>> pixels, float max_value, float color_res)
     this->max_value = max_value;
     this->color_res = color_res;
     this->p = pixels;
-    this->h = p[0].size();
-    this->w = p.size();
+    this->h = p.size();
+    this->w = p[0].size();
 }
 
 Image clamp(Image img, float max_clamp)
 {
-    for (int i = img.w-1; i>=0; i--) {
-        for(int j = img.h-1; j>=0; j--) {
+    for (int i = img.h-1; i>=0; i--) {
+        for(int j = img.w-1; j>=0; j--) {
             img.p[i][j].r = (img.p[i][j].r > max_clamp) ? max_clamp : img.p[i][j].r;
             img.p[i][j].g = (img.p[i][j].g > max_clamp) ? max_clamp : img.p[i][j].g;
             img.p[i][j].b = (img.p[i][j].b > max_clamp) ? max_clamp : img.p[i][j].b;
@@ -30,8 +30,8 @@ Image clamp(Image img, float max_clamp)
 
 Image equalize(Image img, float max_equalize)
 {
-    for (int i = img.w-1; i>=0; i--) {
-        for(int j = img.h-1; j>=0; j--) {
+    for (int i = img.h-1; i>=0; i--) {
+        for(int j = img.w-1; j>=0; j--) {
             img.p[i][j].r = (img.p[i][j].r / img.max_value) * max_equalize;
             img.p[i][j].g = (img.p[i][j].g / img.max_value) * max_equalize;
             img.p[i][j].b = (img.p[i][j].b / img.max_value) * max_equalize;
@@ -40,12 +40,17 @@ Image equalize(Image img, float max_equalize)
     return img;
 }
 
+Image equalize_clamp(Image img, float V)
+{
+    return equalize(clamp(img, V), V);
+}
+
 Image gammaCurve(Image img, float gamma)
 {
-    // TODO: EQUALIZAR
+    equalize(img,img.max_value);
 
-    for (int i = img.w-1; i>=0; i--) {
-        for(int j = img.h-1; j>=0; j--) {
+    for (int i = img.h-1; i>=0; i--) {
+        for(int j = img.w-1; j>=0; j--) {
             img.p[i][j].r = 255 * pow((img.p[i][j].r / 255), gamma);
             img.p[i][j].g = 255 * pow((img.p[i][j].g / 255), gamma);
             img.p[i][j].b = 255 * pow((img.p[i][j].b / 255), gamma);
@@ -54,14 +59,9 @@ Image gammaCurve(Image img, float gamma)
     return img;
 }
 
-Image gammaCurve_clamp(Image img, float gamma, float clamping)
+Image gammaCurve_clamp(Image img, float gamma, float V)
 {
-    return clamp(gammaCurve(img, gamma), clamping);
-}
-
-Image equalize_clamp(Image img, float clamping)
-{
-    return clamp(equalize(img, clamping),clamping);
+    return clamp(gammaCurve(img, gamma), V);
 }
 
 ostream& operator << (ostream& os, const Image& p) {

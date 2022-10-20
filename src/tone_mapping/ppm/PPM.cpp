@@ -40,11 +40,11 @@ Image PPM::read(const char* path)
     //Read the file
     float red, green, blue;
     float conversion = max_value/color_res;
-    
-    pixels.resize(w);
-    for(int i = 0; i<w; i++) {
-        pixels[i].resize(h);
-        for(int j = 0; j<h; j++) {
+
+    pixels.resize(h);
+    for(int i = 0; i<h; i++) {
+        pixels[i].resize(w);
+        for(int j = 0; j<w; j++) {
             ifs >> red >> green >> blue;
             pixels[i][j] = RGB(red*conversion,green*conversion,blue*conversion);
         }
@@ -66,8 +66,8 @@ void PPM::write(const char* path, Image img)
     float red, green, blue;
     float conversion = img.color_res/img.max_value;
 
-    for(int i = 0; i < img.w; i++) {
-        for(int j = 0; j < img.h; j++) {
+    for(int i = 0; i < img.h; i++) {
+        for(int j = 0; j < img.w; j++) {
             ofs << (long)(img.p[i][j].r*conversion) << " " << (long)(img.p[i][j].g*conversion) << " " << (long)(img.p[i][j].b*conversion) << "\t";
         }
         ofs << "\n";
