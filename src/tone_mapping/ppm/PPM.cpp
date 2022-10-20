@@ -1,6 +1,7 @@
 #include "PPM.hpp"
 #include <iostream>
 #include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -8,31 +9,38 @@ PPM::PPM() {}
 
 Image PPM::read(const char* path)
 {
-    int N = 50;
-    float max_value, color_res;
+    float max_value = -1;
+    float color_res;
     unsigned int h, w;
     vector<vector<RGB>> pixels;
 
     ifs.open(path);
 
-    char buffer[N] = {};
+    string buffer = "";
 
-    ifs.getline(buffer,N); //Format
+    
+    getline(ifs,buffer); //Format
 
-    ifs.getline(buffer,N); //Max value
-    sscanf(buffer,"#MAX=%f",&max_value);
+    getline(ifs,buffer); //Max value comment
+    if(buffer.substr(0,5) == "#MAX=") {
+        sscanf(buffer.c_str(),"#MAX=%f",&max_value);
+        getline(ifs,buffer); //Name of file
+    }
 
-    ifs.getline(buffer,N); //Name of file
 
-    ifs.getline(buffer,N); //Size
-    sscanf(buffer,"%u %u",&w,&h);
+    getline(ifs,buffer); //Size
+    sscanf(buffer.c_str(),"%u %u",&w,&h);
 
-    ifs.getline(buffer,N); //Color resolution
-    sscanf(buffer,"%f",&color_res);
+    getline(ifs,buffer); //Max value
+    sscanf(buffer.c_str(),"%f",&color_res);
+    if (max_value < 0) {
+        max_value = color_res;
+    }
 
     //Read the file
     float red, green, blue;
     float conversion = max_value/color_res;
+    
     pixels.resize(w);
     for(int i = 0; i<w; i++) {
         pixels[i].resize(h);
