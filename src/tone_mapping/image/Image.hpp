@@ -18,8 +18,8 @@ class Image {
 
 std::ostream& operator << (std::ostream& os, const Image& p);
 
-Image clamp(Image img, float max_clamp = 255);
-Image equalize(Image img, float max_equalize);
+Image clamp(Image img, float max_clamp = 1);
+Image equalize(Image img);
 Image gammaCurve(Image img, float gamma);
 Image gammaCurve_clamp(Image img, float gamma, float max_clamp);
 Image equalize_clamp(Image img, float max_clamp);

@@ -25,35 +25,37 @@ Image clamp(Image img, float max_clamp)
             img.p[i][j].b = (img.p[i][j].b > max_clamp) ? max_clamp : img.p[i][j].b;
         }
     }
+    img.max_value = max_clamp;
     return img;
 }
 
-Image equalize(Image img, float max_equalize)
+Image equalize(Image img)
 {
     for (int i = img.h-1; i>=0; i--) {
         for(int j = img.w-1; j>=0; j--) {
-            img.p[i][j].r = (img.p[i][j].r / img.max_value) * max_equalize;
-            img.p[i][j].g = (img.p[i][j].g / img.max_value) * max_equalize;
-            img.p[i][j].b = (img.p[i][j].b / img.max_value) * max_equalize;
+            img.p[i][j].r = (img.p[i][j].r / img.max_value);
+            img.p[i][j].g = (img.p[i][j].g / img.max_value);
+            img.p[i][j].b = (img.p[i][j].b / img.max_value);
         }
     }
+    img.max_value = 1;
     return img;
 }
 
 Image equalize_clamp(Image img, float V)
 {
-    return equalize(clamp(img, V), V);
+    return equalize(clamp(img, V));
 }
 
 Image gammaCurve(Image img, float gamma)
 {
-    equalize(img,img.max_value);
+    equalize(img);
 
     for (int i = img.h-1; i>=0; i--) {
         for(int j = img.w-1; j>=0; j--) {
-            img.p[i][j].r = 255 * pow((img.p[i][j].r / 255), gamma);
-            img.p[i][j].g = 255 * pow((img.p[i][j].g / 255), gamma);
-            img.p[i][j].b = 255 * pow((img.p[i][j].b / 255), gamma);
+            img.p[i][j].r = pow((img.p[i][j].r), gamma);
+            img.p[i][j].g = pow((img.p[i][j].g), gamma);
+            img.p[i][j].b = pow((img.p[i][j].b), gamma);
         }
     }
     return img;

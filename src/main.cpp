@@ -22,7 +22,7 @@ int main() {
 
     Image test = p.read("/home/yo/Escritorio/GRAF/HDR PPM files/forest_path.ppm");
     
-    Image output = equalize_clamp(test,1024);
+    Image output = gammaCurve(test, 0.25);
     p.write("/home/yo/Escritorio/GRAF/HDR PPM files/test2.ppm",output);
 
     return 0;
