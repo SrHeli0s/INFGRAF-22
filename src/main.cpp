@@ -4,7 +4,7 @@
 #include "tone_mapping/ppm/PPM.hpp"
 #include "tone_mapping/image/Image.hpp"
 #include "tone_mapping/rgb/Rgb.hpp"
-#include "sphere/Sphere.hpp"
+#include "primitives/sphere/Sphere.hpp"
 #include <iostream>
 using namespace std;
 

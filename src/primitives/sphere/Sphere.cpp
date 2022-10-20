@@ -1,7 +1,7 @@
 #include "Sphere.hpp"
-#include "../point/Point.hpp"
-#include "../vec3/Vec3.hpp"
-#include "../transformation/Transformation.hpp"
+#include "../../point/Point.hpp"
+#include "../../vec3/Vec3.hpp"
+#include "../../transformation/Transformation.hpp"
 #include <iostream>
 #include <cmath>
 

@@ -1,8 +1,8 @@
 #pragma once
 #include <cmath>
 #include <iostream>
-#include "../point/Point.hpp"
-#include "../vec3/Vec3.hpp"
+#include "../../point/Point.hpp"
+#include "../../vec3/Vec3.hpp"
 
 const float MAX_ERROR = pow(10,-6);
 
