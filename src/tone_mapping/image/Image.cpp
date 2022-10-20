@@ -53,9 +53,9 @@ Image gammaCurve(Image img, float gamma)
 
     for (int i = img.h-1; i>=0; i--) {
         for(int j = img.w-1; j>=0; j--) {
-            img.p[i][j].r = pow((img.p[i][j].r), gamma);
-            img.p[i][j].g = pow((img.p[i][j].g), gamma);
-            img.p[i][j].b = pow((img.p[i][j].b), gamma);
+            img.p[i][j].r = pow((img.p[i][j].r), 1/gamma);
+            img.p[i][j].g = pow((img.p[i][j].g), 1/gamma);
+            img.p[i][j].b = pow((img.p[i][j].b), 1/gamma);
         }
     }
     return img;
