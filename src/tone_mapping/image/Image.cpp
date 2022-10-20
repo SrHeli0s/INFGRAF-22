@@ -1,6 +1,7 @@
 #include "Image.hpp"
 #include <iostream>
 #include <fstream>
+#include <cmath>
 
 using namespace std;
 
@@ -37,6 +38,30 @@ Image equalize(Image img, float max_equalize)
         }
     }
     return img;
+}
+
+Image gammaCurve(Image img, float gamma)
+{
+    // TODO: EQUALIZAR
+
+    for (int i = img.w-1; i>=0; i--) {
+        for(int j = img.h-1; j>=0; j--) {
+            img.p[i][j].r = 255 * pow((img.p[i][j].r / 255), gamma);
+            img.p[i][j].g = 255 * pow((img.p[i][j].g / 255), gamma);
+            img.p[i][j].b = 255 * pow((img.p[i][j].b / 255), gamma);
+        }
+    }
+    return img;
+}
+
+Image gammaCurve_clamp(Image img, float gamma, float clamping)
+{
+    return clamp(gammaCurve(img, gamma), clamping);
+}
+
+Image equalize_clamp(Image img, float clamping)
+{
+    return clamp(equalize(img, clamping),clamping);
 }
 
 ostream& operator << (ostream& os, const Image& p) {
