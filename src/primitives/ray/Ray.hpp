@@ -15,13 +15,13 @@ class Ray {
     Ray(Point p, Vec3 v);
 };
 
-struct Collision {
+struct Intersection {
     int value;
     Point* positions;
 };
 
-Collision intersect(Ray r, Sphere s);
-Collision intersect(Ray r, Plane p);
+Intersection intersect(Ray r, Sphere s);
+Intersection intersect(Ray r, Plane p);
 
 
 std::ostream& operator << (std::ostream& os, const Point& p);

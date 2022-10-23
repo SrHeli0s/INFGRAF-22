@@ -2,13 +2,17 @@
 #include <cmath>
 #include <iostream>
 #include "../../vec3/Vec3.hpp"
+#include "../../tone_mapping/rgb/Rgb.hpp"
 
 
 class Plane {
     public:
-        Vec3 x,y;
+        float d;
+        Vec3 normal;
+        RGB emission;
         
     Plane();
-    Plane(Vec3 x, Vec3 y);
+    Plane(float d, Vec3 normal);
+    Plane(float d, Vec3 normal, RGB emission);
 
 };

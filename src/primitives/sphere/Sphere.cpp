@@ -11,6 +11,7 @@ Sphere::Sphere() {}
 
 Sphere::Sphere(Point center, Vec3 axis, Point reference)
 {
+    this->emission = RGB(0,0,0);
     this->center = center;
     this->axis = axis;
     this->reference = reference;
@@ -22,6 +23,22 @@ Sphere::Sphere(Point center, Vec3 axis, Point reference)
         << " is inconsistent with the radius of it\n" << endl;
     }
 }
+
+Sphere::Sphere(Point center, Vec3 axis, Point reference, RGB emission)
+{
+    this->emission = emission;
+    this->center = center;
+    this->axis = axis;
+    this->reference = reference;
+    this->radius = mod(axis)/2;
+
+    if (this->radius - mod(center-reference) > MAX_ERROR) {
+        cerr << "The definition of the sphere with center " << center 
+        << " axis " << axis << " and reference " << reference 
+        << " is inconsistent with the radius of it\n" << endl;
+    }
+}
+
 
 Point Sphere::surfacePoint(float inclination, float azimuth) 
 {

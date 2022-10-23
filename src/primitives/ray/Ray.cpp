@@ -16,12 +16,12 @@ Ray::Ray(Point p, Vec3 v)
     this->v = v;
 }
 
-Collision intersect(Ray r, Sphere s)
+Intersection intersect(Ray r, Sphere s)
 {
-    Collision output;
+    Intersection output;
 }
 
-Collision intersect(Ray r, Plane p)
+Intersection intersect(Ray r, Plane p)
 {
-    Collision output;
+    Intersection output;
 }
