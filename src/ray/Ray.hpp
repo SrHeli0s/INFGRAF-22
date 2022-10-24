@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
-#include "../../point/Point.hpp"
-#include "../../vec3/Vec3.hpp"
+#include "../point/Point.hpp"
+#include "../vec3/Vec3.hpp"
 
 class Plane;
 class Sphere;

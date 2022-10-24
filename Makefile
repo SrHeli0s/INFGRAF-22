@@ -24,7 +24,7 @@ PROGRAM = a.out
 
 SPHERE = ${PRIMITIVES}/sphere/Sphere
 PLANE = ${PRIMITIVES}/plane/Plane
-RAY = ${PRIMITIVES}/ray/Ray
+RAY = ${SRC}/ray/Ray
 POINT = ${SRC}/point/Point
 VEC3 = ${SRC}/vec3/Vec3
 TRANSFORMATION = ${SRC}/transformation/Transformation
