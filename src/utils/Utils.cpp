@@ -1,32 +1,30 @@
 #include "Utils.hpp"
 #include <cmath>
+#include <vector>
 
-SecondDegreeEquationSolution solveSecondDegreeEquation(float a, float b, float c)
+using namespace std;
+
+vector<float> solveSecondDegreeEquation(float a, float b, float c)
 {
-  SecondDegreeEquationSolution result={0};
+  vector<float> output;
 
   if(a<0.000001)    // ==0
   {
     if(b>0.000001 && b<-0.000001) { // !=0
-      result.p1 = result.p2 = -c/b;
-      result.nSols = 1;
-    } else result.nSols = 0;
-    return result;
+      output.push_back(-c/b);
+    } 
+    return output;
   }
 
   double delta=b*b-4*a*c;
   if(delta>0)
   {
-    result.p1 = (-b-sqrt(delta))/2/a;
-    result.p2 = (-b+sqrt(delta))/2/a;
-    result.nSols = 2;
+    output.push_back((-b-sqrt(delta))/2/a);
+    output.push_back((-b+sqrt(delta))/2/a);
   }
   else if (delta == 0) {
-    result.p1 = (-b-sqrt(delta))/2/a;
-    result.nSols = 1;
+    output.push_back((-b-sqrt(delta))/2/a);
   }
-  else
-    result.nSols = 0;
 
-  return result;
+  return output;
 }
