@@ -1,4 +1,4 @@
-#include "utils.hpp"
+#include "Utils.hpp"
 #include <cmath>
 
 SecondDegreeEquationSolution solveSecondDegreeEquation(float a, float b, float c)

@@ -21,7 +21,7 @@ Intersection intersect(Ray r, Sphere s)
 {
 
     float a = pow(mod(r.v), 2);
-    float b = 2.0F*r.v*(r.p - s.center);
+    float b = r.v*2.0F*(r.p - s.center);
     float c = pow(mod(r.p - s.center), 2) - pow(s.radius, 2);
 
     SecondDegreeEquationSolution intersection = solveSecondDegreeEquation(a,b,c);
@@ -32,7 +32,7 @@ Intersection intersect(Ray r, Sphere s)
 
     Intersection output;
 
-    output = {intersection.nSols, intersectDistances}
+    output = {intersection.nSols, intersectDistances};
 }
 
 Intersection intersect(Ray r, Plane p)
