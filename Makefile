@@ -31,12 +31,13 @@ TRANSFORMATION = ${SRC}/transformation/Transformation
 RGB = ${TONE_MAPPING}/rgb/Rgb
 PPM = ${TONE_MAPPING}/ppm/PPM
 IMAGE = ${TONE_MAPPING}/image/Image
+UTILS = ${SRC}/utils/Utils
 
 all: ${MAIN}
 #---------------------------------------------------------
 # "linkar"
 ${MAIN}:  ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${MAIN}.cpp
-	${CC} -g ${MAIN}.cpp ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o -o ${PROGRAM} ${CPPFLAGS} -pthread
+	${CC} -g ${MAIN}.cpp ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o -o ${PROGRAM} ${CPPFLAGS} -pthread
 
 #---------------------------------------------------------
 # compilar
@@ -67,8 +68,11 @@ ${PPM}.o: ${PPM}.hpp ${PPM}.cpp
 ${IMAGE}.o: ${IMAGE}.hpp ${IMAGE}.cpp
 	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${IMAGE}.cpp -o ${IMAGE}.o
 
+${UTILS}.o: ${UTILS}.hpp ${UTILS}.cpp
+	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${UTILS}.cpp -o ${UTILS}.o
+
 #---------------------------------------------------------
 # Cuidado con lo que se pone aquí, que se borra sin preguntar
 clean:
-	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o
+	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o
 	$(RM) ${PROGRAM}

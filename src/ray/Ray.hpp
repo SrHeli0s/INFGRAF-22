@@ -17,7 +17,7 @@ class Ray {
 
 struct Intersection {
     int value;
-    Point* positions;
+    float* positions;
 };
 
 Intersection intersect(Ray r, Sphere s);

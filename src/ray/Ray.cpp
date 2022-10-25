@@ -3,6 +3,7 @@
 #include "../vec3/Vec3.hpp"
 #include "../primitives/sphere/Sphere.hpp"
 #include "../primitives/plane/Plane.hpp"
+#include "../utils/Utils.hpp"
 #include <iostream>
 #include <cmath>
 
@@ -19,37 +20,19 @@ Ray::Ray(Point p, Vec3 v)
 Intersection intersect(Ray r, Sphere s)
 {
 
-    float a = r.v * r.v;
-    float b = 20.0F * r.v;
-    float c = r.p*r.p - s.radius*s.radius;
+    float a = pow(mod(r.v), 2);
+    float b = 2.0F*r.v*(r.p - s.center);
+    float c = pow(mod(r.p - s.center), 2) - pow(s.radius, 2);
 
+    SecondDegreeEquationSolution intersection = solveSecondDegreeEquation(a,b,c);
+    float intersectDistances[intersection.nSols];
 
-    discriminant = b*b - 4*a*c;
-    
-    if (discriminant > 0) {
-        x1 = (-b + sqrt(discriminant)) / (2*a);
-        x2 = (-b - sqrt(discriminant)) / (2*a);
-        cout << "Roots are real and different." << endl;
-        cout << "x1 = " << x1 << endl;
-        cout << "x2 = " << x2 << endl;
-    }
-    
-    else if (discriminant == 0) {
-        cout << "Roots are real and same." << endl;
-        x1 = -b/(2*a);
-        cout << "x1 = x2 =" << x1 << endl;
-    }
-
-    else {
-        realPart = -b/(2*a);
-        imaginaryPart =sqrt(-discriminant)/(2*a);
-        cout << "Roots are complex and different."  << endl;
-        cout << "x1 = " << realPart << "+" << imaginaryPart << "i" << endl;
-        cout << "x2 = " << realPart << "-" << imaginaryPart << "i" << endl;
-    }
-
+    if(intersection.nSols >= 1) intersectDistances[0] = intersection.p1;
+    if(intersection.nSols == 2) intersectDistances[1] = intersection.p2;
 
     Intersection output;
+
+    output = {intersection.nSols, intersectDistances}
 }
 
 Intersection intersect(Ray r, Plane p)
