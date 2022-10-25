@@ -17,25 +17,26 @@ Ray::Ray(Point p, Vec3 v)
     this->v = v;
 }
 
-Intersection intersect(Ray r, Sphere s)
+vector<float> intersect(Ray r, Sphere s)
 {
 
     float a = pow(mod(r.v), 2);
-    float b = r.v*2.0F*(r.p - s.center);
+    float b = r.v*(r.p - s.center)*2.0F;
     float c = pow(mod(r.p - s.center), 2) - pow(s.radius, 2);
+    cout << "Mis abc son: " << a << " " << b << " " << c << endl;
 
     SecondDegreeEquationSolution intersection = solveSecondDegreeEquation(a,b,c);
-    float intersectDistances[intersection.nSols];
+    // float intersectDistances[intersection.nSols];
+    vector<float> output = vector<float>();
+    if(intersection.nSols >= 1) output.push_back(intersection.p1);
+    if(intersection.nSols == 2) output.push_back(intersection.p2);
 
-    if(intersection.nSols >= 1) intersectDistances[0] = intersection.p1;
-    if(intersection.nSols == 2) intersectDistances[1] = intersection.p2;
-
-    Intersection output;
-
-    output = {intersection.nSols, intersectDistances};
+    return output;
 }
 
-Intersection intersect(Ray r, Plane p)
+vector<float> intersect(Ray r, Plane p)
 {
-    Intersection output;
+    vector<float> output = vector<float>();
+
+    return output;
 }
