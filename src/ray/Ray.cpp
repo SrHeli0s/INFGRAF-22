@@ -38,3 +38,8 @@ vector<float> intersect(Ray r, Plane p)
     output.push_back(distance);
     return output;
 }
+
+ostream& operator << (ostream& os, const Ray& r) {
+    os << "Ray(origin=" << r.p << ", vector=" << r.v;
+    return os;
+}
