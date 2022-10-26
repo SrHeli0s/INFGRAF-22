@@ -40,6 +40,6 @@ vector<float> intersect(Ray r, Plane p)
 }
 
 ostream& operator << (ostream& os, const Ray& r) {
-    os << "Ray(origin=" << r.p << ", vector=" << r.v;
+    os << "Ray(origin=" << r.p << ", vector=" << r.v << ")";
     return os;
 }
