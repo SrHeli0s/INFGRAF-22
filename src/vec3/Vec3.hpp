@@ -13,6 +13,7 @@ class Vec3 {
 
     const Vec3 operator+ (const Vec3 &v) const;
     const Point operator+ (const Point &p) const;
+    const float operator* (const Point &p) const;
     const Vec3 operator- (const Vec3 &v) const;
     const float operator* (const Vec3 &v) const;
     const Vec3 operator*(float t) const;

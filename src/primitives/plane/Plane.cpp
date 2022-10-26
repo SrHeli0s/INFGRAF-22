@@ -8,15 +8,15 @@ using namespace std;
 
 Plane::Plane() {}
 
-Plane::Plane(float d, Vec3 normal)
+Plane::Plane(float c, Vec3 normal)
 {
-    this->d = d;
+    this->c = c;
     this->normal = normal;
     this->emission = RGB(0,0,0);
 }
 
-Plane::Plane(float d, Vec3 normal, RGB emission) {
-    this->d = d;
+Plane::Plane(float c, Vec3 normal, RGB emission) {
+    this->c = c;
     this->normal = normal;
     this->emission = emission;
 }

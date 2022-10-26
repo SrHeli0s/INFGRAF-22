@@ -25,6 +25,11 @@ const Point Vec3::operator+ (const Point &p) const
     return Point(this->c[0] + p.c[0], this->c[1] + p.c[1], this->c[2] + p.c[2]);
 }
 
+const float Vec3::operator* (const Point &p) const
+{
+    return this->c[0] * p.c[0] + this->c[1] * p.c[1] + this->c[2] * p.c[2];
+}
+
 const Vec3 Vec3::operator- (const Vec3 &v) const
 {
     return Vec3(this->c[0] - v.c[0], this->c[1] - v.c[1], this->c[2] - v.c[2]);

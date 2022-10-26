@@ -7,12 +7,12 @@
 
 class Plane {
     public:
-        float d;
+        float c;
         Vec3 normal;
         RGB emission;
         
     Plane();
-    Plane(float d, Vec3 normal);
-    Plane(float d, Vec3 normal, RGB emission);
+    Plane(float c, Vec3 normal);
+    Plane(float c, Vec3 normal, RGB emission);
 
 };

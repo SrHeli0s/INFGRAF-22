@@ -30,6 +30,7 @@ vector<float> intersect(Ray r, Sphere s)
 vector<float> intersect(Ray r, Plane p)
 {
     vector<float> output = vector<float>();
+    output.push_back((p.c + p.normal*r.p)/(r.v*p.normal));
 
     return output;
 }
