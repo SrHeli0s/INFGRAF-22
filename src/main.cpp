@@ -7,6 +7,7 @@
 #include "primitives/sphere/Sphere.hpp"
 #include "primitives/plane/Plane.hpp"
 #include "ray/Ray.hpp"
+#include "camera/Camera.hpp"
 #include <iostream>
 using namespace std;
 
@@ -19,17 +20,17 @@ int main() {
     // Image output = gammaCurve(test, 0.25);
     // p.write("/home/yo/Escritorio/GRAF/HDR PPM files/test2.ppm",output);
 
-    Plane p = Plane(1,Vec3(1,0,0));
+    Plane left = Plane(1,Vec3(1,0,0));
+    Plane right = Plane(1,Vec3(-1,0,0));
+    Plane floor = Plane(1,Vec3(0,1,0));
+    Plane ceiling = Plane(1,Vec3(0,-1,0));
+    Plane back = Plane(1,Vec3(0,0,-1));
+    
+    Sphere A = Sphere(Point(-0.5,-0.7,0.25),Vec3(0,0.6,0),Point(-0.2,-0.7,0.25));
+    Sphere B = Sphere(Point(0.5,-0.7,0.25),Vec3(0,0.6,0),Point(0.8,-0.7,0.25));
 
-    Ray r = Ray(Point(0,0,0),Vec3(1,0,0));
+    Camera camera = Camera(Point(0,0,3.5),Vec3(0,1,0),Vec3(-1,0,0),Vec3(0,0,3));
 
-    vector<float> i = intersect(r,p);
-
-    cout << i.size() << ": ";
-    for (int j = 0; j<i.size(); j++) {
-        cout << i[j] << ", ";
-    }
-    cout << endl;
 
     return 0;
 }
