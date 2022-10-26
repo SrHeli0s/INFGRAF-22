@@ -32,12 +32,13 @@ RGB = ${TONE_MAPPING}/rgb/Rgb
 PPM = ${TONE_MAPPING}/ppm/PPM
 IMAGE = ${TONE_MAPPING}/image/Image
 UTILS = ${SRC}/utils/Utils
+CAMERA = ${SRC}/camera/Camera
 
 all: ${MAIN}
 #---------------------------------------------------------
 # "linkar"
-${MAIN}:  ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${MAIN}.cpp
-	${CC} -g ${MAIN}.cpp ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o -o ${PROGRAM} ${CPPFLAGS} -pthread
+${MAIN}:  ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${MAIN}.cpp
+	${CC} -g ${MAIN}.cpp ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o -o ${PROGRAM} ${CPPFLAGS} -pthread
 
 #---------------------------------------------------------
 # compilar
@@ -71,8 +72,11 @@ ${IMAGE}.o: ${IMAGE}.hpp ${IMAGE}.cpp
 ${UTILS}.o: ${UTILS}.hpp ${UTILS}.cpp
 	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${UTILS}.cpp -o ${UTILS}.o
 
+${CAMERA}.o: ${CAMERA}.hpp ${CAMERA}.cpp
+	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${CAMERA}.cpp -o ${CAMERA}.o
+
 #---------------------------------------------------------
 # Cuidado con lo que se pone aquí, que se borra sin preguntar
 clean:
-	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o
+	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o
 	$(RM) ${PROGRAM}
