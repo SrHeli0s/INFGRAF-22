@@ -29,8 +29,12 @@ vector<float> intersect(Ray r, Sphere s)
 
 vector<float> intersect(Ray r, Plane p)
 {
-    vector<float> output = vector<float>();
-    output.push_back((p.c + p.normal*r.p)/(r.v*p.normal));
+    vector<float> output;
+    if(r.v*p.normal == 0) return output;
 
+    float distance = (p.c + p.normal*r.p)/(r.v*p.normal);
+    if(distance<0) return output; //The plane is behind the ray
+    
+    output.push_back(distance);
     return output;
 }
