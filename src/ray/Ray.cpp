@@ -23,7 +23,6 @@ vector<float> intersect(Ray r, Sphere s)
     float a = pow(mod(r.v), 2);
     float b = r.v*(r.p - s.center)*2.0F;
     float c = pow(mod(r.p - s.center), 2) - pow(s.radius, 2);
-    cout << "Mis abc son: " << a << " " << b << " " << c << endl;
 
     return solveSecondDegreeEquation(a,b,c);
 }
