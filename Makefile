@@ -26,6 +26,7 @@ SPHERE = ${PRIMITIVES}/sphere/Sphere
 PLANE = ${PRIMITIVES}/plane/Plane
 RAY = ${SRC}/ray/Ray
 POINT = ${SRC}/point/Point
+PRIMITIVE = ${SRC}/primitives/Primitive
 VEC3 = ${SRC}/vec3/Vec3
 TRANSFORMATION = ${SRC}/transformation/Transformation
 RGB = ${TONE_MAPPING}/rgb/Rgb
@@ -48,10 +49,10 @@ ${POINT}.o: ${POINT}.hpp ${POINT}.cpp
 ${VEC3}.o: ${VEC3}.hpp ${VEC3}.cpp 
 	${CC} -c ${VEC3}.cpp -o ${VEC3}.o  ${CPPFLAGS}
 
-${SPHERE}.o: ${SPHERE}.hpp ${SPHERE}.cpp
+${SPHERE}.o: ${SPHERE}.hpp ${PRIMITIVE}.hpp ${SPHERE}.cpp
 	${CC} -c ${SPHERE}.cpp -o ${SPHERE}.o ${CPPFLAGS}
 	
-${PLANE}.o: ${PLANE}.hpp ${PLANE}.cpp
+${PLANE}.o: ${PLANE}.hpp ${PRIMITIVE}.hpp ${PLANE}.cpp
 	${CC} -c ${PLANE}.cpp -o ${PLANE}.o ${CPPFLAGS}
 
 ${RAY}.o: ${RAY}.hpp ${RAY}.cpp
