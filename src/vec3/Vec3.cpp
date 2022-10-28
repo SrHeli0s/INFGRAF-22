@@ -79,3 +79,7 @@ Vec3 normalize(Vec3 v) {
     float length = mod(v);
     return Vec3(v.c[0]/length, v.c[1]/length, v.c[2]/length);
 }
+
+Vec3 inverse(Vec3 v) {
+    return Vec3(-v.c[0], -v.c[1], -v.c[2]);
+}

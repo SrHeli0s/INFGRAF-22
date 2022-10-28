@@ -29,3 +29,5 @@ Vec3 cross(Vec3 v1, Vec3 v2);
 float mod(Vec3 v);
 
 Vec3 normalize(Vec3 v);
+
+Vec3 inverse(Vec3 v);
