@@ -88,7 +88,6 @@ Image Camera::render(vector<Sphere> spheres, vector<Plane> planes)
                 
             }
 
-            cout << "guardando " << nearest_rgb << endl;
             output.p[i].push_back(nearest_rgb);
             //Set output.maxvalue to the max of nearest_rgb.r, nearest_rgb.g, nearest_rgb.b and output.maxvalue
             output.max_value = (nearest_rgb.r>output.max_value) ? nearest_rgb.r : ((nearest_rgb.g>output.max_value) ? nearest_rgb.g : ((nearest_rgb.b>output.max_value) ? nearest_rgb.b : output.max_value));
