@@ -17,7 +17,7 @@ Ray::Ray(Point p, Vec3 v)
     this->v = v;
 }
 
-ostream& operator << (ostream& os, const Ray& r) {
-    os << "Ray(origin=" << r.p << ", vector=" << r.v << ")";
+ostream& operator << (ostream& os, const Ray& obj) {
+    os << "Ray(origin=" << obj.p << ", vector=" << obj.v << ")";
     return os;
 }

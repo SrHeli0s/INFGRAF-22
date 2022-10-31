@@ -16,5 +16,5 @@ class Ray {
     Ray(Point p, Vec3 v);
 };
 
-std::ostream& operator << (std::ostream& os, const Ray& r);
+std::ostream& operator << (std::ostream& os, const Ray& obj);
 

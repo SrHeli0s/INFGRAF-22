@@ -64,8 +64,8 @@ vector<float> Sphere::intersect(Ray r) {
     return solveSecondDegreeEquation(a,b,c);
 }
 
-std::ostream& operator << (std::ostream& os, const Sphere& s) {
-    os << "Sphere(center=" << s.center << ", axis=" << s.axis << ", emission=" << s.emission << ")";    
+std::ostream& operator << (std::ostream& os, const Sphere& obj) {
+    os << "Sphere(center=" << obj.center << ", axis=" << obj.axis << ", emission=" << obj.emission << ")";    
 
     return os;
 }

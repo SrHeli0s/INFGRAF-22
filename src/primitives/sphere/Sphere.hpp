@@ -26,4 +26,4 @@ class Sphere : public Primitive{
     
 };
 
-std::ostream& operator << (std::ostream& os, const Sphere& p);
+std::ostream& operator << (std::ostream& os, const Sphere& obj);

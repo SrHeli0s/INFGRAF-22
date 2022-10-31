@@ -32,8 +32,8 @@ Point Point::applyTransformation(Transformation t)
     return Point(x,y,z);
 }
 
-ostream& operator << (std::ostream& os, const Point& p)
+ostream& operator << (std::ostream& os, const Point& obj)
 {
-    os << "Point(" << p.c[0] << ", " << p.c[1] << ", " << p.c[2] << ")";
+    os << "Point(" << obj.c[0] << ", " << obj.c[1] << ", " << obj.c[2] << ")";
     return os;
 }

@@ -10,4 +10,4 @@ class RGB {
     RGB(float r,float g,float b);
 };
 
-std::ostream& operator << (std::ostream& os, const RGB& p);
+std::ostream& operator << (std::ostream& os, const RGB& obj);

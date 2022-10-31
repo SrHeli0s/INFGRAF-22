@@ -29,5 +29,5 @@ Transformation YRotationTransform(float rad);
 Transformation ZRotationTransform(float rad);
 Transformation BaseChangeTransform(Vec3 bx, Vec3 by, Vec3 bz, Point p);
 
-std::ostream& operator << (std::ostream& os, const Transformation& t);
+std::ostream& operator << (std::ostream& os, const Transformation& obj);
 

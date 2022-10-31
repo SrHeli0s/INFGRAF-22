@@ -36,10 +36,10 @@ Camera::Camera(Point o, Vec3 u, Vec3 l, Vec3 f)
     this->h = 256;
 }
 
-ostream& operator << (ostream& os, const Camera& c)
+ostream& operator << (ostream& os, const Camera& obj)
 {
-    os << "Camera(origin=" << c.o << ", up=" << c.u << ", left=" << c.l
-    << ", foward=" << c.f << ", wxh=" << c.w << "x" << c.h << ")";
+    os << "Camera(origin=" << obj.o << ", up=" << obj.u << ", left=" << obj.l
+    << ", foward=" << obj.f << ", wxh=" << obj.w << "x" << obj.h << ")";
     return os;
 }
 

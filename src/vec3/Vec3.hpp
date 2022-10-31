@@ -22,7 +22,7 @@ class Vec3 {
     void applyTransformation(Transformation t);
 };
 
-std::ostream& operator << (std::ostream& os, const Vec3& v);
+std::ostream& operator << (std::ostream& os, const Vec3& obj);
 
 Vec3 cross(Vec3 v1, Vec3 v2);
 

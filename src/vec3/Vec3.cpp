@@ -50,9 +50,9 @@ const Vec3 Vec3::operator/(float t) const
     return Vec3(this->c[0]/t, this->c[1]/t, this->c[2]/t);
 }
 
-ostream& operator << (std::ostream& os, const Vec3& v)
+ostream& operator << (std::ostream& os, const Vec3& obj)
 {
-    os << "Vec3(" << v.c[0] << ", " << v.c[1] << ", " << v.c[2] << ")";
+    os << "Vec3(" << obj.c[0] << ", " << obj.c[1] << ", " << obj.c[2] << ")";
     return os;
 }
 

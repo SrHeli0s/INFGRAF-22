@@ -209,8 +209,8 @@ Transformation Transformation::inverse()
                           inv[3][0]*det, inv[3][1]*det, inv[3][2]*det, inv[3][3]*det);
 }
 
-ostream& operator << (std::ostream& os, const Transformation& t)
+ostream& operator << (std::ostream& os, const Transformation& obj)
 {
-    os << "Transformation([" << t.m[0][0] << "," << t.m[0][1] << "," << t.m[0][2] << "," << t.m[0][3] << "], [" << t.m[1][0] << "," << t.m[1][1] << "," << t.m[1][2] << "," << t.m[1][3] << "], [" << t.m[2][0] << "," << t.m[2][1] << "," << t.m[2][2] << "," << t.m[2][3] << "], [" << t.m[3][0] << "," << t.m[3][1] << "," << t.m[3][2] << "," << t.m[3][3] << "])";
+    os << "Transformation([" << obj.m[0][0] << "," << obj.m[0][1] << "," << obj.m[0][2] << "," << obj.m[0][3] << "], [" << obj.m[1][0] << "," << obj.m[1][1] << "," << obj.m[1][2] << "," << obj.m[1][3] << "], [" << obj.m[2][0] << "," << obj.m[2][1] << "," << obj.m[2][2] << "," << obj.m[2][3] << "], [" << obj.m[3][0] << "," << obj.m[3][1] << "," << obj.m[3][2] << "," << obj.m[3][3] << "])";
     return os;
 }

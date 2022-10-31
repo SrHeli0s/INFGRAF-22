@@ -20,4 +20,4 @@ class Camera {
     Image render(Primitive* scene[], unsigned int size);
 };
 
-std::ostream& operator << (std::ostream& os, const Camera& c);
+std::ostream& operator << (std::ostream& os, const Camera& obj);

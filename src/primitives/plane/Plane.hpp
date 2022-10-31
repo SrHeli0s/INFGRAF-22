@@ -19,4 +19,4 @@ class Plane : public Primitive {
 
 };
 
-std::ostream& operator << (std::ostream& os, const Plane& p);
+std::ostream& operator << (std::ostream& os, const Plane& obj);
