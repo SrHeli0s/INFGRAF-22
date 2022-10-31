@@ -57,19 +57,19 @@ Image Camera::render(Primitive* scene[], unsigned int size)
 
     Vec3 pixel = this->f + this->l + this->u; // upper-left pixel
 
-    for(int i = 0; i<this->w; i++) {
+    for(int i = 0; i<this->h; i++) {
         vector<RGB> row;
         output.p.push_back(row);
-        for(int j = 0; j<this->h; j++) {
-            Ray rayo = Ray(this->o, pixel + pixel_right*i + pixel_down*j);
+        for(int j = 0; j<this->w; j++) {
+            Ray rayo = Ray(this->o, pixel + pixel_right*j + pixel_down*i);
 
             float nearest_distance = INFINITY;
             RGB nearest_rgb = RGB(0,0,0);
-            for (int j = 0; j<size; j++) {
-                vector<float> distances = scene[j]->intersect(rayo);
+            for (int x = 0; x<size; x++) {
+                vector<float> distances = scene[x]->intersect(rayo);
                 for (int k = 0; k < distances.size(); k++) {
                     if(distances[k] < nearest_distance) {
-                        nearest_rgb = scene[j]->emission;
+                        nearest_rgb = scene[x]->emission;
                         nearest_distance = distances[k];
                     }
                 }
