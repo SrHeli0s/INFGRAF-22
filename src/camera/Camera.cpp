@@ -57,11 +57,16 @@ Image Camera::render(Primitive* scene[], unsigned int size)
 
     Vec3 pixel = this->f + this->l + this->u; // upper-left pixel
 
+    //Prepare output.p
     for(int i = 0; i<this->h; i++) {
         vector<RGB> row;
         output.p.push_back(row);
+    }
+
+    //Iterate
+    for(int i = 0; i<this->h; i++) {
         for(int j = 0; j<this->w; j++) {
-            Ray rayo = Ray(this->o, pixel + pixel_right*j + pixel_down*i);
+            Ray rayo = Ray(this->o, pixel + pixel_right*j + pixel_down*(this->h-i-1));
 
             float nearest_distance = INFINITY;
             RGB nearest_rgb = RGB(0,0,0);
@@ -74,7 +79,6 @@ Image Camera::render(Primitive* scene[], unsigned int size)
                     }
                 }
             }
-
             output.p[i].push_back(nearest_rgb);
             //Set output.maxvalue to the max of nearest_rgb.r, nearest_rgb.g, nearest_rgb.b and output.maxvalue
             output.max_value = (nearest_rgb.r>output.max_value) ? nearest_rgb.r : ((nearest_rgb.g>output.max_value) ? nearest_rgb.g : ((nearest_rgb.b>output.max_value) ? nearest_rgb.b : output.max_value));
