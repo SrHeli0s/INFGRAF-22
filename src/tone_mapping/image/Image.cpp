@@ -66,14 +66,14 @@ Image gammaCurve_clamp(Image img, float gamma, float V)
     return clamp(gammaCurve(img, gamma), V);
 }
 
-ostream& operator << (ostream& os, const Image& p) {
-    os << "Image with hxw:" << to_string(p.h)+"x"+to_string(p.w) 
-       << " max_value:" << p.max_value 
-       << " color_res:" << p.color_res 
+ostream& operator << (ostream& os, const Image& obj) {
+    os << "Image with hxw:" << to_string(obj.h)+"x"+to_string(obj.w) 
+       << " max_value:" << obj.max_value 
+       << " color_res:" << obj.color_res 
        << " pixels:\n";
-    for(int i = 0; i<p.w; i++) {
-        for(int j = 0; j<p.h; j++) {
-            os << p.p[i][j] << " ";
+    for(int i = 0; i<obj.w; i++) {
+        for(int j = 0; j<obj.h; j++) {
+            os << obj.p[i][j] << " ";
         }
         os << "\n";
     }

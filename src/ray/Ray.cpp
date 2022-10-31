@@ -17,29 +17,7 @@ Ray::Ray(Point p, Vec3 v)
     this->v = v;
 }
 
-vector<float> intersect(Ray r, Sphere s)
-{
-
-    float a = pow(mod(r.v), 2);
-    float b = r.v*(r.p - s.center)*2.0F;
-    float c = pow(mod(r.p - s.center), 2) - pow(s.radius, 2);
-
-    return solveSecondDegreeEquation(a,b,c);
-}
-
-vector<float> intersect(Ray r, Plane p)
-{
-    vector<float> output;
-    if(r.v*p.normal == 0) return output;
-
-    float distance = (p.c + p.normal*r.p)/(r.v*p.normal);
-    if(distance<0) return output; //The plane is behind the ray
-    
-    output.push_back(distance);
-    return output;
-}
-
-ostream& operator << (ostream& os, const Ray& r) {
-    os << "Ray(origin=" << r.p << ", vector=" << r.v << ")";
+ostream& operator << (ostream& os, const Ray& obj) {
+    os << "Ray(origin=" << obj.p << ", vector=" << obj.v << ")";
     return os;
 }

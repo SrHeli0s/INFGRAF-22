@@ -16,7 +16,7 @@ class Image {
     Image(std::vector<std::vector<RGB>> pixels, float max_value, float color_res);
 };
 
-std::ostream& operator << (std::ostream& os, const Image& p);
+std::ostream& operator << (std::ostream& os, const Image& obj);
 
 Image clamp(Image img, float max_clamp = 1);
 Image equalize(Image img);

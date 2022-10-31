@@ -17,5 +17,5 @@ class Point {
     Point applyTransformation(Transformation t);
 };
 
-std::ostream& operator << (std::ostream& os, const Point& p);
+std::ostream& operator << (std::ostream& os, const Point& obj);
 
