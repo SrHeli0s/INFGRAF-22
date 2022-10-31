@@ -8,8 +8,8 @@ class Primitive {
     public:
         RGB emission;
 
-    std::vector<float> intersect(Ray r) {}
-    std::string printear() const {}
+    virtual std::vector<float> intersect(Ray r) = 0;
+    virtual std::string to_string() const = 0;
 };
 
 std::ostream& operator << (std::ostream& os, const Primitive& p);

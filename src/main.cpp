@@ -30,27 +30,10 @@ int main() {
 
     Camera camera = Camera(Point(0,0,3.5),Vec3(0,1,0),Vec3(-1,0,0),Vec3(0,0,3));
 
-    vector<Primitive> scene;
-    scene.push_back(left);
-    scene.push_back(right);
-    scene.push_back(floor);
-    scene.push_back(ceiling);
-    scene.push_back(back);
-    scene.push_back(A);
-    scene.push_back(B);
+    Primitive* scene[7] = {&left, &right, &floor, &ceiling, &back, &A, &B};
 
-    Ray test = Ray(Point(0,0,3.5),Vec3(0,0,3));
-
-    vector<float> distancia = scene[4].intersect(test);
-
-    cout << "DISTANCES: " << distancia.size() << " CON " << scene[4] << endl;
-    for (int pene = 0; pene < distancia.size(); pene++) {
-        cout << distancia[pene] << " ";
-    }
-    cout << endl;
-
-    Image output = camera.render(scene);
-
+    Image output = camera.render(scene,sizeof(scene)/sizeof(scene[0]));
+    //                                 ^Size of array
     p.write("scene.ppm",output);
 
     return 0;

@@ -22,9 +22,9 @@ class Sphere : public Primitive{
 
     Point surfacePoint(float inclination, float azimuth);
 
-    std::vector<float> intersect(Ray r);
+    std::vector<float> intersect(Ray r) override;
     
-    std::string printear() const;
+    std::string to_string() const override;
 };
 
 std::ostream& operator << (std::ostream& os, const Sphere& p);

@@ -15,9 +15,9 @@ class Plane : public Primitive {
     Plane(float c, Vec3 normal);
     Plane(float c, Vec3 normal, RGB emission);
 
-    std::vector<float> intersect(Ray r);
+    std::vector<float> intersect(Ray r) override;
 
-    std::string printear() const;
+    std::string to_string() const override;
 };
 
 std::ostream& operator << (std::ostream& os, const Plane& p);

@@ -66,7 +66,7 @@ vector<float> Sphere::intersect(Ray r) {
     return solveSecondDegreeEquation(a,b,c);
 }
 
-string Sphere::printear() const {
+string Sphere::to_string() const {
     stringstream ss;
     ss << "Sphere(center=" << this->center << ", axis=" << this->axis << ")";
     return ss.str();

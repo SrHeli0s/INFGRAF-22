@@ -41,7 +41,7 @@ std::ostream& operator << (std::ostream& os, const Plane& p) {
     return os;
 }
 
-string Plane::printear() const {
+string Plane::to_string() const {
     stringstream ss;
     ss << "Plane(c=" << this->c << ", normal=" << this->normal << ")";
     return ss.str();
