@@ -43,7 +43,7 @@ ostream& operator << (ostream& os, const Camera& obj)
     return os;
 }
 
-Image Camera::render(Primitive* scene[], unsigned int size)
+Image Camera::render(Primitive* scene[], unsigned int size, unsigned int nRays = 1)
 {
     Image output;
     output.w = this->w;
@@ -62,26 +62,46 @@ Image Camera::render(Primitive* scene[], unsigned int size)
         vector<RGB> row;
         output.p.push_back(row);
     }
-
+    float randx = rand()/RAND_MAX;
+    float randz = rand()/RAND_MAX;
     //Iterate
     for(int i = 0; i<this->h; i++) {
         for(int j = 0; j<this->w; j++) {
-            Ray rayo = Ray(this->o, pixel + pixel_right*j + pixel_down*(this->h-i-1));
+            vector<RGB> colors;
+            
+            for (int y = 0; y<nRays; y++) {
 
-            float nearest_distance = INFINITY;
-            RGB nearest_rgb = RGB(0,0,0);
-            for (int x = 0; x<size; x++) {
-                vector<float> distances = scene[x]->intersect(rayo);
-                for (int k = 0; k < distances.size(); k++) {
-                    if(distances[k] < nearest_distance) {
-                        nearest_rgb = scene[x]->emission;
-                        nearest_distance = distances[k];
+                Ray rayo = Ray(this->o, pixel + pixel_right*(j+(rand()/(float) (RAND_MAX))) + pixel_down*(this->h-i-1+(rand()/(float) (RAND_MAX))));
+                float nearest_distance = INFINITY;
+                RGB nearest_rgb = RGB(0,0,0);
+                for (int x = 0; x<size; x++) {
+                    vector<float> distances = scene[x]->intersect(rayo);
+                    for (int k = 0; k < distances.size(); k++) {
+                        if(distances[k] < nearest_distance) {
+                            nearest_rgb = scene[x]->emission;
+                            nearest_distance = distances[k];
+                        }
                     }
                 }
+                colors.push_back(nearest_rgb);
             }
-            output.p[i].push_back(nearest_rgb);
-            //Set output.maxvalue to the max of nearest_rgb.r, nearest_rgb.g, nearest_rgb.b and output.maxvalue
-            output.max_value = (nearest_rgb.r>output.max_value) ? nearest_rgb.r : ((nearest_rgb.g>output.max_value) ? nearest_rgb.g : ((nearest_rgb.b>output.max_value) ? nearest_rgb.b : output.max_value));
+
+            //Calculate average
+            RGB average_rgb = RGB(0,0,0);
+
+            for(RGB c : colors) {
+                average_rgb.r += c.r;
+                average_rgb.g += c.g;
+                average_rgb.b += c.b;
+            }
+
+            average_rgb.r /= colors.size();
+            average_rgb.g /= colors.size();
+            average_rgb.b /= colors.size();
+
+            output.p[i].push_back(average_rgb);
+            //Set output.maxvalue to the max of average_rgb.r, average_rgb.g, average_rgb.b and output.maxvalue
+            output.max_value = (average_rgb.r>output.max_value) ? average_rgb.r : ((average_rgb.g>output.max_value) ? average_rgb.g : ((average_rgb.b>output.max_value) ? average_rgb.b : output.max_value));
 
         }
     }

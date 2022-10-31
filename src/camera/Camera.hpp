@@ -17,7 +17,7 @@ class Camera {
     Camera(Point o, Vec3 u, Vec3 l, Vec3 f);
     Camera(Point o, Vec3 u, Vec3 l, Vec3 f, float w, float h);
 
-    Image render(Primitive* scene[], unsigned int size);
+    Image render(Primitive* scene[], unsigned int size, unsigned int nRays);
 };
 
 std::ostream& operator << (std::ostream& os, const Camera& obj);

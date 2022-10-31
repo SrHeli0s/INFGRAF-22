@@ -9,9 +9,11 @@
 #include "ray/Ray.hpp"
 #include "camera/Camera.hpp"
 #include <iostream>
+#include <time.h>
 using namespace std;
 
 int main() {
+    srand(time(NULL));
 
     PPM p = PPM();
     
@@ -28,12 +30,13 @@ int main() {
     Sphere A = Sphere(Point(-0.5,-0.7,0.25),Vec3(0,0.6,0),Point(-0.2,-0.7,0.25),RGB(255,255,0));
     Sphere B = Sphere(Point(0.5,-0.7,0.25),Vec3(0,0.6,0),Point(0.8,-0.7,0.25),RGB(255,0,127));
 
-    Camera camera = Camera(Point(0,0,5.5),Vec3(0,1,0),Vec3(-1,0,0),Vec3(0,0,3));
+    Camera camera = Camera(Point(0,0,5.5),Vec3(0,1,0),Vec3(-1,0,0),Vec3(0,0,3),1024,1024);
 
     Primitive* scene[7] = {&left, &right, &floor, &ceiling, &back, &A, &B};
 
-    Image output = camera.render(scene,sizeof(scene)/sizeof(scene[0]));
-    //                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Size of array
+    Image output = camera.render(scene,sizeof(scene)/sizeof(scene[0]),64);
+    //                                 \____________________________/
+    //                                          Size of array
     p.write("scene.ppm",output);
 
     return 0;
