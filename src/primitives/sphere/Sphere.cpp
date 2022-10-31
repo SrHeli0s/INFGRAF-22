@@ -53,8 +53,6 @@ Point Sphere::surfacePoint(float inclination, float azimuth)
     Vec3 normal = this->reference - this->center;
     Transformation t = BaseChangeTransform(normal, normalize(this->axis), cross(normal,normalize(this->axis)), this->center);
     
-    cout << "\n"<< "\nVoy a aplicar la transformacion " << t << " al punto " << target<< "\n"<< "\n";
-    // cout << "\n" << t << "\n" << target<< "\n"<< "\n";
     return target.applyTransformation(t);;
 }
 
@@ -66,8 +64,8 @@ vector<float> Sphere::intersect(Ray r) {
     return solveSecondDegreeEquation(a,b,c);
 }
 
-string Sphere::to_string() const {
-    stringstream ss;
-    ss << "Sphere(center=" << this->center << ", axis=" << this->axis << ")";
-    return ss.str();
+std::ostream& operator << (std::ostream& os, const Sphere& s) {
+    os << "Sphere(center=" << s.center << ", axis=" << s.axis << ", emission=" << s.emission << ")";    
+
+    return os;
 }

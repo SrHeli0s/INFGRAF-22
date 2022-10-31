@@ -24,7 +24,6 @@ class Sphere : public Primitive{
 
     std::vector<float> intersect(Ray r) override;
     
-    std::string to_string() const override;
 };
 
 std::ostream& operator << (std::ostream& os, const Sphere& p);

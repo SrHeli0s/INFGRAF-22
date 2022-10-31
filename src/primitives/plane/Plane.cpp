@@ -36,13 +36,7 @@ vector<float> Plane::intersect(Ray r) {
 }
 
 std::ostream& operator << (std::ostream& os, const Plane& p) {
-    os << "Plane(c=" << p.c << ", normal=" << p.normal << ")";
+    os << "Plane(c=" << p.c << ", normal=" << p.normal << ", emission=" << p.emission << ")";
 
     return os;
-}
-
-string Plane::to_string() const {
-    stringstream ss;
-    ss << "Plane(c=" << this->c << ", normal=" << this->normal << ")";
-    return ss.str();
 }
