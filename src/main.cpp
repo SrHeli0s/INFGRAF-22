@@ -6,8 +6,9 @@
 #include "tone_mapping/rgb/Rgb.hpp"
 #include "primitives/sphere/Sphere.hpp"
 #include "primitives/plane/Plane.hpp"
-#include "ray/Ray.hpp"
-#include "camera/Camera.hpp"
+#include "render/ray/Ray.hpp"
+#include "render/camera/Camera.hpp"
+#include "render/scene/Scene.hpp"
 #include <iostream>
 #include <time.h>
 using namespace std;
@@ -32,11 +33,19 @@ int main() {
 
     Camera camera = Camera(Point(0,0,5.5),Vec3(0,1,0),Vec3(-1,0,0),Vec3(0,0,3),1024,1024);
 
-    Primitive* scene[7] = {&left, &right, &floor, &ceiling, &back, &A, &B};
+    Scene sc = Scene();
+    sc.add(left);
+    sc.add(right);
+    sc.add(floor);
+    sc.add(ceiling);
+    sc.add(back);
+    sc.add(A);
+    sc.add(B);
+    
+    // Primitive* scene[7] = {&left, &right, &floor, &ceiling, &back, &A, &B};
 
-    Image output = camera.render(scene,sizeof(scene)/sizeof(scene[0]),8);
-    //                                 \____________________________/
-    //                                          Size of array
+    Image output = camera.render(sc,1);
+
     p.write("scene.ppm",output);
 
     return 0;

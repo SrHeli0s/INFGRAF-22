@@ -13,33 +13,29 @@ CC = g++         # compilador
 # opciones compilación y enlazado ("linkado")
 CPPFLAGS = -I. -I${SRC} -I -O2 -std=c++11 -fmax-errors=1 # opciones compilación
 #---------------------------------------------------------
-# vars
 SRC = ./src
-MAIN = ${SRC}/main
-TONE_MAPPING = ${SRC}/tone_mapping
-PRIMITIVES = ${SRC}/primitives
 PROGRAM = a.out
 #---------------------------------------------------------
-#directorio y clase para manejo de logs
-
-SPHERE = ${PRIMITIVES}/sphere/Sphere
-PLANE = ${PRIMITIVES}/plane/Plane
-RAY = ${SRC}/ray/Ray
+MAIN = ${SRC}/main
 POINT = ${SRC}/point/Point
-PRIMITIVE = ${SRC}/primitives/Primitive
 VEC3 = ${SRC}/vec3/Vec3
+PRIMITIVE = ${SRC}/primitives/Primitive
+SPHERE = ${SRC}/primitives/sphere/Sphere
+PLANE = ${SRC}/primitives/plane/Plane
 TRANSFORMATION = ${SRC}/transformation/Transformation
-RGB = ${TONE_MAPPING}/rgb/Rgb
-PPM = ${TONE_MAPPING}/ppm/PPM
-IMAGE = ${TONE_MAPPING}/image/Image
+RGB = ${SRC}/tone_mapping/rgb/Rgb
+PPM = ${SRC}/tone_mapping/ppm/PPM
+IMAGE = ${SRC}/tone_mapping/image/Image
 UTILS = ${SRC}/utils/Utils
-CAMERA = ${SRC}/camera/Camera
+CAMERA = ${SRC}/render/camera/Camera
+RAY = ${SRC}/render/ray/Ray
+SCENE = ${SRC}/render/scene/Scene
 
 all: ${MAIN}
 #---------------------------------------------------------
 # "linkar"
-${MAIN}:  ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${MAIN}.cpp
-	${CC} -g ${MAIN}.cpp ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o -o ${PROGRAM} ${CPPFLAGS} -pthread
+${MAIN}:  ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${MAIN}.cpp
+	${CC} -g ${MAIN}.cpp ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o -o ${PROGRAM} ${CPPFLAGS} -pthread
 
 #---------------------------------------------------------
 # compilar
@@ -76,8 +72,11 @@ ${UTILS}.o: ${UTILS}.hpp ${UTILS}.cpp
 ${CAMERA}.o: ${CAMERA}.hpp ${CAMERA}.cpp
 	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${CAMERA}.cpp -o ${CAMERA}.o
 
+${SCENE}.o: ${SCENE}.hpp ${SCENE}.cpp
+	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${SCENE}.cpp -o ${SCENE}.o
+
 #---------------------------------------------------------
 # Cuidado con lo que se pone aquí, que se borra sin preguntar
 clean:
-	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o
+	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o
 	$(RM) ${PROGRAM}

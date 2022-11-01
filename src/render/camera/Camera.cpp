@@ -1,12 +1,13 @@
 #include "Camera.hpp"
-#include "../point/Point.hpp"
-#include "../vec3/Vec3.hpp"
-#include "../primitives/sphere/Sphere.hpp"
-#include "../primitives/plane/Plane.hpp"
-#include "../tone_mapping/image/Image.hpp"
-#include "../utils/Utils.hpp"
-#include "../primitives/Primitive.hpp"
+#include "../../point/Point.hpp"
+#include "../../vec3/Vec3.hpp"
+#include "../../primitives/Primitive.hpp"
+#include "../../primitives/sphere/Sphere.hpp"
+#include "../../primitives/plane/Plane.hpp"
+#include "../../tone_mapping/image/Image.hpp"
+#include "../../utils/Utils.hpp"
 #include "../ray/Ray.hpp"
+#include "../scene/Scene.hpp"
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -43,7 +44,7 @@ ostream& operator << (ostream& os, const Camera& obj)
     return os;
 }
 
-Image Camera::render(Primitive* scene[], unsigned int size, unsigned int nRays = 1)
+Image Camera::render(Scene scene, unsigned int nRays = 1)
 {
     Image output;
     output.w = this->w;
@@ -74,11 +75,11 @@ Image Camera::render(Primitive* scene[], unsigned int size, unsigned int nRays =
                 Ray rayo = Ray(this->o, pixel + pixel_right*(j+(rand()/(float) (RAND_MAX))) + pixel_down*(this->h-i-1+(rand()/(float) (RAND_MAX))));
                 float nearest_distance = INFINITY;
                 RGB nearest_rgb = RGB(0,0,0);
-                for (int x = 0; x<size; x++) {
-                    vector<float> distances = scene[x]->intersect(rayo);
+                for (int x = 0; x<scene.objs.size(); x++) {
+                    vector<float> distances = scene.objs[x]->intersect(rayo);
                     for (int k = 0; k < distances.size(); k++) {
                         if(distances[k] < nearest_distance) {
-                            nearest_rgb = scene[x]->emission;
+                            nearest_rgb = scene.objs[x]->emission;
                             nearest_distance = distances[k];
                         }
                     }

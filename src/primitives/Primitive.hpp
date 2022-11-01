@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../tone_mapping/rgb/Rgb.hpp"
-#include "../ray/Ray.hpp"
+#include "../render/ray/Ray.hpp"
 
 class Primitive {
     public:

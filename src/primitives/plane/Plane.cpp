@@ -1,6 +1,6 @@
 #include "Plane.hpp"
 #include "../../vec3/Vec3.hpp"
-#include "../../ray/Ray.hpp"
+#include "../../render/ray/Ray.hpp"
 #include "../../tone_mapping/rgb/Rgb.hpp"
 #include "../../utils/Utils.hpp"
 #include <iostream>

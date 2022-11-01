@@ -1,9 +1,9 @@
 #include "Ray.hpp"
-#include "../point/Point.hpp"
-#include "../vec3/Vec3.hpp"
-#include "../primitives/sphere/Sphere.hpp"
-#include "../primitives/plane/Plane.hpp"
-#include "../utils/Utils.hpp"
+#include "../../point/Point.hpp"
+#include "../../vec3/Vec3.hpp"
+#include "../../primitives/sphere/Sphere.hpp"
+#include "../../primitives/plane/Plane.hpp"
+#include "../../utils/Utils.hpp"
 #include <iostream>
 #include <cmath>
 

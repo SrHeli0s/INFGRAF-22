@@ -1,7 +1,7 @@
 #include "Sphere.hpp"
 #include "../../point/Point.hpp"
 #include "../../vec3/Vec3.hpp"
-#include "../../ray/Ray.hpp"
+#include "../../render/ray/Ray.hpp"
 #include "../../utils/Utils.hpp"
 #include "../../transformation/Transformation.hpp"
 #include <iostream>

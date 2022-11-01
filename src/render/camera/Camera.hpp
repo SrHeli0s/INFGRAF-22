@@ -1,11 +1,11 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include "../point/Point.hpp"
-#include "../vec3/Vec3.hpp"
-#include "../tone_mapping/image/Image.hpp"
-#include "../primitives/Primitive.hpp"
+#include "../../point/Point.hpp"
+#include "../../vec3/Vec3.hpp"
 
+class Scene;
+class Image;
 
 class Camera {
     public :
@@ -17,7 +17,7 @@ class Camera {
     Camera(Point o, Vec3 u, Vec3 l, Vec3 f);
     Camera(Point o, Vec3 u, Vec3 l, Vec3 f, float w, float h);
 
-    Image render(Primitive* scene[], unsigned int size, unsigned int nRays);
+    Image render(Scene scene, unsigned int nRays);
 };
 
 std::ostream& operator << (std::ostream& os, const Camera& obj);
