@@ -3,7 +3,6 @@
 #include "../tone_mapping/rgb/Rgb.hpp"
 #include "../ray/Ray.hpp"
 
-
 class Primitive {
     public:
         RGB emission;
