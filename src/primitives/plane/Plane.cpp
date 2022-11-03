@@ -28,7 +28,7 @@ vector<float> Plane::intersect(Ray r) {
     vector<float> output;
     if(r.v*this->normal == 0) return output;
 
-    float distance = (this->c + this->normal*r.p)/(r.v*this->normal);
+    float distance = -(this->c + this->normal*r.p)/(r.v*this->normal);
     if(distance<0) return output; //The plane is behind the ray
     
     output.push_back(distance);

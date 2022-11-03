@@ -105,6 +105,14 @@ void Camera::worker(ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel>
         n = jobs.pop();
     }
     return;
+    
+    // Point hit = rayo.p + (rayo.v * nearest_distance);
+    // RGB sum = RGB(0,0,0);
+    // //P4
+    // for (auto l: scene.lights) {
+    //     sum = sum + (l.power)/(float)(pow(mod(l.center - hit),2));
+    //     float x = ((l.center-hit)/(mod(l.center - hit)));
+    // }
 }
 
 
@@ -134,6 +142,7 @@ Image Camera::render(Scene scene, unsigned int nRays = 1)
         for(int j = 0; j<this->w; j++) output.p[i].push_back(RGB(0,0,0));
     }
 
+
     //Call threads
     vector<thread> threads;
     for (int i = 0; i<NTHREADS; i++) {
@@ -157,9 +166,9 @@ Image Camera::render(Scene scene, unsigned int nRays = 1)
         output.max_value = (a.color.r>output.max_value) ? a.color.r : ((a.color.g>output.max_value) ? a.color.g : ((a.color.b>output.max_value) ? a.color.b : output.max_value));
 
         qresult.pop();
+
     }
 
-    
     // output.p[i].push_back(average_rgb);
 
     return output;
