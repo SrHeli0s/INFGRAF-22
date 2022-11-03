@@ -62,7 +62,7 @@ RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsi
     Vec3 pixel = this->f + this->l + this->u; // upper-left pixel
     
     for (int y = 0; y<nRays; y++) {
-        Ray rayo = Ray(this->o, pixel + pixel_right*(column+(rand()/(float) (RAND_MAX))) + pixel_down*(this->h-row-1+(rand()/(float) (RAND_MAX))));
+        Ray rayo = Ray(this->o, pixel + pixel_right*(column+(rand()/(float) (RAND_MAX))) + pixel_down*(row+(rand()/(float) (RAND_MAX))));
 
         float nearest_distance = INFINITY;
         RGB nearest_rgb = RGB(0,0,0);
