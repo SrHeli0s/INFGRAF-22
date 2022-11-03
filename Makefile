@@ -27,6 +27,7 @@ RGB = ${SRC}/tone_mapping/rgb/Rgb
 PPM = ${SRC}/tone_mapping/ppm/PPM
 IMAGE = ${SRC}/tone_mapping/image/Image
 UTILS = ${SRC}/utils/Utils
+CONCURRENTQUEUE = ${SRC}/utils/ConcurrentQueue
 CAMERA = ${SRC}/render/camera/Camera
 RAY = ${SRC}/render/ray/Ray
 SCENE = ${SRC}/render/scene/Scene
@@ -69,7 +70,7 @@ ${IMAGE}.o: ${IMAGE}.hpp ${IMAGE}.cpp
 ${UTILS}.o: ${UTILS}.hpp ${UTILS}.cpp
 	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${UTILS}.cpp -o ${UTILS}.o
 
-${CAMERA}.o: ${CAMERA}.hpp ${CAMERA}.cpp
+${CAMERA}.o: ${CAMERA}.hpp ${CONCURRENTQUEUE}.hpp ${CAMERA}.cpp
 	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${CAMERA}.cpp -o ${CAMERA}.o
 
 ${SCENE}.o: ${SCENE}.hpp ${SCENE}.cpp
