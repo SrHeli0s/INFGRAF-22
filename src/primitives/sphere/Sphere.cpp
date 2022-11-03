@@ -8,6 +8,7 @@
 #include <sstream>
 #include <cmath>
 #include <vector>
+#include <memory>
 
 using namespace std;
 
@@ -56,12 +57,14 @@ Point Sphere::surfacePoint(float inclination, float azimuth)
     return target.applyTransformation(t);;
 }
 
-vector<float> Sphere::intersect(Ray r) {
+vector<Collision> Sphere::intersect(Ray r) {
     float a = pow(mod(r.v), 2);
     float b = r.v*(r.p - this->center)*2.0F;
     float c = pow(mod(r.p - this->center), 2) - pow(this->radius, 2);
-
-    return solveSecondDegreeEquation(a,b,c);
+    vector<float> distances = solveSecondDegreeEquation(a,b,c);
+    vector<Collision> output;
+    for (float d : distances) output.push_back({make_shared<Sphere>(*this),r.p+(r.v*d),d});
+    return output;
 }
 
 std::ostream& operator << (std::ostream& os, const Sphere& obj) {

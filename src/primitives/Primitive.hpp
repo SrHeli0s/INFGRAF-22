@@ -7,6 +7,6 @@ class Primitive {
     public:
         RGB emission;
 
-    virtual std::vector<float> intersect(Ray r) = 0;
+    virtual std::vector<Collision> intersect(Ray r) = 0;
 };
 

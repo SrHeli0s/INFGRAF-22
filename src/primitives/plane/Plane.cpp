@@ -6,6 +6,7 @@
 #include <iostream>
 #include <sstream>
 #include <cmath>
+#include <memory>
 
 using namespace std;
 
@@ -24,14 +25,14 @@ Plane::Plane(float c, Vec3 normal, RGB emission) {
     this->emission = emission;
 }
 
-vector<float> Plane::intersect(Ray r) {
-    vector<float> output;
+vector<Collision> Plane::intersect(Ray r) {
+    vector<Collision> output;
     if(r.v*this->normal == 0) return output;
 
     float distance = -(this->c + this->normal*r.p)/(r.v*this->normal);
     if(distance<0) return output; //The plane is behind the ray
     
-    output.push_back(distance);
+    output.push_back({make_shared<Plane>(*this),r.p+(r.v*distance),distance});
     return output;
 }
 

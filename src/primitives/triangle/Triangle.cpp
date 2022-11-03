@@ -31,8 +31,8 @@ Triangle::Triangle(float c, Point v1, Point v2, Point v3, Vec3 normal, RGB emiss
     this->emission = emission;
 }
 
-vector<float> Triangle::intersect(Ray r) {
-    vector<float> output;
+vector<Collision> Triangle::intersect(Ray r) {
+    vector<Collision> output;
     if(r.v*this->normal == 0) return output;
 
     float distance = (this->c + this->normal*r.p)/(r.v*this->normal);
@@ -60,7 +60,7 @@ vector<float> Triangle::intersect(Ray r) {
 
     if ((this->normal*C1 > 0) && (this->normal*C2 > 0) && (this->normal*C3 > 0)) {
         cout << "INTERSECTA" << endl;
-        output.push_back(distance);
+        output.push_back({make_shared<Triangle>(*this),r.p+(r.v*distance),distance});
     }
     return output;
 }

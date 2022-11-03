@@ -18,7 +18,7 @@ class Triangle : public Primitive {
     Triangle(float c, Point v1, Point v2, Point v3, Vec3 normal);
     Triangle(float c, Point v1, Point v2, Point v3, Vec3 normal, RGB emission);
 
-    std::vector<float> intersect(Ray r) override;
+    std::vector<Collision> intersect(Ray r) override;
 
 };
 

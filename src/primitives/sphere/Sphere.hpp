@@ -22,7 +22,7 @@ class Sphere : public Primitive{
 
     Point surfacePoint(float inclination, float azimuth);
 
-    std::vector<float> intersect(Ray r) override;
+    std::vector<Collision> intersect(Ray r) override;
     
 };
 

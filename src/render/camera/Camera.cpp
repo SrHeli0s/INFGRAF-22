@@ -64,18 +64,16 @@ RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsi
     for (int y = 0; y<nRays; y++) {
         Ray rayo = Ray(this->o, pixel + pixel_right*(column+(rand()/(float) (RAND_MAX))) + pixel_down*(row+(rand()/(float) (RAND_MAX))));
 
-        float nearest_distance = INFINITY;
-        RGB nearest_rgb = RGB(0,0,0);
+        Collision nearest_collision = {nullptr,Point(0,0,0),INFINITY};
         for (int x = 0; x<scene.objs.size(); x++) {
-            vector<float> distances = scene.objs[x]->intersect(rayo);
-            for (int k = 0; k < distances.size(); k++) {
-                if(distances[k] < nearest_distance) {
-                    nearest_rgb = scene.objs[x]->emission;
-                    nearest_distance = distances[k];
+            vector<Collision> collisions = scene.objs[x]->intersect(rayo);
+            for (int k = 0; k < collisions.size(); k++) {
+                if(collisions[k].distance < nearest_collision.distance) {
+                    nearest_collision = collisions[k];
                 }
             }
         }
-        colors.push_back(nearest_rgb);
+        colors.push_back(nearest_collision.obj->emission);
     }
 
     //Calculate average

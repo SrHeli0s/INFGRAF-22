@@ -1,11 +1,19 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <memory>
 #include "../../point/Point.hpp"
 #include "../../vec3/Vec3.hpp"
 
 class Plane;
 class Sphere;
+class Primitive;
+
+struct Collision {
+    std::shared_ptr<Primitive> obj;
+    Point collision_point;
+    float distance;
+};
 
 class Ray {
     public :
