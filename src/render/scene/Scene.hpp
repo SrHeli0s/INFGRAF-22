@@ -10,6 +10,7 @@ class Image;
 class Primitive;
 class Sphere;
 class Plane;
+class Triangle;
 
 class Scene {
     public:
@@ -21,4 +22,5 @@ class Scene {
     void add(const shared_ptr<Primitive> p);
     void add(Sphere p);
     void add(Plane p);
+    void add(Triangle p);
 };

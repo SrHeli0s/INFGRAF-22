@@ -11,7 +11,7 @@ RM = /bin/rm -f  # para limpiar
 CC = g++         # compilador
 #---------------------------------------------------------
 # opciones compilación y enlazado ("linkado")
-CPPFLAGS = -I. -I${SRC} -I -O2 -std=c++11 -fmax-errors=1 # opciones compilación
+CPPFLAGS = -I. -I${SRC} -I -O2 -std=c++11 -g -fmax-errors=1 # opciones compilación
 #---------------------------------------------------------
 SRC = ./src
 PROGRAM = a.out
@@ -19,9 +19,12 @@ PROGRAM = a.out
 MAIN = ${SRC}/main
 POINT = ${SRC}/point/Point
 VEC3 = ${SRC}/vec3/Vec3
+
 PRIMITIVE = ${SRC}/primitives/Primitive
 SPHERE = ${SRC}/primitives/sphere/Sphere
 PLANE = ${SRC}/primitives/plane/Plane
+TRIANGLE = ${SRC}/primitives/triangle/Triangle
+
 TRANSFORMATION = ${SRC}/transformation/Transformation
 RGB = ${SRC}/tone_mapping/rgb/Rgb
 PPM = ${SRC}/tone_mapping/ppm/PPM
@@ -34,8 +37,8 @@ SCENE = ${SRC}/render/scene/Scene
 all: ${MAIN}
 #---------------------------------------------------------
 # "linkar"
-${MAIN}:  ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${MAIN}.cpp
-	${CC} -g ${MAIN}.cpp ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o -o ${PROGRAM} ${CPPFLAGS} -pthread
+${MAIN}:  ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${MAIN}.cpp
+	${CC} -g ${MAIN}.cpp ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o -o ${PROGRAM} ${CPPFLAGS} -pthread
 
 #---------------------------------------------------------
 # compilar
@@ -50,6 +53,9 @@ ${SPHERE}.o: ${SPHERE}.hpp ${PRIMITIVE}.hpp ${SPHERE}.cpp
 	
 ${PLANE}.o: ${PLANE}.hpp ${PRIMITIVE}.hpp ${PLANE}.cpp
 	${CC} -c ${PLANE}.cpp -o ${PLANE}.o ${CPPFLAGS}
+
+${TRIANGLE}.o: ${TRIANGLE}.hpp ${PRIMITIVE}.hpp ${TRIANGLE}.cpp
+	${CC} -c ${TRIANGLE}.cpp -o ${TRIANGLE}.o ${CPPFLAGS}
 
 ${RAY}.o: ${RAY}.hpp ${RAY}.cpp
 	${CC} -c ${RAY}.cpp -o ${RAY}.o ${CPPFLAGS}
@@ -78,5 +84,5 @@ ${SCENE}.o: ${SCENE}.hpp ${SCENE}.cpp
 #---------------------------------------------------------
 # Cuidado con lo que se pone aquí, que se borra sin preguntar
 clean:
-	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o
+	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o
 	$(RM) ${PROGRAM}
