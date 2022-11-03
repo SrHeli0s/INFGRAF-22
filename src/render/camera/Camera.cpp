@@ -92,6 +92,14 @@ RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsi
     average_rgb.b /= colors.size();
 
     return average_rgb;
+
+    // Point hit = rayo.p + (rayo.v * nearest_distance);
+    // RGB sum = RGB(0,0,0);
+    // //P4
+    // for (auto l: scene.lights) {
+    //     sum = sum + (l.power)/(float)(pow(mod(l.center - hit),2));
+    //     float x = ((l.center-hit)/(mod(l.center - hit)));
+    // }
 }
 
 void Camera::worker(ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays)
@@ -105,14 +113,6 @@ void Camera::worker(ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel>
         n = jobs.pop();
     }
     return;
-    
-    // Point hit = rayo.p + (rayo.v * nearest_distance);
-    // RGB sum = RGB(0,0,0);
-    // //P4
-    // for (auto l: scene.lights) {
-    //     sum = sum + (l.power)/(float)(pow(mod(l.center - hit),2));
-    //     float x = ((l.center-hit)/(mod(l.center - hit)));
-    // }
 }
 
 
