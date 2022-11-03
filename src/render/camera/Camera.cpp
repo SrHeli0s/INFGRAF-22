@@ -64,16 +64,23 @@ RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsi
     for (int y = 0; y<nRays; y++) {
         Ray rayo = Ray(this->o, pixel + pixel_right*(column+(rand()/(float) (RAND_MAX))) + pixel_down*(row+(rand()/(float) (RAND_MAX))));
 
-        Collision nearest_collision = {nullptr,Point(0,0,0),INFINITY};
+        Collision near_col = {nullptr,Point(0,0,0),INFINITY};
         for (int x = 0; x<scene.objs.size(); x++) {
             vector<Collision> collisions = scene.objs[x]->intersect(rayo);
             for (int k = 0; k < collisions.size(); k++) {
-                if(collisions[k].distance < nearest_collision.distance) {
-                    nearest_collision = collisions[k];
+                if(collisions[k].distance < near_col.distance) {
+                    near_col = collisions[k];
                 }
             }
         }
-        colors.push_back(nearest_collision.obj->emission);
+
+        RGB sum = near_col.obj->emission;
+        for (auto l: scene.lights) {
+            sum = sum + (l.power)/(float)(pow(mod(l.center - near_col.collision_point),2));
+            Vec3 x = ((l.center-near_col.collision_point)/(mod(l.center - near_col.collision_point)));
+        }
+
+        colors.push_back(sum);
     }
 
     //Calculate average
@@ -86,13 +93,6 @@ RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsi
 
     return average_rgb;
 
-    // Point hit = rayo.p + (rayo.v * nearest_distance);
-    // RGB sum = RGB(0,0,0);
-    // //P4
-    // for (auto l: scene.lights) {
-    //     sum = sum + (l.power)/(float)(pow(mod(l.center - hit),2));
-    //     float x = ((l.center-hit)/(mod(l.center - hit)));
-    // }
 }
 
 void Camera::worker(ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays)

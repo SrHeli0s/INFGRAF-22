@@ -50,8 +50,6 @@ int main() {
     sc.addL(pl);
     // sc.addP(t);
     
-    // Primitive* scene[7] = {&left, &right, &floor, &ceiling, &back, &A, &B};
-
     auto start = chrono::high_resolution_clock::now();
     Image output = camera.render(sc,1);
     auto stop = chrono::high_resolution_clock::now();

@@ -25,5 +25,5 @@ void Scene::addP(Triangle p){
 }
 
 void Scene::addL(PLSource p){
-    // lights.push_back(p);    
+    lights.push_back(p);    
 }
