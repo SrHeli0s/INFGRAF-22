@@ -63,8 +63,7 @@ Image Camera::render(Scene scene, unsigned int nRays = 1)
         vector<RGB> row;
         output.p.push_back(row);
     }
-    float randx = rand()/RAND_MAX;
-    float randz = rand()/RAND_MAX;
+    
     //Iterate
     for(int i = 0; i<this->h; i++) {
         for(int j = 0; j<this->w; j++) {
@@ -72,18 +71,29 @@ Image Camera::render(Scene scene, unsigned int nRays = 1)
             
             for (int y = 0; y<nRays; y++) {
 
-                Ray rayo = Ray(this->o, pixel + pixel_right*(j+(rand()/(float) (RAND_MAX))) + pixel_down*(this->h-i-1+(rand()/(float) (RAND_MAX))));
+                Ray rayo = Ray(this->o, pixel + pixel_right*(j+(rand()/(float) (RAND_MAX))) + pixel_down*(i+(rand()/(float) (RAND_MAX))));
                 float nearest_distance = INFINITY;
                 RGB nearest_rgb = RGB(0,0,0);
+                shared_ptr<Primitive> nearest_obj;
                 for (int x = 0; x<scene.objs.size(); x++) {
                     vector<float> distances = scene.objs[x]->intersect(rayo);
                     for (int k = 0; k < distances.size(); k++) {
                         if(distances[k] < nearest_distance) {
                             nearest_rgb = scene.objs[x]->emission;
                             nearest_distance = distances[k];
+                            nearest_obj = scene.objs[x];
                         }
                     }
                 }
+
+                Point hit = rayo.p + (rayo.v * nearest_distance);
+                RGB sum = RGB(0,0,0);
+                //P4
+                for (auto l: scene.lights) {
+                    sum = sum + (l.power)/(float)(pow(mod(l.center - hit),2));
+                    float x = ((l.center-hit)/(mod(l.center - hit)));
+                }
+
                 colors.push_back(nearest_rgb);
             }
 
@@ -103,7 +113,6 @@ Image Camera::render(Scene scene, unsigned int nRays = 1)
             output.p[i].push_back(average_rgb);
             //Set output.maxvalue to the max of average_rgb.r, average_rgb.g, average_rgb.b and output.maxvalue
             output.max_value = (average_rgb.r>output.max_value) ? average_rgb.r : ((average_rgb.g>output.max_value) ? average_rgb.g : ((average_rgb.b>output.max_value) ? average_rgb.b : output.max_value));
-
         }
     }
 

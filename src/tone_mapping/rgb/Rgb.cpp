@@ -30,3 +30,22 @@ vector<vector<RGB>> clamp(vector<vector<RGB>> p, float max_value)
     }
     return p;
 }
+
+const RGB RGB::operator/(float f) const {
+    return RGB(this->r/f, this->g/f, this->b/f);
+}
+
+const RGB RGB::operator+(float f) const {
+    return RGB(this->r+f, this->g+f, this->b+f);
+}
+const RGB RGB::operator+(RGB f) const {
+    return RGB(this->r+f.r, this->g+f.g, this->b+f.b);
+}
+
+const RGB RGB::operator-(float f) const {
+    return RGB(this->r-f, this->g-f, this->b-f);
+}
+
+const RGB RGB::operator*(float f) const {
+    return RGB(this->r*f, this->g*f, this->b*f);
+}

@@ -58,9 +58,10 @@ vector<float> Triangle::intersect(Ray r) {
     Vec3 vp3 = P - v3;
     Vec3 C3 = cross(edge3,vp3);
 
-    if ((this->normal*C1 > 0) && (this->normal*C2 > 0) && (this->normal*C3 > 0))
+    if ((this->normal*C1 > 0) && (this->normal*C2 > 0) && (this->normal*C3 > 0)) {
         cout << "INTERSECTA" << endl;
         output.push_back(distance);
+    }
     return output;
 }
 
