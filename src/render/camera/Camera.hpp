@@ -13,7 +13,7 @@ const unsigned int NTHREADS = 5;
 
 struct Pixel 
 {
-    unsigned int i, j;
+    int i, j;
     RGB color;
 };
 
@@ -36,7 +36,7 @@ class Camera {
     RGB renderPixel(Scene scene, unsigned int column, unsigned int row, unsigned int nRays = 1);
     
     private:
-        void worker(ConcurrentQueue<std::pair<unsigned int, unsigned int>> &jobs, ConcurrentQueue<Pixel> &result, Scene scene, unsigned int nRays);
+        void worker(ConcurrentQueue<std::pair<int, int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays);
 
 };
 

@@ -13,6 +13,8 @@
 #include <vector>
 #include <cmath>
 #include <utility>
+#include <thread> // std::thread
+#include <functional> // std::ref
 
 
 using namespace std;
@@ -92,9 +94,9 @@ RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsi
     return average_rgb;
 }
 
-void Camera::worker(ConcurrentQueue<pair<unsigned int, unsigned int>> &jobs, ConcurrentQueue<Pixel> &result, Scene scene, unsigned int nRays)
+void Camera::worker(ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays)
 {
-    pair<unsigned int, unsigned int> n;
+    pair<int, int> n;
     n = jobs.pop();
     while (n.first >= 0 && n.second >= 0) //A value less than 0 marks the end of the list
     {
@@ -112,7 +114,7 @@ Image Camera::render(Scene scene, unsigned int nRays = 1)
     output.w = this->w;
     output.h = this->h;
     output.color_res = 255;
-    ConcurrentQueue<pair<unsigned int, unsigned int>> jobs;
+    ConcurrentQueue<pair<int,int>> jobs;
     ConcurrentQueue<Pixel> result;
 
     //Create jobs
@@ -135,13 +137,13 @@ Image Camera::render(Scene scene, unsigned int nRays = 1)
     //Call threads
     vector<thread> threads;
     for (int i = 0; i<NTHREADS; i++) {
-        std::thread t(&Camera::worker,std::ref(jobs),std::ref(result),scene,nRays);
-        threads.push_back(t);
+        // threads.push_back(std::thread(&Camera::worker,std::ref(jobs),std::ref(result),std::ref(scene),nRays));
+        threads.push_back(std::thread([&](ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays){ worker(jobs,result,scene,nRays); }, std::ref(jobs),std::ref(result),std::ref(scene),nRays));
     }
 
     //Wait for end
-    for (int i = 0; i<NTHREADS; i++) {
-        threads[i].join();
+    for (auto &th : threads) {
+        th.join();
     }
 
     queue<Pixel> qresult = result.getQueue();
@@ -150,7 +152,7 @@ Image Camera::render(Scene scene, unsigned int nRays = 1)
     {
         Pixel a = qresult.front();
 
-        output.p[a.i][a.j] = a.color;
+        output.p[a.j][a.i] = a.color;
         //Set output.maxvalue to the max of average_rgb.r, average_rgb.g, average_rgb.b and output.maxvalue
         output.max_value = (a.color.r>output.max_value) ? a.color.r : ((a.color.g>output.max_value) ? a.color.g : ((a.color.b>output.max_value) ? a.color.b : output.max_value));
 

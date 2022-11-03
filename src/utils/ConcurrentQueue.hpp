@@ -35,23 +35,19 @@ class ConcurrentQueue {
         cond_.notify_one();
     }
 
-  void push(const T& item) {
+    void push(const T& item) {
         std::unique_lock<std::mutex> mlock(mutex_);
-        while (queue_.size() >= BUFFER_SIZE) {
-            cond_.wait(mlock);
-        }
         queue_.push(item);
         mlock.unlock();
         cond_.notify_one();
     }
 
-  ConcurrentQueue()=default;
-  ConcurrentQueue(const ConcurrentQueue&) = delete;            // disable copying
-  ConcurrentQueue& operator=(const ConcurrentQueue&) = delete; // disable assignment
+    ConcurrentQueue()=default;
+    ConcurrentQueue(const ConcurrentQueue&) = delete;            // disable copying
+    ConcurrentQueue& operator=(const ConcurrentQueue&) = delete; // disable assignment
 
- private:
-  std::queue<T> queue_;
-  std::mutex mutex_;
-  std::condition_variable cond_;
-  const static unsigned int BUFFER_SIZE = 10;
+    private:
+        std::queue<T> queue_;
+        std::mutex mutex_;
+        std::condition_variable cond_;
 };
