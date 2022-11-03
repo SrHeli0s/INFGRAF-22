@@ -80,14 +80,9 @@ RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsi
     RGB average_rgb = RGB(0,0,0);
 
     for(RGB c : colors) {
-        average_rgb.r += c.r;
-        average_rgb.g += c.g;
-        average_rgb.b += c.b;
+        average_rgb = average_rgb + c;
     }
-
-    average_rgb.r /= colors.size();
-    average_rgb.g /= colors.size();
-    average_rgb.b /= colors.size();
+    average_rgb = average_rgb / colors.size();
 
     return average_rgb;
 
