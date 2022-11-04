@@ -60,12 +60,17 @@ RGB fillPixel(Collision col, Scene scene)
 {
     RGB sum = col.obj->emission;
         for (auto l: scene.lights) {
-            // Li
-            sum = sum + (l.power)/(float)(pow(mod(l.center - col.collision_point),2));
-            
             float distance_to_light = (mod(l.center - col.collision_point));
-            Vec3 x = (l.center-col.collision_point)/distance_to_light;
-            Ray shadow = Ray(col.collision_point,x);
+            Vec3 W_i = (l.center-col.collision_point)/distance_to_light;
+
+            RGB L_i = l.power/(float)(pow(mod(l.center - col.collision_point),2));
+
+            float Kd = 1;
+
+            sum = sum + (L_i*(Kd/M_PI));
+            //sum = sum + (L_i);
+
+            Ray shadow = Ray(col.collision_point,W_i);
 
             for (int x = 0; x<scene.objs.size(); x++) {
                 vector<Collision> collisions = scene.objs[x]->intersect(shadow);
@@ -98,8 +103,6 @@ RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsi
         }
 
         RGB color = fillPixel(near_col,scene);
-        colors.push_back(color);
-
         colors.push_back(color);
     }
 
