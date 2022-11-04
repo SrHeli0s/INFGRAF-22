@@ -76,6 +76,7 @@ RGB fillPixel(Collision col, Scene scene)
                 }
             }
         }
+    return sum;
 }
 
 RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsigned int nRays)
