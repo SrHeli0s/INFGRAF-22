@@ -60,7 +60,7 @@ vector<Collision> Triangle::intersect(Ray r) {
 
     if ((this->normal*C1 > 0) && (this->normal*C2 > 0) && (this->normal*C3 > 0)) {
         cout << "INTERSECTA" << endl;
-        output.push_back({make_shared<Triangle>(*this),r.p+(r.v*distance),distance});
+        if (distance>MIN_DISTANCE) output.push_back({make_shared<Triangle>(*this),r.p+(r.v*distance),distance});
     }
     return output;
 }

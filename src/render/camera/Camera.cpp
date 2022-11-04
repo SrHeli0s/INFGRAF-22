@@ -77,7 +77,19 @@ RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsi
         RGB sum = near_col.obj->emission;
         for (auto l: scene.lights) {
             sum = sum + (l.power)/(float)(pow(mod(l.center - near_col.collision_point),2));
-            Vec3 x = ((l.center-near_col.collision_point)/(mod(l.center - near_col.collision_point)));
+            
+            float distance_to_light = (mod(l.center - near_col.collision_point));
+            Vec3 x = (l.center-near_col.collision_point)/distance_to_light;
+            Ray shadow = Ray(near_col.collision_point,x);
+
+            for (int x = 0; x<scene.objs.size(); x++) {
+                vector<Collision> collisions = scene.objs[x]->intersect(shadow);
+                for (int k = 0; k < collisions.size(); k++) {
+                    //TODO: blue part of the equation
+                    if (collisions[k].distance<distance_to_light) sum = sum/8;
+                    
+                }
+            }
         }
 
         colors.push_back(sum);

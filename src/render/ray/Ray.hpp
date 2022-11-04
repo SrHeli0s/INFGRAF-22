@@ -2,12 +2,15 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <cmath>
 #include "../../point/Point.hpp"
 #include "../../vec3/Vec3.hpp"
 
 class Plane;
 class Sphere;
 class Primitive;
+
+const float MIN_DISTANCE = pow(10,-1);
 
 struct Collision {
     std::shared_ptr<Primitive> obj;
