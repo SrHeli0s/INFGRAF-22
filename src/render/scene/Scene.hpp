@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 #include "../camera/Camera.hpp"
-#include "../light/light_source/PLSource.hpp"
+#include "../light/point_light/PointLight.hpp"
 
 using namespace std;
 
@@ -17,7 +17,7 @@ class Scene {
     public:
         Camera cam;
         vector<shared_ptr<Primitive>> objs;
-        vector<PLSource> lights;
+        vector<PointLight> lights;
 
     Scene();
 
@@ -25,5 +25,5 @@ class Scene {
     void addP(Sphere p);
     void addP(Plane p);
     void addP(Triangle p);
-    void addL(PLSource p);
+    void addL(PointLight p);
 };

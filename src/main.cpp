@@ -37,7 +37,7 @@ int main() {
 
     Camera camera = Camera(Point(0,0,-3.5),Vec3(0,1,0),Vec3(-1,0,0),Vec3(0,0,3),1024,1024);
 
-    PLSource pl = PLSource(Point(0,0.5,0),RGB(255,255,255));
+    PointLight pl = PointLight(Point(0,0.5,0),RGB(255,255,255));
 
     Scene sc = Scene();
     sc.addP(left);

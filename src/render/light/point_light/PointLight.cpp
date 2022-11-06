@@ -1,13 +1,13 @@
-#include "PLSource.hpp"
+#include "PointLight.hpp"
 #include "../../../tone_mapping/rgb/Rgb.hpp"
 #include "../../../point/Point.hpp"
 #include "../../../vec3/Vec3.hpp"
 
 using namespace std;
 
-PLSource::PLSource() {}
+PointLight::PointLight() {}
 
-PLSource::PLSource(Point center, RGB power) {
+PointLight::PointLight(Point center, RGB power) {
     this->center = center;
     this->power = power;
 }

@@ -34,13 +34,13 @@ CONCURRENTQUEUE = ${SRC}/utils/ConcurrentQueue
 CAMERA = ${SRC}/render/camera/Camera
 RAY = ${SRC}/render/ray/Ray
 SCENE = ${SRC}/render/scene/Scene
-PLSOURCE = ${SRC}/render/light/light_source/PLSource
+POINTLIGHT = ${SRC}/render/light/point_light/PointLight
 
 all: ${MAIN}
 #---------------------------------------------------------
 # "linkar"
-${MAIN}:  ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${PLSOURCE}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${MAIN}.cpp
-	${CC} -g ${MAIN}.cpp ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${PLSOURCE}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o -o ${PROGRAM} ${CPPFLAGS} -pthread
+${MAIN}:  ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${MAIN}.cpp
+	${CC} -g ${MAIN}.cpp ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o -o ${PROGRAM} ${CPPFLAGS} -pthread
 
 #---------------------------------------------------------
 # compilar
@@ -83,11 +83,11 @@ ${CAMERA}.o: ${CAMERA}.hpp ${CONCURRENTQUEUE}.hpp ${CAMERA}.cpp
 ${SCENE}.o: ${SCENE}.hpp ${SCENE}.cpp
 	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${SCENE}.cpp -o ${SCENE}.o
 
-${PLSOURCE}.o: ${PLSOURCE}.hpp ${PLSOURCE}.cpp
-	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${PLSOURCE}.cpp -o ${PLSOURCE}.o
+${POINTLIGHT}.o: ${POINTLIGHT}.hpp ${POINTLIGHT}.cpp
+	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${POINTLIGHT}.cpp -o ${POINTLIGHT}.o
 
 #---------------------------------------------------------
 # Cuidado con lo que se pone aquí, que se borra sin preguntar
 clean:
-	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${PLSOURCE}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o
+	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o
 	$(RM) ${PROGRAM}

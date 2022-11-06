@@ -3,7 +3,7 @@
 #include "../../primitives/sphere/Sphere.hpp"
 #include "../../primitives/plane/Plane.hpp"
 #include "../../primitives/triangle/Triangle.hpp"
-#include "../light/light_source/PLSource.hpp"
+#include "../light/point_light/PointLight.hpp"
 
 Scene::Scene() {}
 
@@ -24,6 +24,6 @@ void Scene::addP(Triangle p){
     objs.push_back(make_shared<Triangle>(p));    
 }
 
-void Scene::addL(PLSource p){
+void Scene::addL(PointLight p){
     lights.push_back(p);    
 }
