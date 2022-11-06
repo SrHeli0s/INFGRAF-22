@@ -80,10 +80,6 @@ RGB fillPixel(Collision col, Scene scene)
         if (closest_col.distance>distance_to_light) { 
             output = output +lightC*matC;
         }
-        // else { //We are in a shadow
-        //     //TODO: El material contribuye con cada rayo de luz? o solo 1 vez?
-        //     output = output + matC;
-        // }
     }
     return output;
 }
