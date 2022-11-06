@@ -57,7 +57,8 @@ int main() {
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
     cout << "Tiempo de render: " << duration.count() << " ms" <<endl;
 
-    p.write("scene.ppm",output);
+    Image outputAdjusted = gammaCurve(output,2.2);
+    p.write("scene.ppm",outputAdjusted);
 
     return 0;
 }

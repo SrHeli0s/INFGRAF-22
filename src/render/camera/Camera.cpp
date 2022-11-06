@@ -58,30 +58,34 @@ ostream& operator << (ostream& os, const Camera& obj)
 
 RGB fillPixel(Collision col, Scene scene) 
 {
-    RGB sum = col.obj->emission;
-        for (auto l: scene.lights) {
-            float distance_to_light = (mod(l.center - col.collision_point));
-            Vec3 W_i = (l.center-col.collision_point)/distance_to_light;
-
-            RGB L_i = l.power/(float)(pow(mod(l.center - col.collision_point),2));
-
-            float Kd = 1;
-
-            sum = sum + (L_i*(Kd/M_PI));
-            //sum = sum + (L_i);
-
-            Ray shadow = Ray(col.collision_point,W_i);
-
-            for (int x = 0; x<scene.objs.size(); x++) {
-                vector<Collision> collisions = scene.objs[x]->intersect(shadow);
-                for (int k = 0; k < collisions.size(); k++) {
-                    //TODO: blue part of the equation
-                    if (collisions[k].distance<distance_to_light) sum = sum/8;
-                    
-                }
+    RGB output = RGB(0,0,0);
+    for (auto l: scene.lights) {
+        float distance_to_light = (mod(l.center - col.collision_point));
+        Vec3 W_i = (l.center-col.collision_point)/distance_to_light;
+        //Calculate shadows
+        Collision closest_col = {nullptr,Point(0,0,0),Vec3(0,0,0),INFINITY};
+        Ray shadow = Ray(col.collision_point,W_i);
+        for (int x = 0; x<scene.objs.size(); x++) {
+            vector<Collision> collisions = scene.objs[x]->intersect(shadow);
+            for (int k = 0; k < collisions.size(); k++) {
+                if(collisions[k].distance < closest_col.distance) closest_col = collisions[k];
             }
         }
-    return sum;
+
+        //Calculate contributions
+        RGB matC = col.obj->emission / M_PI;
+        float geoC = col.collision_normal * W_i;
+        if (geoC<0) geoC = 0; //If is negative is pointing the other way -> It should be black
+        RGB lightC = l.power/(float)(pow(mod(l.center - col.collision_point),2)) * geoC;
+        if (closest_col.distance>distance_to_light) { 
+            output = output +lightC*matC;
+        }
+        // else { //We are in a shadow
+        //     //TODO: El material contribuye con cada rayo de luz? o solo 1 vez?
+        //     output = output + matC;
+        // }
+    }
+    return output;
 }
 
 RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsigned int nRays)
@@ -92,13 +96,11 @@ RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsi
     for (int y = 0; y<nRays; y++) {
         Ray rayo = Ray(this->o, pixel + pixel_right*(column+(rand()/(float) (RAND_MAX))) + pixel_down*(row+(rand()/(float) (RAND_MAX))));
 
-        Collision near_col = {nullptr,Point(0,0,0),INFINITY};
+        Collision near_col = {nullptr,Point(0,0,0),Vec3(0,0,0),INFINITY};
         for (int x = 0; x<scene.objs.size(); x++) {
             vector<Collision> collisions = scene.objs[x]->intersect(rayo);
             for (int k = 0; k < collisions.size(); k++) {
-                if(collisions[k].distance < near_col.distance) {
-                    near_col = collisions[k];
-                }
+                if(collisions[k].distance < near_col.distance) near_col = collisions[k];
             }
         }
 

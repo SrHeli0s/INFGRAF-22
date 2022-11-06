@@ -15,6 +15,7 @@ const float MIN_DISTANCE = pow(10,-1);
 struct Collision {
     std::shared_ptr<Primitive> obj;
     Point collision_point;
+    Vec3 collision_normal;
     float distance;
 };
 
