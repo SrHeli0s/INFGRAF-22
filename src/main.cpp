@@ -36,7 +36,7 @@ int main() {
 
     // Triangle t = Triangle(Point(0.5,-0.5,-0.5),Point(0,0.5,-0.5),Point(-0.5,-0.5,-0.5),RGB(0,255,0));
 
-    STL stlTest = STL("bulbasur.stl",Point(0,0,0),0.1,RGB(0,255,127));
+    STL stlTest = STL("bulbasur.stl",Point(0,0,0),0.01,RGB(0,255,127));
     // STL test = STL("teapot.stl",Point(0,0,0),0.1,RGB(0,255,127));
 
     Camera camera = Camera(Point(0,0,-3.5),Vec3(0,1,0),Vec3(-1,0,0),Vec3(0,0,3),1024,1024);
