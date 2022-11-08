@@ -12,6 +12,7 @@ class Primitive;
 class Sphere;
 class Plane;
 class Triangle;
+class STL;
 
 class Scene {
     public:
@@ -25,5 +26,6 @@ class Scene {
     void addP(Sphere p);
     void addP(Plane p);
     void addP(Triangle p);
+    void addP(STL p);
     void addL(PointLight p);
 };

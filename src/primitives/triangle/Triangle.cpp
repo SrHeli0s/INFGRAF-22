@@ -17,19 +17,10 @@ Triangle::Triangle(Point a, Point b, Point c, RGB emission = RGB(200,200,200))
     this->v1 = a;
     this->v2 = b;
     this->v3 = c;
-    this->normal = normalize(cross(a-b,b-c));
     this->emission = emission;
     Point centroide = Point((a.c[0]+b.c[0]+c.c[0])/3,(a.c[1]+b.c[1]+c.c[1])/3,(a.c[2]+b.c[2]+c.c[2])/3);
-    this->c = mod(centroide-Point(0,0,0));
-}
-
-Triangle::Triangle(float c, Point v1, Point v2, Point v3, Vec3 normal, RGB emission = RGB(200,200,200)) {
-    this->c = c;
-    this->v1 = v1;
-    this->v2 = v2;
-    this->v3 = v3;
-    this->normal = normal;
-    this->emission = emission;
+    this->normal = normalize(cross(a-b,a-c));
+    this->c = this->normal*(Point(0,0,0)-a);
 }
 
 vector<Collision> Triangle::intersect(Ray r) {

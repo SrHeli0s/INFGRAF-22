@@ -15,6 +15,7 @@ CPPFLAGS = -I. -I${SRC} -I -O2 -std=c++11 -g -fmax-errors=1 # opciones compilaci
 #---------------------------------------------------------
 SRC = ./src
 PROGRAM = a.out
+STL_PROGRAM = STLconverter.out
 #---------------------------------------------------------
 MAIN = ${SRC}/main
 POINT = ${SRC}/point/Point
@@ -24,6 +25,7 @@ PRIMITIVE = ${SRC}/primitives/Primitive
 SPHERE = ${SRC}/primitives/sphere/Sphere
 PLANE = ${SRC}/primitives/plane/Plane
 TRIANGLE = ${SRC}/primitives/triangle/Triangle
+STL = ${SRC}/primitives/stl/Stl
 
 TRANSFORMATION = ${SRC}/transformation/Transformation
 RGB = ${SRC}/tone_mapping/rgb/Rgb
@@ -36,12 +38,12 @@ RAY = ${SRC}/render/ray/Ray
 SCENE = ${SRC}/render/scene/Scene
 POINTLIGHT = ${SRC}/render/light/point_light/PointLight
 
-all: ${MAIN}
+
+all: ${MAIN} 
 #---------------------------------------------------------
 # "linkar"
-${MAIN}:  ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${MAIN}.cpp
-	${CC} -g ${MAIN}.cpp ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o -o ${PROGRAM} ${CPPFLAGS} -pthread
-
+${MAIN}:  ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${STL}.o ${MAIN}.cpp
+	${CC} -g ${MAIN}.cpp ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${STL}.o -o ${PROGRAM} ${CPPFLAGS} -pthread
 #---------------------------------------------------------
 # compilar
 ${POINT}.o: ${POINT}.hpp ${POINT}.cpp
@@ -58,6 +60,9 @@ ${PLANE}.o: ${PLANE}.hpp ${PRIMITIVE}.hpp ${PLANE}.cpp
 
 ${TRIANGLE}.o: ${TRIANGLE}.hpp ${PRIMITIVE}.hpp ${TRIANGLE}.cpp
 	${CC} -c ${TRIANGLE}.cpp -o ${TRIANGLE}.o ${CPPFLAGS}
+
+${STL}.o: ${STL}.hpp ${STL}.cpp
+	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${STL}.cpp -o ${STL}.o
 
 ${RAY}.o: ${RAY}.hpp ${RAY}.cpp
 	${CC} -c ${RAY}.cpp -o ${RAY}.o ${CPPFLAGS}
@@ -89,5 +94,5 @@ ${POINTLIGHT}.o: ${POINTLIGHT}.hpp ${POINTLIGHT}.cpp
 #---------------------------------------------------------
 # Cuidado con lo que se pone aquí, que se borra sin preguntar
 clean:
-	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o
+	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${STL}.o
 	$(RM) ${PROGRAM}
