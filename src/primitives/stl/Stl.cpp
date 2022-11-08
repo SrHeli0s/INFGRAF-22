@@ -22,10 +22,6 @@ STL::STL(const char* path, Point center, float scale, RGB emission)
         }
         tris.push_back(Triangle(p[0],p[1],p[2],emission));
     }
-    for (Triangle t:tris) {
-        cout << t << endl;
-    }
-    cout << tris.size() << endl;
 }
 
 vector<Collision> STL::intersect(Ray r) {
