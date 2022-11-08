@@ -17,7 +17,7 @@ Triangle::Triangle(Point a, Point b, Point c, RGB emission = RGB(200,200,200))
     this->v1 = a;
     this->v2 = b;
     this->v3 = c;
-    this->normal = cross(a-b,b-c);
+    this->normal = normalize(cross(a-b,b-c));
     this->emission = emission;
     Point centroide = Point((a.c[0]+b.c[0]+c.c[0])/3,(a.c[1]+b.c[1]+c.c[1])/3,(a.c[2]+b.c[2]+c.c[2])/3);
     this->c = mod(centroide-Point(0,0,0));
@@ -36,7 +36,7 @@ vector<Collision> Triangle::intersect(Ray r) {
     vector<Collision> output;
     if(r.v*this->normal == 0) return output;
 
-    float distance = (this->c + this->normal*r.p)/(r.v*this->normal);
+    float distance = -(this->c + this->normal*r.p)/(r.v*this->normal);
     if(distance<0) return output; //The plane is behind the ray
 
     Point P = r.p + r.v*distance; // Intersection point
