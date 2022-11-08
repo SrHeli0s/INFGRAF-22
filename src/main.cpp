@@ -48,7 +48,7 @@ int main() {
     sc.addP(A);
     sc.addP(B);
     sc.addL(pl);
-    // sc.addP(t);
+    sc.addP(t);
     
     auto start = chrono::high_resolution_clock::now();
     Image output = camera.render(sc,1);

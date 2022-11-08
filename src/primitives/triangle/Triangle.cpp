@@ -12,17 +12,18 @@ using namespace std;
 
 Triangle::Triangle() {}
 
-Triangle::Triangle(float c, Point v1, Point v2, Point v3, Vec3 normal)
+Triangle::Triangle(Point a, Point b, Point c, RGB emission = RGB(200,200,200))
 {
-    this->c = c;
-    this->v1 = v1;
-    this->v2 = v2;
-    this->v3 = v3;
-    this->normal = normal;
-    this->emission = RGB(200,200,200);
+    this->v1 = a;
+    this->v2 = b;
+    this->v3 = c;
+    this->normal = cross(a-b,b-c);
+    this->emission = emission;
+    Point centroide = Point((a.c[0]+b.c[0]+c.c[0])/3,(a.c[1]+b.c[1]+c.c[1])/3,(a.c[2]+b.c[2]+c.c[2])/3);
+    this->c = mod(centroide-Point(0,0,0));
 }
 
-Triangle::Triangle(float c, Point v1, Point v2, Point v3, Vec3 normal, RGB emission) {
+Triangle::Triangle(float c, Point v1, Point v2, Point v3, Vec3 normal, RGB emission = RGB(200,200,200)) {
     this->c = c;
     this->v1 = v1;
     this->v2 = v2;
@@ -59,7 +60,7 @@ vector<Collision> Triangle::intersect(Ray r) {
     Vec3 C3 = cross(edge3,vp3);
 
     if ((this->normal*C1 > 0) && (this->normal*C2 > 0) && (this->normal*C3 > 0)) {
-        cout << "INTERSECTA" << endl;
+        // cout << "INTERSECTA " << distance << endl;
         if (distance>MIN_DISTANCE) output.push_back({make_shared<Triangle>(*this),r.p+(r.v*distance),this->normal,distance});
     }
     return output;
