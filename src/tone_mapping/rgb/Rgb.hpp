@@ -17,6 +17,8 @@ class RGB {
     const RGB operator/ (RGB f) const;
     const RGB operator* (float f) const;
     const RGB operator* (RGB f) const;
+    const bool operator== (RGB f) const;
+    const bool operator!= (RGB f) const;
 };
 
 std::ostream& operator << (std::ostream& os, const RGB& obj);

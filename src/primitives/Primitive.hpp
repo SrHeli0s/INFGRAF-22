@@ -8,5 +8,6 @@ class Primitive {
         RGB emission;
 
     virtual std::vector<Collision> intersect(Ray r) = 0;
+    virtual RGB getEmission(Point p) { return emission; }
 };
 

@@ -73,7 +73,7 @@ RGB fillPixel(Collision col, Scene scene)
         }
 
         //Calculate contributions
-        RGB matC = col.obj->emission / M_PI;
+        RGB matC = col.obj->getEmission(col.collision_point) / M_PI;
         float geoC = col.collision_normal * W_i;
         if (geoC<0) geoC = 0; //If is negative is pointing the other way -> It should be black
         RGB lightC = l.power/(float)(pow(distance_to_light,2)) * geoC;

@@ -28,3 +28,7 @@ vector<float> solveSecondDegreeEquation(float a, float b, float c)
 
   return output;
 }
+
+bool isfZero(float a) {
+  return abs(a)<ZERO_THRESHOLD;
+}

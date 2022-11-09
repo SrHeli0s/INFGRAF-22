@@ -4,6 +4,7 @@
 #include "../../primitives/plane/Plane.hpp"
 #include "../../primitives/triangle/Triangle.hpp"
 #include "../../primitives/stl/Stl.hpp"
+#include "../../primitives/sprite/Sprite.hpp"
 #include "../light/point_light/PointLight.hpp"
 
 Scene::Scene() {}
@@ -27,6 +28,10 @@ void Scene::addP(Triangle p){
 
 void Scene::addP(STL p){
     objs.push_back(make_shared<STL>(p));
+}
+
+void Scene::addP(Sprite p){
+    objs.push_back(make_shared<Sprite>(p));
 }
 
 void Scene::addL(PointLight p){

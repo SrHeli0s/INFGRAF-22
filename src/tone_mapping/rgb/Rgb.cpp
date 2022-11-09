@@ -58,3 +58,11 @@ const RGB RGB::operator*(float f) const {
 const RGB RGB::operator*(RGB f) const {
     return RGB(this->r*f.r, this->g*f.g, this->b*f.b);
 }
+
+const bool RGB::operator==(RGB f) const {
+    return this->r==f.r && this->g==f.g && this->b==f.b;
+}
+
+const bool RGB::operator!=(RGB f) const {
+    return this->r!=f.r || this->g!=f.g || this->b!=f.b;
+}
