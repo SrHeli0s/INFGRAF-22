@@ -32,7 +32,7 @@ vector<Collision> Plane::intersect(Ray r) {
     float distance = -(this->c + this->normal*r.p)/(r.v*this->normal);
     if(distance<0) return output; //The plane is behind the ray
     
-    if (distance>MIN_DISTANCE) output.push_back({make_shared<Plane>(*this),r.p+(r.v*distance),this->normal,distance});
+    if (distance>MIN_DISTANCE) output.push_back({make_shared<Plane>(*this),r.p+(r.v*distance),this->normal,r,distance});
     return output;
 }
 

@@ -63,7 +63,7 @@ vector<Collision> Sphere::intersect(Ray r) {
     float c = pow(mod(r.p - this->center), 2) - pow(this->radius, 2);
     vector<float> distances = solveSecondDegreeEquation(a,b,c);
     vector<Collision> output;
-    for (float d : distances) if (d>MIN_DISTANCE) output.push_back({make_shared<Sphere>(*this),r.p+(r.v*d),(r.p+(r.v*d))-this->center,d});
+    for (float d : distances) if (d>MIN_DISTANCE) output.push_back({make_shared<Sphere>(*this),r.p+(r.v*d),(r.p+(r.v*d))-this->center,r,d});
     return output;
 }
 

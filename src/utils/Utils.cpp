@@ -1,6 +1,11 @@
 #include "Utils.hpp"
 #include <cmath>
 #include <vector>
+#include <utility>
+#include <memory>
+#include "../render/ray/Ray.hpp"
+#include "../render/scene/Scene.hpp"
+#include "../primitives/Primitive.hpp"
 
 using namespace std;
 
@@ -31,4 +36,16 @@ vector<float> solveSecondDegreeEquation(float a, float b, float c)
 
 bool isfZero(float a) {
   return abs(a)<ZERO_THRESHOLD;
+}
+
+Collision closest_col(Ray r, Scene s) {
+  Collision output = {nullptr,Point(0,0,0),Vec3(0,0,0),r,INFINITY};
+  for (int x = 0; x<s.objs.size(); x++) {
+    vector<Collision> collisions = s.objs[x]->intersect(r);
+    for (int k = 0; k < collisions.size(); k++) {
+      if(collisions[k].distance < output.distance) output = collisions[k];
+    }
+  }
+
+  return output;
 }

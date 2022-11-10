@@ -64,7 +64,7 @@ vector<Collision> Sprite::intersect(Ray r) {
     Point contact = r.p+(r.v*distance);
     //TODO: Is this transparency check correct?
     if (distance>MIN_DISTANCE && insideSprite(contact) && (getEmission(contact)*(img.max_value/img.color_res))!=transparent)
-        output.push_back({make_shared<Sprite>(*this),contact,this->normal,distance});
+        output.push_back({make_shared<Sprite>(*this),contact,this->normal,r,distance});
     
     return output;
 }

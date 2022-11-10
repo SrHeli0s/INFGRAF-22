@@ -9,6 +9,7 @@
 #include "../../utils/ConcurrentQueue.hpp"
 #include "../ray/Ray.hpp"
 #include "../scene/Scene.hpp"
+#include "../../tone_mapping/rgb/Rgb.hpp"
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -56,31 +57,45 @@ ostream& operator << (ostream& os, const Camera& obj)
     return os;
 }
 
-RGB fillPixel(Collision col, Scene scene) 
+RGB Camera::getBRDF(Collision col, Vec3 wi) {
+    //NOTE: W0 esta dentro de col
+    return col.obj->getEmission(col.collision_point) / M_PI;
+}
+
+RGB Camera::nextLevelEstimation(Collision col, Scene scene) 
 {
-    RGB output = RGB(0,0,0);
+    RGB output = getBRDF(col, normalize(col.r.v));
     for (auto l: scene.lights) {
         float distance_to_light = (mod(l.center - col.collision_point));
         Vec3 W_i = (l.center-col.collision_point)/distance_to_light;
         //Calculate shadows
-        Collision closest_col = {nullptr,Point(0,0,0),Vec3(0,0,0),INFINITY};
         Ray shadow = Ray(col.collision_point,W_i);
-        for (int x = 0; x<scene.objs.size(); x++) {
-            vector<Collision> collisions = scene.objs[x]->intersect(shadow);
-            for (int k = 0; k < collisions.size(); k++) {
-                if(collisions[k].distance < closest_col.distance) closest_col = collisions[k];
+        Collision col = closest_col(shadow,scene);
+        
+        RGB color = RGB(0,0,0);
+        if (col.obj != nullptr) {
+            //Calculate contributions
+            RGB matC = getBRDF(col, normalize(shadow.v));
+            float geoC = col.collision_normal * W_i;
+            if (geoC<0) geoC = 0; //If is negative is pointing the other way -> It should be black
+            RGB lightC = l.power/(float)(pow(distance_to_light,2)) * geoC;
+            if (col.distance>distance_to_light) {                 
+                output = output +lightC*matC;
             }
         }
-
-        //Calculate contributions
-        RGB matC = col.obj->getEmission(col.collision_point) / M_PI;
-        float geoC = col.collision_normal * W_i;
-        if (geoC<0) geoC = 0; //If is negative is pointing the other way -> It should be black
-        RGB lightC = l.power/(float)(pow(distance_to_light,2)) * geoC;
-        if (closest_col.distance>distance_to_light) { 
-            output = output +lightC*matC;
-        }
     }
+
+    float randInclination = acos(sqrt(1-(rand()/(float) (RAND_MAX))));
+    float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
+
+    Sphere zone = Sphere(col.collision_point,col.collision_normal,col.collision_point+col.collision_normal);
+    Vec3 wi = zone.surfacePoint(randInclination,randAzimuth)-col.collision_point;
+    Ray newr = Ray(col.collision_point,wi);
+    Collision c = closest_col(newr,scene);
+    if(c.obj != nullptr) {
+        output = output + nextLevelEstimation(c,scene);
+    }
+
     return output;
 }
 
@@ -90,17 +105,12 @@ RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsi
     Vec3 pixel = this->f + this->l + this->u; // upper-left pixel
     
     for (int y = 0; y<nRays; y++) {
-        Ray rayo = Ray(this->o, pixel + pixel_right*(column+(rand()/(float) (RAND_MAX))) + pixel_down*(row+(rand()/(float) (RAND_MAX))));
+        Ray ray = Ray(this->o, pixel + pixel_right*(column+(rand()/(float) (RAND_MAX))) + pixel_down*(row+(rand()/(float) (RAND_MAX))));
 
-        Collision near_col = {nullptr,Point(0,0,0),Vec3(0,0,0),INFINITY};
-        for (int x = 0; x<scene.objs.size(); x++) {
-            vector<Collision> collisions = scene.objs[x]->intersect(rayo);
-            for (int k = 0; k < collisions.size(); k++) {
-                if(collisions[k].distance < near_col.distance) near_col = collisions[k];
-            }
-        }
+        Collision near_col = closest_col(ray,scene);
 
-        RGB color = fillPixel(near_col,scene);
+        RGB color = RGB(0,0,0);
+        if (near_col.obj != nullptr) color = nextLevelEstimation(near_col,scene);
         colors.push_back(color);
     }
 
