@@ -65,7 +65,7 @@ int main() {
 
 
 
-    //========================= SCENE 3 =========================
+    // ========================= SCENE 3 =========================
     // Plane back = Plane(2,Vec3(0,0,-1),RGB(10,10,10));
     // Plane ceiling = Plane(5,Vec3(0,-1,0));
     // STL stlTest = STL("resources/test.stl",Point(0,0,0),0.02,RGB(0,255,127));
@@ -122,7 +122,7 @@ int main() {
 
     
     auto start = chrono::high_resolution_clock::now();
-    Image output = camera.render(sc,10);
+    Image output = camera.render(sc,1);
     auto stop = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);

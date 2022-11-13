@@ -64,13 +64,13 @@ RGB Camera::getBRDF(Collision col, Vec3 wi) {
 
 RGB Camera::nextLevelEstimation(Collision col, Scene scene) 
 {
-    RGB output = getBRDF(col, normalize(col.r.v));
+    RGB output = RGB(0,0,0);
     for (auto l: scene.lights) {
         float distance_to_light = (mod(l.center - col.collision_point));
         Vec3 W_i = (l.center-col.collision_point)/distance_to_light;
         //Calculate shadows
         Ray shadow = Ray(col.collision_point,W_i);
-        Collision col = closest_col(shadow,scene);
+        Collision closest = closest_col(shadow,scene);
         
         RGB color = RGB(0,0,0);
         if (col.obj != nullptr) {
@@ -79,7 +79,7 @@ RGB Camera::nextLevelEstimation(Collision col, Scene scene)
             float geoC = col.collision_normal * W_i;
             if (geoC<0) geoC = 0; //If is negative is pointing the other way -> It should be black
             RGB lightC = l.power/(float)(pow(distance_to_light,2)) * geoC;
-            if (col.distance>distance_to_light) {                 
+            if (closest.distance>distance_to_light) {                 
                 output = output +lightC*matC;
             }
         }
