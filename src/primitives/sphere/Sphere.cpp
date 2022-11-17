@@ -16,7 +16,7 @@ Sphere::Sphere() {}
 
 Sphere::Sphere(Point center, Vec3 axis, Point reference)
 {
-    this->emission = RGB(200,200,200);
+    this->emission = RGB(0.2,0.2,0.2);
     this->center = center;
     this->axis = axis;
     this->reference = reference;

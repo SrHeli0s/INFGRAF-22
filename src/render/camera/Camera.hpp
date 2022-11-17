@@ -10,7 +10,7 @@
 class Scene;
 class Image;
 
-const unsigned int NTHREADS = 5;
+const unsigned int NTHREADS = 6;
 
 struct Pixel 
 {

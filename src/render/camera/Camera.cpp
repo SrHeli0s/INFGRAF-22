@@ -90,18 +90,15 @@ RGB Camera::nextLevelEstimation(Collision col, Scene scene)
 }
 
 RGB Camera::getColor(Ray r, Scene s) {
-    RGB output = RGB(0,0,0);
-
     Collision c = closest_col(r,s);
+    RGB output = RGB(0,0,0);
     if (c.obj != nullptr) {
-        output = nextLevelEstimation(c, s);
-
         float randInclination = acos(sqrt(1-(rand()/(float) (RAND_MAX))));
         float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
 
-        Vec3 om = normalize(Vec3(sin(randInclination) * cos(randAzimuth),
-                                 sin(randInclination) * sin(randAzimuth),
-                                 cos(randInclination)));
+        Vec3 om = Vec3(sin(randInclination) * cos(randAzimuth),
+                       sin(randInclination) * sin(randAzimuth),
+                       cos(randInclination));
         
         Vec3 p = perpendicular(c.collision_normal);
 
@@ -112,7 +109,10 @@ RGB Camera::getColor(Ray r, Scene s) {
 
         Ray newr = Ray(c.collision_point,dir);
 
-        output = output + getColor(newr, s);
+        RGB directa = nextLevelEstimation(c,s);
+        RGB indirecta = getBRDF(c, r.v)*getColor(newr,s)*M_PI;
+
+        output = directa + indirecta;
     }
     return output;
 } 
@@ -126,7 +126,8 @@ RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsi
     for (int y = 0; y<nRays; y++) {
         Ray ray = Ray(this->o, pixel + pixel_right*(column+(rand()/(float) (RAND_MAX))) + pixel_down*(row+(rand()/(float) (RAND_MAX))));
         // Ray ray = Ray(this->o, normalize(this->f));
-        colors.push_back(getColor(ray,scene));
+        RGB color = getColor(ray,scene);
+        colors.push_back(color);
     }
 
     //Calculate average

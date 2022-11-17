@@ -23,8 +23,8 @@ int main() {
     PPM p = PPM();
 
     //========================= SCENE 1 =========================
-    Plane left = Plane(1,Vec3(1,0,0),RGB(255,0,0));
-    Plane right = Plane(1,Vec3(-1,0,0),RGB(0,255,0));
+    Plane left = Plane(1,Vec3(1,0,0),RGB(1,0,0));
+    Plane right = Plane(1,Vec3(-1,0,0),RGB(0,1,0));
     Plane floor = Plane(1,Vec3(0,1,0));
     Plane ceiling = Plane(1,Vec3(0,-1,0));
     Plane back = Plane(1,Vec3(0,0,-1));
@@ -33,9 +33,9 @@ int main() {
     Sphere B = Sphere(Point(0.5,-0.7,-0.25),Vec3(0,0.6,0),Point(0.8,-0.7,0.25));
     // Triangle t = Triangle(Point(0.5,-0.5,-0.5),Point(0,0.5,-0.5),Point(-0.5,-0.5,-0.5),RGB(0,255,0));
 
-    Camera camera = Camera(Point(0,0,-3.5),Vec3(0,1,0),Vec3(-1,0,0),Vec3(0,0,3),256,256);
+    Camera camera = Camera(Point(0,0,-3.5),Vec3(0,1,0),Vec3(-1,0,0),Vec3(0,0,3),255,255);
 
-    PointLight pl = PointLight(Point(0,0.5,0),RGB(255,255,255));
+    PointLight pl = PointLight(Point(0,0.5,0),RGB(0.5,0.5,0.5));
 
     Scene sc = Scene();
     sc.addP(left);
@@ -122,7 +122,7 @@ int main() {
 
     
     auto start = chrono::high_resolution_clock::now();
-    Image output = camera.render(sc,100);
+    Image output = camera.render(sc,10);
     auto stop = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
