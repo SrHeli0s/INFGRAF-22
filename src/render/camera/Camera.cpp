@@ -1,6 +1,7 @@
 #include "Camera.hpp"
 #include "../../point/Point.hpp"
 #include "../../vec3/Vec3.hpp"
+#include "../../transformation/Transformation.hpp"
 #include "../../primitives/Primitive.hpp"
 #include "../../primitives/sphere/Sphere.hpp"
 #include "../../primitives/plane/Plane.hpp"
@@ -78,26 +79,55 @@ RGB Camera::nextLevelEstimation(Collision col, Scene scene)
             RGB matC = getBRDF(col, normalize(shadow.v));
             float geoC = col.collision_normal * W_i;
             if (geoC<0) geoC = 0; //If is negative is pointing the other way -> It should be black
-            RGB lightC = l.power/(float)(pow(distance_to_light,2)) * geoC;
+            RGB lightC = l.power/(float)(pow(distance_to_light,2));
             if (closest.distance>distance_to_light) {                 
-                output = output +lightC*matC;
+                output = output +lightC*matC*geoC;
             }
         }
     }
 
-    float randInclination = acos(sqrt(1-(rand()/(float) (RAND_MAX))));
-    float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
-
-    Sphere zone = Sphere(col.collision_point,col.collision_normal,col.collision_point+col.collision_normal);
-    Vec3 wi = zone.surfacePoint(randInclination,randAzimuth)-col.collision_point;
-    Ray newr = Ray(col.collision_point,wi);
-    Collision c = closest_col(newr,scene);
-    if(c.obj != nullptr) {
-        output = output + nextLevelEstimation(c,scene);
-    }
-
     return output;
 }
+
+RGB Camera::getColor(Ray r, Scene s) {
+    RGB output = RGB(0,0,0);
+
+    Collision c = closest_col(r,s);
+    if (c.obj != nullptr) {
+        output = nextLevelEstimation(c, s);
+
+        float randInclination = acos(sqrt(1-(rand()/(float) (RAND_MAX))));
+        float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
+
+        Vec3 om = normalize(Vec3(sin(randInclination) * cos(randAzimuth),
+                                 sin(randInclination) * sin(randAzimuth),
+                                 cos(randInclination)));
+        
+        Vec3 p = perpendicular(c.collision_normal);
+
+        Transformation t1 = BaseChangeTransform(cross(p,c.collision_normal),c.collision_normal,p,c.collision_point);
+        Transformation t2 = t1.inverse();
+
+        Vec3 dir = om.applyTransformation(t2);
+
+        Ray newr = Ray(c.collision_point,dir);
+
+        output = output + getColor(newr, s);
+
+    // Vector3 perp = perpendicular(n);
+    // Coordinate global2Local(cross(perp, n), perp, n, x, 1);
+    // Coordinate dir(Vector3(1,0,0), Vector3(0,1,0), Vector3(0,0,1), omega, 0);
+
+    // Coordinate local2Global = inverseTransformation(global2Local);
+
+    // Vector3 globalDir = local2Global(dir).getPosition();
+
+    // return { globalDir, eval(x, globalDir, omega0) };
+
+    }
+    return output;
+} 
+
 
 RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsigned int nRays)
 {
@@ -106,12 +136,8 @@ RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsi
     
     for (int y = 0; y<nRays; y++) {
         Ray ray = Ray(this->o, pixel + pixel_right*(column+(rand()/(float) (RAND_MAX))) + pixel_down*(row+(rand()/(float) (RAND_MAX))));
-
-        Collision near_col = closest_col(ray,scene);
-
-        RGB color = RGB(0,0,0);
-        if (near_col.obj != nullptr) color = nextLevelEstimation(near_col,scene);
-        colors.push_back(color);
+        // Ray ray = Ray(this->o, normalize(this->f));
+        colors.push_back(getColor(ray,scene));
     }
 
     //Calculate average

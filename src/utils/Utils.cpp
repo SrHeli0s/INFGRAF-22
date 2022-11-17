@@ -43,7 +43,7 @@ Collision closest_col(Ray r, Scene s) {
   for (int x = 0; x<s.objs.size(); x++) {
     vector<Collision> collisions = s.objs[x]->intersect(r);
     for (int k = 0; k < collisions.size(); k++) {
-      if(collisions[k].distance < output.distance) output = collisions[k];
+      if(collisions[k].distance < output.distance && !isfZero(collisions[k].distance)) output = collisions[k];
     }
   }
 

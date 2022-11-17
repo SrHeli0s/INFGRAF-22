@@ -27,13 +27,13 @@ int main() {
     Plane right = Plane(1,Vec3(-1,0,0),RGB(0,255,0));
     Plane floor = Plane(1,Vec3(0,1,0));
     Plane ceiling = Plane(1,Vec3(0,-1,0));
-    Plane back = Plane(1,Vec3(0,0,-1),RGB(10,10,10));
+    Plane back = Plane(1,Vec3(0,0,-1));
     
     Sphere A = Sphere(Point(-0.5,-0.7,0.25),Vec3(0,0.6,0),Point(-0.2,-0.7,0.25),RGB(255,255,0));
     Sphere B = Sphere(Point(0.5,-0.7,-0.25),Vec3(0,0.6,0),Point(0.8,-0.7,0.25),RGB(255,0,127));
     // Triangle t = Triangle(Point(0.5,-0.5,-0.5),Point(0,0.5,-0.5),Point(-0.5,-0.5,-0.5),RGB(0,255,0));
 
-    Camera camera = Camera(Point(0,0,-3.5),Vec3(0,1,0),Vec3(-1,0,0),Vec3(0,0,3),1024,1024);
+    Camera camera = Camera(Point(0,0,-3.5),Vec3(0,1,0),Vec3(-1,0,0),Vec3(0,0,3),256,256);
 
     PointLight pl = PointLight(Point(0,0.5,0),RGB(255,255,255));
 
@@ -122,7 +122,7 @@ int main() {
 
     
     auto start = chrono::high_resolution_clock::now();
-    Image output = camera.render(sc,1);
+    Image output = camera.render(sc,100);
     auto stop = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);

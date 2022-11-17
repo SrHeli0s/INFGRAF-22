@@ -47,14 +47,12 @@ Sphere::Sphere(Point center, Vec3 axis, Point reference, RGB emission)
 
 Point Sphere::surfacePoint(float inclination, float azimuth) 
 {
-    Point target = Point(sin(inclination)*cos(azimuth),
-                 sin(inclination)*sin(azimuth),
-                 cos(inclination)); // Point of sphere with center (0,0,0)
+    Point target = Point(this->radius*sin(inclination)*cos(azimuth),
+                 this->radius*sin(inclination)*sin(azimuth),
+                 this->radius*cos(inclination)); // Point of sphere with center (0,0,0)
 
-    Vec3 normal = this->reference - this->center;
-    Transformation t = BaseChangeTransform(normal, normalize(this->axis), cross(normal,normalize(this->axis)), this->center);
-    
-    return target.applyTransformation(t);;
+    Vec3 translation = this->center - Point(0,0,0);
+    return target+translation;
 }
 
 vector<Collision> Sphere::intersect(Ray r) {
@@ -63,7 +61,7 @@ vector<Collision> Sphere::intersect(Ray r) {
     float c = pow(mod(r.p - this->center), 2) - pow(this->radius, 2);
     vector<float> distances = solveSecondDegreeEquation(a,b,c);
     vector<Collision> output;
-    for (float d : distances) if (d>MIN_DISTANCE) output.push_back({make_shared<Sphere>(*this),r.p+(r.v*d),(r.p+(r.v*d))-this->center,r,d});
+    for (float d : distances) if (d>MIN_DISTANCE) output.push_back({make_shared<Sphere>(*this),r.p+(r.v*d),normalize((r.p+(r.v*d))-this->center),r,d});
     return output;
 }
 

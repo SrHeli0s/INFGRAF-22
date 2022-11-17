@@ -56,11 +56,11 @@ ostream& operator << (std::ostream& os, const Vec3& obj)
     return os;
 }
 
-void Vec3::applyTransformation(Transformation t)
+Vec3 Vec3::applyTransformation(Transformation t)
 {
-    c[0] = c[0]*t.m[0][0] + c[1]*t.m[0][1] + c[2]*t.m[0][2] + 0*t.m[0][3];
-    c[1] = c[0]*t.m[1][0] + c[1]*t.m[1][1] + c[2]*t.m[1][2] + 0*t.m[1][3];
-    c[2] = c[0]*t.m[2][0] + c[1]*t.m[2][1] + c[2]*t.m[2][2] + 0*t.m[2][3];
+    return Vec3(c[0]*t.m[0][0] + c[1]*t.m[0][1] + c[2]*t.m[0][2] + 0*t.m[0][3],
+                c[0]*t.m[1][0] + c[1]*t.m[1][1] + c[2]*t.m[1][2] + 0*t.m[1][3],
+                c[0]*t.m[2][0] + c[1]*t.m[2][1] + c[2]*t.m[2][2] + 0*t.m[2][3]);
 }
 
 Vec3 cross(Vec3 v1, Vec3 v2)
@@ -82,4 +82,13 @@ Vec3 normalize(Vec3 v) {
 
 Vec3 inverse(Vec3 v) {
     return Vec3(-v.c[0], -v.c[1], -v.c[2]);
+}
+
+//https://math.stackexchange.com/questions/137362/how-to-find-perpendicular-vector-to-another-vector
+Vec3 perpendicular(Vec3 v) {
+    if (v.c[2] != 0 && -v.c[0] != v.c[1]) {
+        return Vec3(v.c[2], v.c[2], - v.c[0]-v.c[1]);
+    } else {
+        return Vec3(v.c[1]-v.c[2], v.c[0], v.c[0]);
+    }
 }

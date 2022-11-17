@@ -19,7 +19,7 @@ class Vec3 {
     const Vec3 operator*(float t) const;
     const Vec3 operator/(float t) const;
 
-    void applyTransformation(Transformation t);
+    Vec3 applyTransformation(Transformation t);
 };
 
 std::ostream& operator << (std::ostream& os, const Vec3& obj);
@@ -31,3 +31,5 @@ float mod(Vec3 v);
 Vec3 inverse(Vec3 v);
 
 Vec3 normalize(Vec3 v);
+
+Vec3 perpendicular(Vec3 v);
