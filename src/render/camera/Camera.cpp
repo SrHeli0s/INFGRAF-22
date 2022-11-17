@@ -113,17 +113,6 @@ RGB Camera::getColor(Ray r, Scene s) {
         Ray newr = Ray(c.collision_point,dir);
 
         output = output + getColor(newr, s);
-
-    // Vector3 perp = perpendicular(n);
-    // Coordinate global2Local(cross(perp, n), perp, n, x, 1);
-    // Coordinate dir(Vector3(1,0,0), Vector3(0,1,0), Vector3(0,0,1), omega, 0);
-
-    // Coordinate local2Global = inverseTransformation(global2Local);
-
-    // Vector3 globalDir = local2Global(dir).getPosition();
-
-    // return { globalDir, eval(x, globalDir, omega0) };
-
     }
     return output;
 } 
