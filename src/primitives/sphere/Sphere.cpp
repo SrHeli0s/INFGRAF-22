@@ -16,11 +16,28 @@ Sphere::Sphere() {}
 
 Sphere::Sphere(Point center, Vec3 axis, Point reference)
 {
-    this->emission = RGB(200,200,200);
+    this->emission = RGB(0.2,0.2,0.2);
     this->center = center;
     this->axis = axis;
     this->reference = reference;
     this->radius = mod(axis)/2;
+    this->material = Material(1.0,0,0,0);
+
+    if (this->radius - mod(center-reference) > MAX_ERROR) {
+        cerr << "The definition of the sphere with center " << center 
+        << " axis " << axis << " and reference " << reference 
+        << " is inconsistent with the radius of it\n" << endl;
+    }
+}
+
+Sphere::Sphere(Point center, Vec3 axis, Point reference, Material material)
+{
+    this->emission = RGB(0.2,0.2,0.2);
+    this->center = center;
+    this->axis = axis;
+    this->reference = reference;
+    this->radius = mod(axis)/2;
+    this->material = material;
 
     if (this->radius - mod(center-reference) > MAX_ERROR) {
         cerr << "The definition of the sphere with center " << center 
@@ -36,6 +53,23 @@ Sphere::Sphere(Point center, Vec3 axis, Point reference, RGB emission)
     this->axis = axis;
     this->reference = reference;
     this->radius = mod(axis)/2;
+    this->material = Material(1.0,0,0,0);
+
+    if (this->radius - mod(center-reference) > MAX_ERROR) {
+        cerr << "The definition of the sphere with center " << center 
+        << " axis " << axis << " and reference " << reference 
+        << " is inconsistent with the radius of it\n" << endl;
+    }
+}
+
+Sphere::Sphere(Point center, Vec3 axis, Point reference, RGB emission, Material material)
+{
+    this->emission = emission;
+    this->center = center;
+    this->axis = axis;
+    this->reference = reference;
+    this->radius = mod(axis)/2;
+    this->material = material;
 
     if (this->radius - mod(center-reference) > MAX_ERROR) {
         cerr << "The definition of the sphere with center " << center 

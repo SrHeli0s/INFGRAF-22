@@ -60,7 +60,13 @@ ostream& operator << (ostream& os, const Camera& obj)
 
 RGB Camera::getBRDF(Collision col, Vec3 wi) {
     //NOTE: W0 esta dentro de col
-    return col.obj->getEmission(col.collision_point) / M_PI;
+    RGB emission = col.obj->getEmission(col.collision_point);
+    Vec3 n = normalize(col.collision_normal);
+    float kd = col.obj->material.kd;
+    float ks = col.obj->material.ks;
+    float kt = col.obj->material.kt;
+
+    return (emission*kd / M_PI) + (emission*(ks*(wi*2*(wi*n)*n)) / (n*wi));
 }
 
 RGB Camera::nextLevelEstimation(Collision col, Scene scene) 

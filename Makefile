@@ -22,6 +22,7 @@ POINT = ${SRC}/point/Point
 VEC3 = ${SRC}/vec3/Vec3
 
 PRIMITIVE = ${SRC}/primitives/Primitive
+MATERIAL = ${SRC}/primitives/Material
 SPHERE = ${SRC}/primitives/sphere/Sphere
 PLANE = ${SRC}/primitives/plane/Plane
 TRIANGLE = ${SRC}/primitives/triangle/Triangle
@@ -43,8 +44,8 @@ POINTLIGHT = ${SRC}/render/light/point_light/PointLight
 all: ${MAIN} 
 #---------------------------------------------------------
 # "linkar"
-${MAIN}:  ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${STL}.o ${SPRITE}.o ${MAIN}.cpp
-	${CC} -g ${MAIN}.cpp ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${STL}.o ${SPRITE}.o -o ${PROGRAM} ${CPPFLAGS} -pthread
+${MAIN}:  ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${STL}.o ${SPRITE}.o ${MATERIAL}.o ${MAIN}.cpp
+	${CC} -g ${MAIN}.cpp ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${STL}.o ${SPRITE}.o ${MATERIAL}.o -o ${PROGRAM} ${CPPFLAGS} -pthread
 #---------------------------------------------------------
 # compilar
 ${POINT}.o: ${POINT}.hpp ${POINT}.cpp
@@ -96,8 +97,11 @@ ${SCENE}.o: ${SCENE}.hpp ${SCENE}.cpp
 ${POINTLIGHT}.o: ${POINTLIGHT}.hpp ${POINTLIGHT}.cpp
 	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${POINTLIGHT}.cpp -o ${POINTLIGHT}.o
 
+${MATERIAL}.o: ${MATERIAL}.hpp ${MATERIAL}.cpp
+	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${MATERIAL}.cpp -o ${MATERIAL}.o
+
 #---------------------------------------------------------
 # Cuidado con lo que se pone aquí, que se borra sin preguntar
 clean:
-	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${STL}.o ${SPRITE}.o
+	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${STL}.o ${SPRITE}.o ${MATERIAL}.o
 	$(RM) ${PROGRAM}
