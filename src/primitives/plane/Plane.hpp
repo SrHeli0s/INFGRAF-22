@@ -14,6 +14,7 @@ class Plane : public Primitive {
     Plane();
     Plane(float c, Vec3 normal);
     Plane(float c, Vec3 normal, RGB emission);
+    Plane(float c, Vec3 normal, RGB emission, Material material);
 
     std::vector<Collision> intersect(Ray r) override;
 

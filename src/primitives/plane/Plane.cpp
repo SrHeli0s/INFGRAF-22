@@ -16,7 +16,8 @@ Plane::Plane(float c, Vec3 normal)
 {
     this->c = c;
     this->normal = normal;
-    this->emission = RGB(0.2,0.2,0.2);
+    this->emission = RGB(200,200,200);
+    this->material = Material(1.0,0,0,0);
 }
 
 Plane::Plane(float c, Vec3 normal, RGB emission) {
