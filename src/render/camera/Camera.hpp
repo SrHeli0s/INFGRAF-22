@@ -26,6 +26,8 @@ class Camera {
         RGB nextLevelEstimation(Collision col, Scene scene);
         Ray nextRay(Collision col, Scene scene);
         RGB getColor(Ray r, Scene s);
+        Vec3 sampleDirSpec(Collision col);
+        Vec3 sampleDirRefr(Collision col);
         Vec3 pixel_up;
         Vec3 pixel_down;
         Vec3 pixel_left;

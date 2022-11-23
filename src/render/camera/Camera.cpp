@@ -59,17 +59,24 @@ ostream& operator << (ostream& os, const Camera& obj)
 }
 
 RGB Camera::getBRDF(Collision col, Vec3 wi) {
-    //NOTE: W0 esta dentro de col
-    RGB emission = col.obj->getEmission(col.collision_point);
-    Vec3 n = normalize(col.collision_normal);
+    Material m = col.obj->material;
 
-    float kd = col.obj->material.kd;
-    float ks = col.obj->material.ks;
-    float kt = col.obj->material.kt;
-    
-    // if (ks > 0) {return RGB(1,1,1);}
-    
-    return (emission*kd / M_PI) + (emission*(ks*(wi*2*(wi*n)*n)) / (n*wi));
+    RGB dif = m.kd > 0 ? m.dif / M_PI / m.kd : RGB();
+    RGB spec = m.ks > 0 ? m.spec * (delta(wi, sampleDirSpec(col))) / m.ks : RGB();
+    RGB refr = m.kt > 0 ? m.refr * (delta(wi, sampleDirRefr(col))) / m.kt : RGB();
+
+    return dif+spec+refr;
+
+    //ANTIGUO:
+        // //NOTE: W0 esta dentro de col
+        // RGB emission = col.obj->getEmission(col.collision_point);
+        // Vec3 n = normalize(col.collision_normal);
+
+        // float kd = col.obj->material.kd;
+        // float ks = col.obj->material.ks;
+        // float kt = col.obj->material.kt;
+        
+        // return (emission*kd / M_PI) + (emission*(ks*(wi*2*(wi*n)*n)) / (n*wi));
 }
 
 RGB Camera::nextLevelEstimation(Collision col, Scene scene) 
@@ -87,8 +94,15 @@ RGB Camera::nextLevelEstimation(Collision col, Scene scene)
             
             RGB color = RGB(0,0,0);
             if (col.obj != nullptr) {
+                Material m = col.obj->material;
+                Vec3 omI = normalize(shadow.v);
                 //Calculate contributions
-                RGB matC = getBRDF(col, normalize(shadow.v));
+                RGB dif = m.kd > 0 ? m.dif / M_PI / m.kd : RGB();
+                RGB spec = m.ks > 0 ? m.spec * (delta(omI, sampleDirSpec(col))) / m.ks : RGB();
+                RGB refr = m.kt > 0 ? m.refr * (delta(omI, sampleDirRefr(col))) / m.kt : RGB();
+
+                RGB matC = (dif+spec+refr)*col.obj->emission;
+                // RGB matC = getBRDF(col, normalize(shadow.v));
                 float geoC = col.collision_normal * W_i;
                 if (geoC<0) geoC = 0; //If is negative is pointing the other way -> It should be black
                 RGB lightC = l.power/(float)(pow(distance_to_light,2));
@@ -103,6 +117,14 @@ RGB Camera::nextLevelEstimation(Collision col, Scene scene)
     }
 
     return output;
+}
+
+Vec3 Camera::sampleDirSpec(Collision col) {
+    return normalize(col.r.v - col.collision_normal*(col.r.v*col.collision_normal)*2);
+}
+
+Vec3 Camera::sampleDirRefr(Collision col) {
+    return Vec3(0,0,0); //TODO
 }
 
 Ray Camera::nextRay(Collision col, Scene scene) {
@@ -127,7 +149,7 @@ Ray Camera::nextRay(Collision col, Scene scene) {
             Transformation t2 = t1.inverse();
 
             Vec3 dir = om.applyTransformation(t2);
-RGB(0,0,0);
+
             output = Ray(col.collision_point,normalize(dir));
         }
         else if (m.ks != 0) {//Generate next ray of specular
@@ -147,10 +169,11 @@ RGB Camera::getColor(Ray r, Scene s) {
     Collision c = closest_col(r,s);
     RGB output = RGB(0,0,0);
     if (c.obj != nullptr) {
-        RGB directa = nextLevelEstimation(c,s);
-        RGB indirecta = getBRDF(c, normalize(r.v))*getColor(nextRay(c,s),s)*M_PI;
-
-        output = directa + indirecta;
+        //Ld
+        output = output + nextLevelEstimation(c,s);
+        //Li
+        Ray nextR = nextRay(c,s);
+        output = output + getBRDF(c, nextR.v) * getColor(nextR,s);
     }
     return output;
 } 

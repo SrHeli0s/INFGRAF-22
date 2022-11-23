@@ -1,5 +1,6 @@
 #include "Vec3.hpp"
 #include "../point/Point.hpp"
+#include "../utils/Utils.hpp"
 #include "../transformation/Transformation.hpp"
 #include <iostream>
 #include <cmath>
@@ -91,4 +92,8 @@ Vec3 perpendicular(Vec3 v) {
     } else {
         return Vec3(v.c[1]-v.c[2], v.c[0], v.c[0]);
     }
+}
+
+float delta(Vec3 a, Vec3 b) {
+    return isfZero(mod(cross(a,b))) ? 1 : 0;
 }

@@ -4,7 +4,11 @@
 
 using namespace std;
 
-RGB::RGB() {}
+RGB::RGB() {
+    this->r = 0;
+    this->g = 0;
+    this->b = 0;
+}
 
 RGB::RGB(float red, float green, float blue)
 {

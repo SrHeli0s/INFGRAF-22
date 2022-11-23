@@ -33,3 +33,5 @@ Vec3 inverse(Vec3 v);
 Vec3 normalize(Vec3 v);
 
 Vec3 perpendicular(Vec3 v);
+
+float delta(Vec3 a, Vec3 b);

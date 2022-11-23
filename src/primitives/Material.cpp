@@ -10,12 +10,15 @@ Material::Material()
     this->ke = 0;
 }
 
-Material::Material(float kd, float ks, float kt, float ke)
+Material::Material(float kd, float ks, float kt, float ke, RGB diffuse, RGB specular, RGB refraction)
 {
     this->kd = kd;
     this->ks = ks;
     this->kt = kt;
     this->ke = ke;
+    this->dif = diffuse;
+    this->spec = specular;
+    this->refr = refraction;
 
     if ((this->kd + this->ks + this->kt) > 1) {
         std::cerr << "The sum of difusse, specular and refraction coeficients must be less than or equal 1" << std::endl;
