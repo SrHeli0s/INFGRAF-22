@@ -9,6 +9,7 @@
 
 class Scene;
 class Image;
+class Ray;
 
 const unsigned int NTHREADS = 4;
 
@@ -23,6 +24,7 @@ class Camera {
         void worker(ConcurrentQueue<std::pair<int, int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays);
         RGB getBRDF(Collision col, Vec3 wi);
         RGB nextLevelEstimation(Collision col, Scene scene);
+        Ray nextRay(Collision col, Scene scene);
         RGB getColor(Ray r, Scene s);
         Vec3 pixel_up;
         Vec3 pixel_down;

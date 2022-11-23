@@ -62,61 +62,93 @@ RGB Camera::getBRDF(Collision col, Vec3 wi) {
     //NOTE: W0 esta dentro de col
     RGB emission = col.obj->getEmission(col.collision_point);
     Vec3 n = normalize(col.collision_normal);
+
     float kd = col.obj->material.kd;
     float ks = col.obj->material.ks;
     float kt = col.obj->material.kt;
-
+    
+    // if (ks > 0) {return RGB(1,1,1);}
+    
     return (emission*kd / M_PI) + (emission*(ks*(wi*2*(wi*n)*n)) / (n*wi));
 }
 
 RGB Camera::nextLevelEstimation(Collision col, Scene scene) 
 {
-    RGB output = RGB(0,0,0);
-    for (auto l: scene.lights) {
-        float distance_to_light = (mod(l.center - col.collision_point));
-        Vec3 W_i = (l.center-col.collision_point)/distance_to_light;
-        //Calculate shadows
-        Ray shadow = Ray(col.collision_point,W_i);
-        Collision closest = closest_col(shadow,scene);
-        
-        RGB color = RGB(0,0,0);
-        if (col.obj != nullptr) {
-            //Calculate contributions
-            RGB matC = getBRDF(col, normalize(shadow.v));
-            float geoC = col.collision_normal * W_i;
-            if (geoC<0) geoC = 0; //If is negative is pointing the other way -> It should be black
-            RGB lightC = l.power/(float)(pow(distance_to_light,2));
-            if (closest.distance>distance_to_light) {                 
-                output = output +lightC*matC*geoC;
+    Material m = col.obj->material;
+    RGB output;
+    if (m.kd != 0) { //Generate color of diffuse
+        output = RGB(0,0,0);
+        for (auto l: scene.lights) {
+            float distance_to_light = (mod(l.center - col.collision_point));
+            Vec3 W_i = (l.center-col.collision_point)/distance_to_light;
+            //Calculate shadows
+            Ray shadow = Ray(col.collision_point,W_i);
+            Collision closest = closest_col(shadow,scene);
+            
+            RGB color = RGB(0,0,0);
+            if (col.obj != nullptr) {
+                //Calculate contributions
+                RGB matC = getBRDF(col, normalize(shadow.v));
+                float geoC = col.collision_normal * W_i;
+                if (geoC<0) geoC = 0; //If is negative is pointing the other way -> It should be black
+                RGB lightC = l.power/(float)(pow(distance_to_light,2));
+                if (closest.distance>distance_to_light) {                 
+                    output = output + lightC*matC*geoC;
+                }
             }
         }
     }
+    else if (m.ks != 0) { //Generate color of specular
+        output = RGB(0,0,0);
+    }
 
     return output;
+}
+
+Ray Camera::nextRay(Collision col, Scene scene) {
+    Ray output;
+
+    Material m = col.obj->material;
+    if (((m.kd == 0)+(m.ks == 0)+(m.kt == 0)+(m.ke == 0)) == 3) { //If 3 of the values are 0
+        if (m.kd != 0) { //Generate next ray of diffuse
+            float randInclination = acos(sqrt(1-(rand()/(float) (RAND_MAX))));
+            float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
+
+            Vec3 om = Vec3(sin(randInclination) * cos(randAzimuth),
+                            sin(randInclination) * sin(randAzimuth),
+                            cos(randInclination));
+            
+            // Vec3 n = normalize(col.collision_normal);
+            Vec3 n = col.collision_normal;
+            
+            Vec3 p = perpendicular(n);
+
+            Transformation t1 = BaseChangeTransform(cross(p,n),n,p,col.collision_point);
+            Transformation t2 = t1.inverse();
+
+            Vec3 dir = om.applyTransformation(t2);
+RGB(0,0,0);
+            output = Ray(col.collision_point,normalize(dir));
+        }
+        else if (m.ks != 0) {//Generate next ray of specular
+            Vec3 n = col.collision_normal;
+            output = Ray(col.collision_point,normalize(col.r.v - n*(col.r.v*n)*2));
+        }
+    }
+    else {
+        //TODO: ruleta rusa
+    }
+    
+    return output;
+
 }
 
 RGB Camera::getColor(Ray r, Scene s) {
     Collision c = closest_col(r,s);
     RGB output = RGB(0,0,0);
     if (c.obj != nullptr) {
-        float randInclination = acos(sqrt(1-(rand()/(float) (RAND_MAX))));
-        float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
-
-        Vec3 om = Vec3(sin(randInclination) * cos(randAzimuth),
-                       sin(randInclination) * sin(randAzimuth),
-                       cos(randInclination));
-        
-        Vec3 p = perpendicular(c.collision_normal);
-
-        Transformation t1 = BaseChangeTransform(cross(p,c.collision_normal),c.collision_normal,p,c.collision_point);
-        Transformation t2 = t1.inverse();
-
-        Vec3 dir = om.applyTransformation(t2);
-
-        Ray newr = Ray(c.collision_point,dir);
-
         RGB directa = nextLevelEstimation(c,s);
-        RGB indirecta = getBRDF(c, r.v)*getColor(newr,s)*M_PI;
+        RGB indirecta = getBRDF(c, normalize(r.v))*getColor(nextRay(c,s),s)*M_PI;
 
         output = directa + indirecta;
     }
