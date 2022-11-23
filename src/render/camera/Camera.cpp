@@ -101,8 +101,8 @@ RGB Camera::nextLevelEstimation(Collision col, Scene scene)
                 RGB spec = m.ks > 0 ? m.spec * (delta(omI, sampleDirSpec(col))) / m.ks : RGB();
                 RGB refr = m.kt > 0 ? m.refr * (delta(omI, sampleDirRefr(col))) / m.kt : RGB();
 
-                RGB matC = (dif+spec+refr)*col.obj->emission;
-                // RGB matC = getBRDF(col, normalize(shadow.v));
+                // RGB matC = (dif+spec+refr)*col.obj->emission;
+                RGB matC = getBRDF(col, normalize(shadow.v));
                 float geoC = col.collision_normal * W_i;
                 if (geoC<0) geoC = 0; //If is negative is pointing the other way -> It should be black
                 RGB lightC = l.power/(float)(pow(distance_to_light,2));
@@ -140,12 +140,11 @@ Ray Camera::nextRay(Collision col, Scene scene) {
                             sin(randInclination) * sin(randAzimuth),
                             cos(randInclination));
             
-            // Vec3 n = normalize(col.collision_normal);
             Vec3 n = col.collision_normal;
             
             Vec3 p = perpendicular(n);
 
-            Transformation t1 = BaseChangeTransform(cross(p,n),n,p,col.collision_point);
+            Transformation t1 = BaseChangeTransform(cross(n,p),n,p,col.collision_point);
             Transformation t2 = t1.inverse();
 
             Vec3 dir = om.applyTransformation(t2);
@@ -181,26 +180,18 @@ RGB Camera::getColor(Ray r, Scene s) {
 
 RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsigned int nRays)
 {
-    vector<RGB> colors;
     Vec3 pixel = this->f + this->l + this->u; // upper-left pixel
     
+    RGB average_rgb = RGB(0,0,0);
     for (int y = 0; y<nRays; y++) {
         Ray ray = Ray(this->o, pixel + pixel_right*(column+(rand()/(float) (RAND_MAX))) + pixel_down*(row+(rand()/(float) (RAND_MAX))));
         // Ray ray = Ray(this->o, normalize(this->f));
-        RGB color = getColor(ray,scene);
-        colors.push_back(color);
+        average_rgb = average_rgb + getColor(ray,scene);
     }
-
     //Calculate average
-    RGB average_rgb = RGB(0,0,0);
-
-    for(RGB c : colors) {
-        average_rgb = average_rgb + c;
-    }
-    average_rgb = average_rgb / colors.size();
+    average_rgb = average_rgb / nRays;
 
     return average_rgb;
-
 }
 
 void Camera::worker(ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays)

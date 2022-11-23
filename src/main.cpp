@@ -23,7 +23,7 @@ int main() {
     PPM p = PPM();
 
     // MATERIALS
-    Material glass = Material(0,1.0,0,0,RGB(1,1,1),RGB(1,1,1),RGB(1,1,1));
+    Material glass = Material(0,1.0,0,0,RGB(),RGB(0,0,1),RGB());
 
     //========================= SCENE 1 =========================
     Plane left = Plane(1,Vec3(1,0,0),RGB(1,0,0));
