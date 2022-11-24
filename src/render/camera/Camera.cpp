@@ -172,7 +172,7 @@ RGB Camera::getColor(Ray r, Scene s) {
         output = output + nextLevelEstimation(c,s);
         //Li
         Ray nextR = nextRay(c,s);
-        output = output + getBRDF(c, nextR.v) * getColor(nextR,s);
+        output = output + getBRDF(c, nextR.v) * getColor(nextR,s)* M_PI;
     }
     return output;
 } 
