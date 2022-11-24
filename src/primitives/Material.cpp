@@ -1,6 +1,9 @@
 #include "Material.hpp"
 #include <iostream>
+#include <cmath>
 #include <sstream>
+
+using namespace std;
 
 Material::Material()
 {
@@ -9,8 +12,18 @@ Material::Material()
     this->kt = 0;
     this->ke = 0;
 }
+Material::Material(RGB diffuse, RGB specular, RGB refraction, float ri=1) 
+{
+    this->dif = diffuse;
+    this->spec = specular;
+    this->refr = refraction;
+    this->kd = max(diffuse.r,max(diffuse.g,diffuse.b));
+    this->ks = max(specular.r,max(specular.g,specular.b));
+    this->kt = max(refraction.r,max(refraction.g,refraction.b));
+    this->ke = 0;
+}
 
-Material::Material(float kd, float ks, float kt, float ke, RGB diffuse, RGB specular, RGB refraction)
+Material::Material(float kd, float ks, float kt, float ke, RGB diffuse, RGB specular, RGB refraction, float ri=1)
 {
     this->kd = kd;
     this->ks = ks;

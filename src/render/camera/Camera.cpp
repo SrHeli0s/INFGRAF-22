@@ -58,6 +58,19 @@ ostream& operator << (ostream& os, const Camera& obj)
     return os;
 }
 
+Camera::Event Camera::russianRoulette(double t, Material m) {
+    if ( t < m.kd ) {
+        return DIFFUSE;
+    } else if ( t < m.kd + m.ks ) {
+        return SPECULAR;
+    } else if ( t < m.kd + m.ks + m.kt ) {
+        return REFRACTION;
+    } else {
+        return ABSORPTION;
+    }
+}
+
+
 RGB Camera::getBRDF(Collision col, Vec3 wi) {
     Material m = col.obj->material;
 
@@ -79,11 +92,11 @@ RGB Camera::getBRDF(Collision col, Vec3 wi) {
         // return (emission*kd / M_PI) + (emission*(ks*(wi*2*(wi*n)*n)) / (n*wi));
 }
 
-RGB Camera::nextLevelEstimation(Collision col, Scene scene) 
+RGB Camera::nextLevelEstimation(Collision col, Scene scene, Event e) 
 {
     Material m = col.obj->material;
     RGB output;
-    if (m.kd != 0) { //Generate color of diffuse
+    if (e == DIFFUSE) { //Generate color of diffuse
         output = RGB(0,0,0);
         for (auto l: scene.lights) {
             float distance_to_light = (mod(l.center - col.collision_point));
@@ -112,7 +125,13 @@ RGB Camera::nextLevelEstimation(Collision col, Scene scene)
             }
         }
     }
-    else if (m.ks != 0) { //Generate color of specular
+    else if (e == SPECULAR) { //Generate color of specular
+        output = RGB(0,0,0);
+    }
+    else if (e == REFRACTION) {
+        output = RGB(0,0,0);
+    }
+    else { //ABSORB
         output = RGB(0,0,0);
     }
 
@@ -120,44 +139,40 @@ RGB Camera::nextLevelEstimation(Collision col, Scene scene)
 }
 
 Vec3 Camera::sampleDirSpec(Collision col) {
-    return normalize(col.r.v - col.collision_normal*(col.r.v*col.collision_normal)*2);
+    return normalize(normalize(col.r.v) - normalize(col.collision_normal)*(normalize(col.r.v)*normalize(col.collision_normal))*2);
 }
 
 Vec3 Camera::sampleDirRefr(Collision col) {
-    return Vec3(0,0,0); //TODO
+    Vec3 w_i = normalize(col.r.v);
+    Vec3 n = normalize(col.collision_normal);
+    
 }
 
-Ray Camera::nextRay(Collision col, Scene scene) {
+Ray Camera::nextRay(Collision col, Scene scene, Event e) {
     Ray output;
 
     Material m = col.obj->material;
-    if (((m.kd == 0)+(m.ks == 0)+(m.kt == 0)+(m.ke == 0)) == 3) { //If 3 of the values are 0
-        if (m.kd != 0) { //Generate next ray of diffuse
-            float randInclination = acos(sqrt(1-(rand()/(float) (RAND_MAX))));
-            float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
+    if (e == DIFFUSE) { //Generate next ray of diffuse
+        float randInclination = acos(sqrt(1-(rand()/(float) (RAND_MAX))));
+        float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
 
-            Vec3 om = Vec3(sin(randInclination) * cos(randAzimuth),
-                            sin(randInclination) * sin(randAzimuth),
-                            cos(randInclination));
-            
-            Vec3 n = col.collision_normal;
-            
-            Vec3 p = perpendicular(n);
+        Vec3 om = Vec3(sin(randInclination) * cos(randAzimuth),
+                        sin(randInclination) * sin(randAzimuth),
+                        cos(randInclination));
+        
+        Vec3 n = col.collision_normal;
+        
+        Vec3 p = perpendicular(n);
 
-            Transformation t1 = BaseChangeTransform(cross(n,p),n,p,col.collision_point);
-            Transformation t2 = t1.inverse();
+        Transformation t1 = BaseChangeTransform(cross(n,p),n,p,col.collision_point);
+        Transformation t2 = t1.inverse();
 
-            Vec3 dir = om.applyTransformation(t2);
+        Vec3 dir = om.applyTransformation(t2);
 
-            output = Ray(col.collision_point,normalize(dir));
-        }
-        else if (m.ks != 0) {//Generate next ray of specular
-            Vec3 n = col.collision_normal;
-            output = Ray(col.collision_point,normalize(col.r.v - n*(col.r.v*n)*2));
-        }
+        output = Ray(col.collision_point,normalize(dir));
     }
-    else {
-        //TODO: ruleta rusa
+    else if (e == SPECULAR) {//Generate next ray of specular        
+        output = Ray(col.collision_point,sampleDirSpec(col));
     }
     
     return output;
@@ -168,10 +183,11 @@ RGB Camera::getColor(Ray r, Scene s) {
     Collision c = closest_col(r,s);
     RGB output = RGB(0,0,0);
     if (c.obj != nullptr) {
+        Event e = russianRoulette(rand()/(float)(RAND_MAX),c.obj->material);
         //Ld
-        output = output + nextLevelEstimation(c,s);
+        output = output + nextLevelEstimation(c,s,e);
         //Li
-        Ray nextR = nextRay(c,s);
+        Ray nextR = nextRay(c,s,e);
         output = output + getBRDF(c, nextR.v) * getColor(nextR,s)* M_PI;
     }
     return output;

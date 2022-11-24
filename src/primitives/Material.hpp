@@ -7,13 +7,15 @@ public:
     // ks: specular coeficient
     // kt: refraction coeficient
     // ke: emission coeficient
-    float kd, ks, kt, ke;
+    // ri: refraction index
+    float kd, ks, kt, ke, ri;
     RGB dif, spec, refr;
     //TODO: Mover emission de primitive a aqui:
     // RGB emission
 
 
     Material();
-    Material(float kd, float ks, float kt, float ke, RGB diffuse, RGB specular, RGB refraction);
+    Material(RGB diffuse, RGB specular, RGB refraction, float ri);
+    Material(float kd, float ks, float kt, float ke, RGB diffuse, RGB specular, RGB refraction, float ri);
 };
 

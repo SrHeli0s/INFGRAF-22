@@ -15,22 +15,22 @@ Plane::Plane() {}
 Plane::Plane(float c, Vec3 normal)
 {
     this->c = c;
-    this->normal = normal;
+    this->normal = normalize(normal);
     this->emission = RGB(0.2,0.2,0.2);
-    this->material = Material(1.0,0,0,0,RGB(0.2,0.2,0.2),RGB(),RGB());
+    this->material = Material(1.0,0,0,0,RGB(0.2,0.2,0.2),RGB(),RGB(),1);
 }
 
 Plane::Plane(float c, Vec3 normal, RGB emission) {
     this->c = c;
-    this->normal = normal;
+    this->normal = normalize(normal);
     this->emission = emission;
-    this->material = Material(1.0,0,0,0,emission,RGB(),RGB());
+    this->material = Material(1.0,0,0,0,emission,RGB(),RGB(),1);
 }
 
 Plane::Plane(float c, Vec3 normal, RGB emission, Material material)
 {
     this->c = c;
-    this->normal = normal;
+    this->normal = normalize(normal);
     this->emission = emission;
     this->material = material;
 }

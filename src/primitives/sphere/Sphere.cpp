@@ -21,7 +21,7 @@ Sphere::Sphere(Point center, Vec3 axis, Point reference)
     this->axis = axis;
     this->reference = reference;
     this->radius = mod(axis)/2;
-    this->material = Material(1.0,0,0,0,RGB(0.2,0.2,0.2),RGB(),RGB());
+    this->material = Material(1.0,0,0,0,RGB(0.2,0.2,0.2),RGB(),RGB(),1);
 
     if (this->radius - mod(center-reference) > MAX_ERROR) {
         cerr << "The definition of the sphere with center " << center 
@@ -53,7 +53,7 @@ Sphere::Sphere(Point center, Vec3 axis, Point reference, RGB emission)
     this->axis = axis;
     this->reference = reference;
     this->radius = mod(axis)/2;
-    this->material = Material(1.0,0,0,0,emission,RGB(),RGB());
+    this->material = Material(1.0,0,0,0,emission,RGB(),RGB(),1);
 
     if (this->radius - mod(center-reference) > MAX_ERROR) {
         cerr << "The definition of the sphere with center " << center 

@@ -21,7 +21,7 @@ Triangle::Triangle(Point a, Point b, Point c, RGB emission = RGB(0.2,0.2,0.2))
     Point centroide = Point((a.c[0]+b.c[0]+c.c[0])/3,(a.c[1]+b.c[1]+c.c[1])/3,(a.c[2]+b.c[2]+c.c[2])/3);
     this->normal = normalize(cross(a-b,a-c));
     this->c = this->normal*(Point(0,0,0)-a);
-    this->material = Material(1.0,0,0,0,RGB(1,1,1),RGB(1,1,1),RGB(1,1,1));
+    this->material = Material(1.0,0,0,0,RGB(1,1,1),RGB(1,1,1),RGB(1,1,1),1);
 }
 
 Triangle::Triangle(Point a, Point b, Point c, RGB emission, Material material)

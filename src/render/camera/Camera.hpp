@@ -5,6 +5,7 @@
 #include "../../vec3/Vec3.hpp"
 #include "../ray/Ray.hpp"
 #include "../../tone_mapping/rgb/Rgb.hpp"
+#include "../../primitives/Material.hpp"
 #include "../../utils/ConcurrentQueue.hpp"
 
 class Scene;
@@ -21,18 +22,26 @@ struct Pixel
 
 class Camera {
     private:
+        enum Event {
+            DIFFUSE = 0,
+            SPECULAR = 1,
+            REFRACTION = 2,
+            ABSORPTION = 3
+        };
         void worker(ConcurrentQueue<std::pair<int, int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays);
         RGB getBRDF(Collision col, Vec3 wi);
-        RGB nextLevelEstimation(Collision col, Scene scene);
-        Ray nextRay(Collision col, Scene scene);
+        RGB nextLevelEstimation(Collision col, Scene scene, Event e);
+        Ray nextRay(Collision col, Scene scene, Event e);
         RGB getColor(Ray r, Scene s);
-        Vec3 sampleDirSpec(Collision col);
         Vec3 sampleDirRefr(Collision col);
+        Event russianRoulette(double t, Material m);
+
         Vec3 pixel_up;
         Vec3 pixel_down;
         Vec3 pixel_left;
         Vec3 pixel_right;
     public :
+        Vec3 sampleDirSpec(Collision col);
         Point o;
         Vec3 u, l, f; //Up, left, foward
         float w,h;  //Size of the image
