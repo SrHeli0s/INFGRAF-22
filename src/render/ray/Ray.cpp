@@ -15,6 +15,14 @@ Ray::Ray(Point p, Vec3 v)
 {
     this->p = p;
     this->v = normalize(v);
+    this->ri = 1.0;
+}
+
+Ray::Ray(Point p, Vec3 v, float ri)
+{
+    this->p = p;
+    this->v = normalize(v);
+    this->ri = ri;
 }
 
 ostream& operator << (ostream& os, const Ray& obj) {

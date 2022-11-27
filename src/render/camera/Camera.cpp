@@ -144,8 +144,15 @@ Vec3 Camera::sampleDirSpec(Collision col) {
 
 Vec3 Camera::sampleDirRefr(Collision col) {
     Vec3 w_i = normalize(col.r.v);
-    Vec3 n = normalize(col.collision_normal);
+    Vec3 n = inverse(normalize(col.collision_normal));
+    float angle_i = acos((w_i*n)/(mod(w_i)*mod(n)));
+
+    float angle_o = asin((col.r.ri/col.obj->material.ri)*sin(angle_i));
     
+    float cosi = n * w_i; 
+    float k = 1 - col.r.ri * col.r.ri * (1 - cosi * cosi); 
+    
+    return normalize(w_i * col.r.ri + n * (col.r.ri *  cosi - sqrt(k)));  
 }
 
 Ray Camera::nextRay(Collision col, Scene scene, Event e) {
