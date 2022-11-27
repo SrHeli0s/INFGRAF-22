@@ -17,6 +17,7 @@
 #include <utility>
 #include <thread> // std::thread
 #include <functional> // std::ref
+#include <algorithm>
 
 
 using namespace std;
@@ -143,16 +144,46 @@ Vec3 Camera::sampleDirSpec(Collision col) {
 }
 
 Vec3 Camera::sampleDirRefr(Collision col) {
-    Vec3 w_i = normalize(col.r.v);
-    Vec3 n = inverse(normalize(col.collision_normal));
-    float angle_i = acos((w_i*n)/(mod(w_i)*mod(n)));
 
-    float angle_o = asin((col.r.ri/col.obj->material.ri)*sin(angle_i));
+    Vec3 w_i = normalize(col.r.v);
+    Vec3 n = normalize(col.collision_normal);
+    float cosTh = 1.0;
+    if (w_i*n < 1.0) cosTh = -(w_i*n);
+    float sinTh = sqrt(1.0 - (cosTh*cosTh));
+    bool frontFace = w_i*n < 0; 
+
+    Vec3 ax = frontFace ? n : inverse(n);
+
+    // Assume objects are solid and don't clip
+    double ratio = frontFace ? 1.0 / col.r.ri : col.r.ri;
+
+    bool cannotRefract = ratio * sinTh > 1.0;
+    if ( cannotRefract ) {
+        return sampleDirSpec(col);
+    } else {
+        float cos = 1.0;
+        if (inverse(w_i)*ax < 1.0) cos = w_i*ax;
+
+        // Compute refracted parallel and perpendicular component to normal
+        Vec3 rPerp = (inverse(w_i) + ax * cos) * ratio;
+        Vec3 rPar = inverse(ax) * sqrt(abs(1.0 - rPerp * rPerp));
+        
+        // Sum both components together
+        return rPerp + rPar;
+    }
+
+
+
+    // Vec3 w_i = normalize(col.r.v);
+    // Vec3 n = inverse(normalize(col.collision_normal));
+    // float angle_i = acos((w_i*n)/(mod(w_i)*mod(n)));
+
+    // float angle_o = asin((col.r.ri/col.obj->material.ri)*sin(angle_i));
     
-    float cosi = n * w_i; 
-    float k = 1 - col.r.ri * col.r.ri * (1 - cosi * cosi); 
+    // float cosi = n * w_i; 
+    // float k = 1 - col.r.ri * col.r.ri * (1 - cosi * cosi); 
     
-    return normalize(w_i * col.r.ri + n * (col.r.ri *  cosi - sqrt(k)));  
+    // return normalize(w_i * col.r.ri + n * (col.r.ri *  cosi - sqrt(k)));  
 }
 
 Ray Camera::nextRay(Collision col, Scene scene, Event e) {
@@ -179,7 +210,7 @@ Ray Camera::nextRay(Collision col, Scene scene, Event e) {
         output = Ray(col.collision_point,normalize(dir));
     }
     else if (e == SPECULAR) {//Generate next ray of specular        
-        output = Ray(col.collision_point,sampleDirSpec(col));
+        output = Ray(col.collision_point,sampleDirSpec(col), col.obj->material.ri);
     }
     
     return output;
