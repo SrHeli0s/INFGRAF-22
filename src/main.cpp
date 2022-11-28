@@ -26,12 +26,12 @@ int main() {
     // //========================= SCENE 1 =========================
     // // MATERIALS
     Material metal = Material(RGB(),RGB(1,1,1),RGB(),1);
-    Material glass = Material(RGB(),RGB(),RGB(1,1,1),1.5);
+    Material glass = Material(RGB(),RGB(),RGB(0.8,0.8,0.8),1.5);
     Plane left = Plane(1,Vec3(1,0,0),RGB(0.8,0,0));
     Plane right = Plane(1,Vec3(-1,0,0),RGB(0,0.8,0));
     Plane floor = Plane(1,Vec3(0,1,0));
     Plane ceiling = Plane(1,Vec3(0,-1,0));
-    Plane back = Plane(1,Vec3(0,0,-1), RGB(0,0,0.8));
+    Plane back = Plane(1,Vec3(0,0,-1), RGB(0.8,0.8,0.8));
     
     Sphere A = Sphere(Point(-0.5,-0.7,0.25),Vec3(0,0.6,0),Point(-0.2,-0.7,0.25));
     Sphere B = Sphere(Point(0.5,-0.7,-0.25),Vec3(0,0.6,0),Point(0.8,-0.7,0.25), glass);

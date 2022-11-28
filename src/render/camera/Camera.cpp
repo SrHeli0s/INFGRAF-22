@@ -144,33 +144,56 @@ Vec3 Camera::sampleDirSpec(Collision col) {
 }
 
 Vec3 Camera::sampleDirRefr(Collision col) {
-
     Vec3 w_i = normalize(col.r.v);
     Vec3 n = normalize(col.collision_normal);
-    float cosTh = 1.0;
-    if (w_i*n < 1.0) cosTh = -(w_i*n);
-    float sinTh = sqrt(1.0 - (cosTh*cosTh));
-    bool frontFace = w_i*n < 0; 
+    float refraction_ratio = w_i*n < 0 ? (1.0/col.obj->material.ri) : col.obj->material.ri;
 
-    Vec3 ax = frontFace ? n : inverse(n);
+    float cos_theta = fmin(inverse(w_i) * n, 1.0);
+    float sin_theta = sqrt(1.0 - cos_theta*cos_theta);
 
-    // Assume objects are solid and don't clip
-    double ratio = frontFace ? 1.0 / col.r.ri : col.r.ri;
+    bool cannot_refract = refraction_ratio * sin_theta > 1.0;
 
-    bool cannotRefract = ratio * sinTh > 1.0;
-    if ( cannotRefract ) {
-        return sampleDirSpec(col);
-    } else {
-        float cos = 1.0;
-        if (inverse(w_i)*ax < 1.0) cos = w_i*ax;
-
-        // Compute refracted parallel and perpendicular component to normal
-        Vec3 rPerp = (inverse(w_i) + ax * cos) * ratio;
-        Vec3 rPar = inverse(ax) * sqrt(abs(1.0 - rPerp * rPerp));
-        
-        // Sum both components together
-        return rPerp + rPar;
+    if (cannot_refract) return sampleDirSpec(col);
+    else {
+        Vec3 out_perp =  (w_i + n*cos_theta) * refraction_ratio;
+        Vec3 out_parallel = n * -sqrt(fabs(1.0 - pow(mod(out_perp),2)));
+        return normalize(out_perp + out_parallel);
     }
+
+    
+
+
+
+
+    // Vec3 w_i = normalize(col.r.v);
+    // Vec3 n = normalize(col.collision_normal);
+    // float cosTh = 1.0;
+    // if (w_i*n < 1.0) cosTh = -(w_i*n);
+    // float sinTh = sqrt(1.0 - (cosTh*cosTh));
+    // bool frontFace = w_i*n < 0; 
+
+    // Vec3 ax = frontFace ? n : inverse(n);
+
+    // // Assume objects are solid and don't clip
+    // double ratio = frontFace ? 1.0 / col.r.ri : col.r.ri;
+
+    // bool cannotRefract = ratio * sinTh > 1.0;
+    // if ( cannotRefract ) {
+    //     return sampleDirSpec(col);
+    // } else {
+    //     float cos = 1.0;
+    //     if (inverse(w_i)*ax < 1.0) cos = w_i*ax;
+
+    //     // Compute refracted parallel and perpendicular component to normal
+    //     Vec3 rPerp = (inverse(w_i) + ax * cos) * ratio;
+    //     Vec3 rPar = inverse(ax) * sqrt(abs(1.0 - rPerp * rPerp));
+        
+    //     // Sum both components together
+    //     return normalize(rPerp + rPar);
+    // }
+
+
+
 
 
 
