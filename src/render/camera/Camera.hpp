@@ -30,7 +30,7 @@ class Camera {
         };
         void worker(ConcurrentQueue<std::pair<int, int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays);
         RGB getBRDF(Collision col, Vec3 wi);
-        RGB nextLevelEstimation(Collision col, Scene scene, Event e);
+        RGB nextEventEstimation(Collision col, Scene scene, Event e);
         Ray nextRay(Collision col, Scene scene, Event e);
         RGB getColor(Ray r, Scene s);
         Vec3 sampleDirRefr(Collision col);

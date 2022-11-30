@@ -12,24 +12,24 @@ using namespace std;
 
 Triangle::Triangle() {}
 
-Triangle::Triangle(Point a, Point b, Point c, RGB emission = RGB(0.2,0.2,0.2))
+Triangle::Triangle(Point a, Point b, Point c)
 {
     this->v1 = a;
     this->v2 = b;
     this->v3 = c;
-    this->emission = emission;
+    this->material = Material();
     Point centroide = Point((a.c[0]+b.c[0]+c.c[0])/3,(a.c[1]+b.c[1]+c.c[1])/3,(a.c[2]+b.c[2]+c.c[2])/3);
     this->normal = normalize(cross(a-b,a-c));
     this->c = this->normal*(Point(0,0,0)-a);
-    this->material = Material(1.0,0,0,0,RGB(1,1,1),RGB(1,1,1),RGB(1,1,1),1);
+    this->material = Material();
 }
 
-Triangle::Triangle(Point a, Point b, Point c, RGB emission, Material material)
+Triangle::Triangle(Point a, Point b, Point c, Material material)
 {
     this->v1 = a;
     this->v2 = b;
     this->v3 = c;
-    this->emission = emission;
+    this->material = material;
     Point centroide = Point((a.c[0]+b.c[0]+c.c[0])/3,(a.c[1]+b.c[1]+c.c[1])/3,(a.c[2]+b.c[2]+c.c[2])/3);
     this->normal = normalize(cross(a-b,a-c));
     this->c = this->normal*(Point(0,0,0)-a);
@@ -44,10 +44,8 @@ vector<Collision> Triangle::intersect(Ray r) {
     if(distance<0) return output; //The plane is behind the ray
 
     Point P = r.p + r.v*distance; // Intersection point
-    //cout << "P = " << P <<endl;
 
     // Inside-outside test (https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/ray-triangle-intersection-geometric-solution)
-    
     // edge 1
     Vec3 edge1 = v2 - v1;
     Vec3 vp1 = P - v1;
@@ -64,14 +62,22 @@ vector<Collision> Triangle::intersect(Ray r) {
     Vec3 C3 = cross(edge3,vp3);
 
     if ((this->normal*C1 > 0) && (this->normal*C2 > 0) && (this->normal*C3 > 0)) {
-        // cout << "INTERSECTA " << distance << endl;
-        if (distance>MIN_DISTANCE) output.push_back({make_shared<Triangle>(*this),r.p+(r.v*distance),this->normal,r,distance});
+        if (distance>MIN_DISTANCE) output.push_back({
+            make_shared<Triangle>(*this),
+            r.p+(r.v*distance),
+            this->normal,
+            r,
+            distance
+        });
     }
     return output;
 }
 
 std::ostream& operator << (std::ostream& os, const Triangle& obj) {
-    os << "Triangle(c=" << obj.c << ", vertices:" << obj.v1 << " " << obj.v2 << " " << obj.v3 << ", normal=" << obj.normal << ", emission=" << obj.emission << ")";
+    os << "Triangle(c=" << obj.c 
+       << ", vertex=" << obj.v1 << ":" << obj.v2 << ":" << obj.v3 
+       << ", normal=" << obj.normal 
+       << ", material=" << obj.material << ")";
 
     return os;
 }

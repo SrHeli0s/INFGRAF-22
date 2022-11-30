@@ -19,3 +19,5 @@ public:
     Material(float kd, float ks, float kt, float ke, RGB diffuse, RGB specular, RGB refraction, float ri);
 };
 
+std::ostream& operator << (std::ostream& os, const Material& obj);
+

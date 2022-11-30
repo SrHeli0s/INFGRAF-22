@@ -16,12 +16,11 @@ Sphere::Sphere() {}
 
 Sphere::Sphere(Point center, Vec3 axis, Point reference)
 {
-    this->emission = RGB(0.2,0.2,0.2);
     this->center = center;
     this->axis = axis;
     this->reference = reference;
     this->radius = mod(axis)/2;
-    this->material = Material(1.0,0,0,0,RGB(0.2,0.2,0.2),RGB(),RGB(),1);
+    this->material = Material();
 
     if (this->radius - mod(center-reference) > MAX_ERROR) {
         cerr << "The definition of the sphere with center " << center 
@@ -32,39 +31,6 @@ Sphere::Sphere(Point center, Vec3 axis, Point reference)
 
 Sphere::Sphere(Point center, Vec3 axis, Point reference, Material material)
 {
-    this->emission = RGB(0.2,0.2,0.2);
-    this->center = center;
-    this->axis = axis;
-    this->reference = reference;
-    this->radius = mod(axis)/2;
-    this->material = material;
-
-    if (this->radius - mod(center-reference) > MAX_ERROR) {
-        cerr << "The definition of the sphere with center " << center 
-        << " axis " << axis << " and reference " << reference 
-        << " is inconsistent with the radius of it\n" << endl;
-    }
-}
-
-Sphere::Sphere(Point center, Vec3 axis, Point reference, RGB emission)
-{
-    this->emission = emission;
-    this->center = center;
-    this->axis = axis;
-    this->reference = reference;
-    this->radius = mod(axis)/2;
-    this->material = Material(1.0,0,0,0,emission,RGB(),RGB(),1);
-
-    if (this->radius - mod(center-reference) > MAX_ERROR) {
-        cerr << "The definition of the sphere with center " << center 
-        << " axis " << axis << " and reference " << reference 
-        << " is inconsistent with the radius of it\n" << endl;
-    }
-}
-
-Sphere::Sphere(Point center, Vec3 axis, Point reference, RGB emission, Material material)
-{
-    this->emission = emission;
     this->center = center;
     this->axis = axis;
     this->reference = reference;
@@ -86,9 +52,12 @@ Point Sphere::surfacePoint(float inclination, float azimuth)
                  cos(inclination)); // Point of sphere with center (0,0,0)
 
     Vec3 normal = this->reference - this->center;
-    Transformation t = BaseChangeTransform(normal, normalize(this->axis), cross(normal,normalize(this->axis)), this->center);
+    Transformation t = BaseChangeTransform(normal, 
+        normalize(this->axis), 
+        cross(normal,normalize(this->axis)), this->center
+    );
     
-    return target.applyTransformation(t);;
+    return target.applyTransformation(t);
 }
 
 vector<Collision> Sphere::intersect(Ray r) {
@@ -97,12 +66,20 @@ vector<Collision> Sphere::intersect(Ray r) {
     float c = pow(mod(r.p - this->center), 2) - pow(this->radius, 2);
     vector<float> distances = solveSecondDegreeEquation(a,b,c);
     vector<Collision> output;
-    for (float d : distances) if (d>MIN_DISTANCE) output.push_back({make_shared<Sphere>(*this),r.p+(r.v*d),(r.p+(r.v*d))-this->center,r,d});
+    for (float d : distances) if (d>MIN_DISTANCE) output.push_back({
+        make_shared<Sphere>(*this),
+        r.p+(r.v*d),
+        (r.p+(r.v*d))-this->center,
+        r,
+        d
+    });
     return output;
 }
 
 std::ostream& operator << (std::ostream& os, const Sphere& obj) {
-    os << "Sphere(center=" << obj.center << ", axis=" << obj.axis << ", emission=" << obj.emission << ")";    
+    os << "Sphere(center=" << obj.center 
+       << ", axis=" << obj.axis 
+       << ", material=" << obj.material << ")";    
 
     return os;
 }

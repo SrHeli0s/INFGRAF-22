@@ -12,7 +12,7 @@ class STL : public Primitive {
         std::vector<Triangle> tris;
         
     STL();
-    STL(const char* path, Point center, float scale, RGB emission);
+    STL(const char* path, Point center, float scale, Material material);
 
     std::vector<Collision> intersect(Ray r) override;
 

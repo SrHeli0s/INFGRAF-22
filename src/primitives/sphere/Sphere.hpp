@@ -19,8 +19,6 @@ class Sphere : public Primitive{
     Sphere();
     Sphere(Point center, Vec3 axis, Point reference);
     Sphere(Point center, Vec3 axis, Point reference, Material material);
-    Sphere(Point center, Vec3 axis, Point reference, RGB emission);
-    Sphere(Point center, Vec3 axis, Point reference, RGB emission, Material material);
 
     Point surfacePoint(float inclination, float azimuth);
 

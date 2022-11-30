@@ -7,9 +7,13 @@ using namespace std;
 
 Material::Material()
 {
-    this->kd = 1.0;
+    this->kd = 1;
+    this->dif = RGB(0.2,0.2,0.2);
     this->ks = 0;
+    this->refr = RGB();
     this->kt = 0;
+    this->spec = RGB();
+    this->ri = 1;
     this->ke = 0;
 }
 Material::Material(RGB diffuse, RGB specular, RGB refraction, float ri=1) 
@@ -42,4 +46,13 @@ Material::Material(float kd, float ks, float kt, float ke, RGB diffuse, RGB spec
     if(this->ke != 0 && this->ks != 0 && this->kt != 0) {
         std::cerr << "Emissive objects do not reflect/refract" << std::endl;
     }
+}
+
+ostream& operator << (ostream& os, const Material& obj) {
+    os << "Material(diff=" << obj.kd << ":" << obj.dif
+       << ", spec=" << obj.ks << ":" << obj.spec
+       << ", refr=" << obj.kt << ":" << obj.refr << ":" << obj.ri
+       << ", ke=" << obj.ke << ")";
+    
+    return os;
 }

@@ -24,14 +24,16 @@ int main() {
 
 
     // //========================= SCENE 1 =========================
-    // // MATERIALS
+    // MATERIALS
     Material metal = Material(RGB(),RGB(1,1,1),RGB(),1);
     Material glass = Material(RGB(),RGB(),RGB(0.8,0.8,0.8),1.5);
-    Plane left = Plane(1,Vec3(1,0,0),RGB(0.8,0,0));
-    Plane right = Plane(1,Vec3(-1,0,0),RGB(0,0.8,0));
+    Material red = Material(RGB(0.5,0,0),RGB(),RGB(),1);
+    Material green = Material(RGB(0,0.5,0),RGB(),RGB(),1);
+    Plane left = Plane(1,Vec3(1,0,0),red);
+    Plane right = Plane(1,Vec3(-1,0,0),green);
     Plane floor = Plane(1,Vec3(0,1,0));
     Plane ceiling = Plane(1,Vec3(0,-1,0));
-    Plane back = Plane(1,Vec3(0,0,-1), RGB(0.8,0.8,0.8));
+    Plane back = Plane(1,Vec3(0,0,-1));
     
     Sphere A = Sphere(Point(-0.5,-0.7,0.25),Vec3(0,0.6,0),Point(-0.2,-0.7,0.25));
     Sphere B = Sphere(Point(0.5,-0.7,-0.25),Vec3(0,0.6,0),Point(0.8,-0.7,0.25), glass);
@@ -53,11 +55,6 @@ int main() {
     sc.addL(pl);
 
 
-    //prueba sampleDirSpec
-    // Vec3 vi = Vec3(1,-1,0);
-    // Ray r = Ray(Point(0,1,0),vi);
-    // Collision c = {nullptr, Point(1,0,0), Vec3(0,1,0), r, mod(Point(1,0,0)-Point(0,1,0))};
-    // cout << camera.sampleDirSpec(c);
     
     
     
@@ -136,7 +133,7 @@ int main() {
     
     cout << "Renderizando..." << endl;
     auto start = chrono::high_resolution_clock::now();
-    Image output = camera.render(sc,10);
+    Image output = camera.render(sc,100);
     auto stop = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);

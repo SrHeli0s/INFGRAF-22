@@ -80,20 +80,9 @@ RGB Camera::getBRDF(Collision col, Vec3 wi) {
     RGB refr = m.kt > 0 ? m.refr * (delta(wi, sampleDirRefr(col))) / m.kt : RGB();
 
     return dif+spec+refr;
-
-    //ANTIGUO:
-        // //NOTE: W0 esta dentro de col
-        // RGB emission = col.obj->getEmission(col.collision_point);
-        // Vec3 n = normalize(col.collision_normal);
-
-        // float kd = col.obj->material.kd;
-        // float ks = col.obj->material.ks;
-        // float kt = col.obj->material.kt;
-        
-        // return (emission*kd / M_PI) + (emission*(ks*(wi*2*(wi*n)*n)) / (n*wi));
 }
 
-RGB Camera::nextLevelEstimation(Collision col, Scene scene, Event e) 
+RGB Camera::nextEventEstimation(Collision col, Scene scene, Event e) 
 {
     Material m = col.obj->material;
     RGB output;
@@ -115,7 +104,6 @@ RGB Camera::nextLevelEstimation(Collision col, Scene scene, Event e)
                 RGB spec = m.ks > 0 ? m.spec * (delta(omI, sampleDirSpec(col))) / m.ks : RGB();
                 RGB refr = m.kt > 0 ? m.refr * (delta(omI, sampleDirRefr(col))) / m.kt : RGB();
 
-                // RGB matC = (dif+spec+refr)*col.obj->emission;
                 RGB matC = getBRDF(col, normalize(shadow.v));
                 float geoC = col.collision_normal * W_i;
                 if (geoC<0) geoC = 0; //If is negative is pointing the other way -> It should be black
@@ -147,11 +135,11 @@ Vec3 Camera::sampleDirRefr(Collision col) {
     Vec3 w_i = normalize(col.r.v);
     Vec3 n;
     float refraction_ratio;
-    if (w_i * normalize(col.collision_normal) < 0) {
+    if (w_i * normalize(col.collision_normal) < 0) { //We are outside of the object
         refraction_ratio = 1.0/col.obj->material.ri;
         n = normalize(col.collision_normal);
     }
-    else {
+    else { //We are inside of the object
         refraction_ratio = col.obj->material.ri;
         n = normalize(col.collision_normal)*(-1.0);
     }
@@ -159,63 +147,13 @@ Vec3 Camera::sampleDirRefr(Collision col) {
     float cos_theta = inverse(w_i) * n;
     float sin_theta = sqrt(1.0 - cos_theta*cos_theta);
     if (refraction_ratio * sin_theta > 1.0) {
-        // cout << "A" << endl;
         return sampleDirSpec(col);
     }
     else {
-        // cout << "B" << endl;
         Vec3 out_perp =  (w_i + n*cos_theta) * refraction_ratio;
         Vec3 out_parallel = n * -sqrt(1.0 - pow(mod(out_perp),2));
         return out_perp + out_parallel;
     }
-
-    
-
-
-
-
-    // Vec3 w_i = normalize(col.r.v);
-    // Vec3 n = normalize(col.collision_normal);
-    // float cosTh = 1.0;
-    // if (w_i*n < 1.0) cosTh = -(w_i*n);
-    // float sinTh = sqrt(1.0 - (cosTh*cosTh));
-    // bool frontFace = w_i*n < 0; 
-
-    // Vec3 ax = frontFace ? n : inverse(n);
-
-    // // Assume objects are solid and don't clip
-    // double ratio = frontFace ? 1.0 / col.r.ri : col.r.ri;
-
-    // bool cannotRefract = ratio * sinTh > 1.0;
-    // if ( cannotRefract ) {
-    //     return sampleDirSpec(col);
-    // } else {
-    //     float cos = 1.0;
-    //     if (inverse(w_i)*ax < 1.0) cos = w_i*ax;
-
-    //     // Compute refracted parallel and perpendicular component to normal
-    //     Vec3 rPerp = (inverse(w_i) + ax * cos) * ratio;
-    //     Vec3 rPar = inverse(ax) * sqrt(abs(1.0 - rPerp * rPerp));
-        
-    //     // Sum both components together
-    //     return normalize(rPerp + rPar);
-    // }
-
-
-
-
-
-
-    // Vec3 w_i = normalize(col.r.v);
-    // Vec3 n = inverse(normalize(col.collision_normal));
-    // float angle_i = acos((w_i*n)/(mod(w_i)*mod(n)));
-
-    // float angle_o = asin((col.r.ri/col.obj->material.ri)*sin(angle_i));
-    
-    // float cosi = n * w_i; 
-    // float k = 1 - col.r.ri * col.r.ri * (1 - cosi * cosi); 
-    
-    // return normalize(w_i * col.r.ri + n * (col.r.ri *  cosi - sqrt(k)));  
 }
 
 Ray Camera::nextRay(Collision col, Scene scene, Event e) {
@@ -241,10 +179,10 @@ Ray Camera::nextRay(Collision col, Scene scene, Event e) {
 
         output = Ray(col.collision_point,normalize(dir));
     }
-    else if (e == SPECULAR) {//Generate next ray of specular        
+    else if (e == SPECULAR) { //Generate next ray of specular        
         output = Ray(col.collision_point,sampleDirSpec(col));
     }
-    else if (e == REFRACTION) {
+    else if (e == REFRACTION) { //Generate next ray of refraction
         output = Ray(col.collision_point, sampleDirRefr(col));
     }
     else { //ABSORTION
@@ -261,7 +199,7 @@ RGB Camera::getColor(Ray r, Scene s) {
     if (c.obj != nullptr) {
         Event e = russianRoulette(rand()/(float)(RAND_MAX),c.obj->material);
         //Ld
-        output = output + nextLevelEstimation(c,s,e);
+        output = output + nextEventEstimation(c,s,e);
         //Li
         if (e != ABSORPTION) {
             Ray nextR = nextRay(c,s,e);

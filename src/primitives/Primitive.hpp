@@ -6,9 +6,8 @@
 
 class Primitive {
     public:
-        RGB emission;
         Material material;
 
     virtual std::vector<Collision> intersect(Ray r) = 0;
-    virtual RGB getEmission(Point p) { return emission; }
+    virtual RGB getEmission(Point p) { return material.dif; }
 };

@@ -12,7 +12,7 @@ Sprite::Sprite(Point center, Vec3 normal, Vec3 up, const char* path, float scale
     this->c = x / mod(normal);
     this->center = center;
     this->normal = normal;
-    this->emission = RGB(200,200,200);
+    this->material = Material();
     PPM reader = PPM();
     this->img = reader.read(path);
     this->a = normalize(up);
@@ -26,7 +26,7 @@ Sprite::Sprite(Point center, Vec3 normal, Vec3 up, const char* path, float scale
     this->c = x / mod(normal);
     this->center = center;
     this->normal = normal;
-    this->emission = RGB(200,200,200);
+    this->material = Material();
     PPM reader = PPM();
     this->img = reader.read(path);
     this->a = normalize(up);
@@ -51,7 +51,7 @@ RGB Sprite::getEmission(Point p) {
     int x = a * (p-center) * scale;
     int y = b * (p-center) * scale;
     if (insideSprite(p)) return img.p[x][img.h-y];
-    else return emission;
+    else return material.dif;
 };
 
 vector<Collision> Sprite::intersect(Ray r) {
@@ -64,7 +64,13 @@ vector<Collision> Sprite::intersect(Ray r) {
     Point contact = r.p+(r.v*distance);
     //TODO: Is this transparency check correct?
     if (distance>MIN_DISTANCE && insideSprite(contact) && (getEmission(contact)*(img.max_value/img.color_res))!=transparent)
-        output.push_back({make_shared<Sprite>(*this),contact,this->normal,r,distance});
+        output.push_back({
+            make_shared<Sprite>(*this),
+            contact,
+            this->normal,
+            r,
+            distance
+        });
     
     return output;
 }

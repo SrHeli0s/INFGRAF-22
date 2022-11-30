@@ -8,7 +8,7 @@
 
 using namespace std;
 
-STL::STL(const char* path, Point center, float scale, RGB emission)
+STL::STL(const char* path, Point center, float scale, Material material)
 {
     stl_reader::ReadStlFile(path, coordsSTL, normalsSTL, trisSTL, solidRangesSTL);
 
@@ -20,12 +20,8 @@ STL::STL(const char* path, Point center, float scale, RGB emission)
             float* c = &coordsSTL[3 * trisSTL[3 * itri + icorner]];
             p[icorner] = Point(c[0]*scale,c[1]*scale,c[2]*scale)+translation;
         }
-        tris.push_back(Triangle(p[0],p[1],p[2],emission));
+        tris.push_back(Triangle(p[0],p[1],p[2],material));
     }
-    // for (Triangle t:tris) {
-    //     cout << t << endl;
-    // }
-    // cout << tris.size() << endl;
 }
 
 vector<Collision> STL::intersect(Ray r) {
