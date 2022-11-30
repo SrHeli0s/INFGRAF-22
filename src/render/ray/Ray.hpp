@@ -17,11 +17,9 @@ class Ray {
     public :
         Point p;
         Vec3 v;
-        float ri;
 
     Ray();
     Ray(Point p, Vec3 v);
-    Ray(Point p, Vec3 v, float ri);
 };
 
 struct Collision {

@@ -18,6 +18,7 @@ class Vec3 {
     const float operator* (const Vec3 &v) const;
     const Vec3 operator*(float t) const;
     const Vec3 operator/(float t) const;
+    const bool operator==(Vec3 v) const;
 
     Vec3 applyTransformation(Transformation t);
 };

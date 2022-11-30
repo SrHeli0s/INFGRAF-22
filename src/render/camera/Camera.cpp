@@ -145,19 +145,28 @@ Vec3 Camera::sampleDirSpec(Collision col) {
 
 Vec3 Camera::sampleDirRefr(Collision col) {
     Vec3 w_i = normalize(col.r.v);
-    Vec3 n = normalize(col.collision_normal);
-    float refraction_ratio = w_i*n < 0 ? (1.0/col.obj->material.ri) : col.obj->material.ri;
-
-    float cos_theta = fmin(inverse(w_i) * n, 1.0);
-    float sin_theta = sqrt(1.0 - cos_theta*cos_theta);
-
-    bool cannot_refract = refraction_ratio * sin_theta > 1.0;
-
-    if (cannot_refract) return sampleDirSpec(col);
+    Vec3 n;
+    float refraction_ratio;
+    if (w_i * normalize(col.collision_normal) < 0) {
+        refraction_ratio = 1.0/col.obj->material.ri;
+        n = normalize(col.collision_normal);
+    }
     else {
+        refraction_ratio = col.obj->material.ri;
+        n = normalize(col.collision_normal)*(-1.0);
+    }
+
+    float cos_theta = inverse(w_i) * n;
+    float sin_theta = sqrt(1.0 - cos_theta*cos_theta);
+    if (refraction_ratio * sin_theta > 1.0) {
+        // cout << "A" << endl;
+        return sampleDirSpec(col);
+    }
+    else {
+        // cout << "B" << endl;
         Vec3 out_perp =  (w_i + n*cos_theta) * refraction_ratio;
-        Vec3 out_parallel = n * -sqrt(fabs(1.0 - pow(mod(out_perp),2)));
-        return normalize(out_perp + out_parallel);
+        Vec3 out_parallel = n * -sqrt(1.0 - pow(mod(out_perp),2));
+        return out_perp + out_parallel;
     }
 
     
@@ -233,7 +242,13 @@ Ray Camera::nextRay(Collision col, Scene scene, Event e) {
         output = Ray(col.collision_point,normalize(dir));
     }
     else if (e == SPECULAR) {//Generate next ray of specular        
-        output = Ray(col.collision_point,sampleDirSpec(col), col.obj->material.ri);
+        output = Ray(col.collision_point,sampleDirSpec(col));
+    }
+    else if (e == REFRACTION) {
+        output = Ray(col.collision_point, sampleDirRefr(col));
+    }
+    else { //ABSORTION
+        output = Ray(Point(0,0,0),Vec3(0,0,0));
     }
     
     return output;
@@ -248,8 +263,15 @@ RGB Camera::getColor(Ray r, Scene s) {
         //Ld
         output = output + nextLevelEstimation(c,s,e);
         //Li
-        Ray nextR = nextRay(c,s,e);
-        output = output + getBRDF(c, nextR.v) * getColor(nextR,s)* M_PI;
+        if (e != ABSORPTION) {
+            Ray nextR = nextRay(c,s,e);
+            if(e==DIFFUSE) {
+                output = output + getBRDF(c, nextR.v) * getColor(nextR,s) * M_PI;
+            }
+            else {
+                output = output + getBRDF(c, nextR.v) * getColor(nextR,s);
+            }
+        }
     }
     return output;
 } 

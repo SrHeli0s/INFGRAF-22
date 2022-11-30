@@ -20,6 +20,7 @@ Material::Material(RGB diffuse, RGB specular, RGB refraction, float ri=1)
     this->kd = max(diffuse.r,max(diffuse.g,diffuse.b));
     this->ks = max(specular.r,max(specular.g,specular.b));
     this->kt = max(refraction.r,max(refraction.g,refraction.b));
+    this->ri = ri;
     this->ke = 0;
 }
 
@@ -32,6 +33,7 @@ Material::Material(float kd, float ks, float kt, float ke, RGB diffuse, RGB spec
     this->dif = diffuse;
     this->spec = specular;
     this->refr = refraction;
+    this->ri = ri;
 
     if ((this->kd + this->ks + this->kt) > 1) {
         std::cerr << "The sum of difusse, specular and refraction coeficients must be less than or equal 1" << std::endl;
