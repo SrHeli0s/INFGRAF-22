@@ -131,18 +131,17 @@ int main() {
 
 
     
-    cout << "Renderizando..." << endl;
     auto start = chrono::high_resolution_clock::now();
-    Image output = camera.render(sc,100);
+    Image output = camera.render(sc,100,10000);
     auto stop = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    cout << "Tiempo de render: " << duration.count() << " ms" <<endl;
+    cout << "Time: " << duration.count() << " ms" <<endl;
     
-    cout << "Ajustando..." << endl;
+    cout << "Adjusting..." << endl;
     Image outputAdjusted = gammaCurve(output,2.2);
     
-    cout << "Escribiendo..." << endl;
+    cout << "Writing..." << endl;
     p.write("scene.ppm",outputAdjusted);
 
     return 0;

@@ -13,6 +13,7 @@ class Point {
     
     const Vec3 operator- (const Point &p) const;
     const Point operator+ (const Vec3 &v) const;
+    const float& operator[](size_t t) const;
 
     Point applyTransformation(Transformation t);
 };

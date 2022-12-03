@@ -37,3 +37,8 @@ ostream& operator << (std::ostream& os, const Point& obj)
     os << "Point(" << obj.c[0] << ", " << obj.c[1] << ", " << obj.c[2] << ")";
     return os;
 }
+
+const float& Point::operator[](size_t t) const 
+{
+    return c[t];
+}

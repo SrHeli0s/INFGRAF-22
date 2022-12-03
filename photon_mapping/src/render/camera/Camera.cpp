@@ -11,6 +11,8 @@
 #include "../ray/Ray.hpp"
 #include "../scene/Scene.hpp"
 #include "../../tone_mapping/rgb/Rgb.hpp"
+#include "../../photon/Photon.hpp"
+#include "../../utils/kdtree.h"
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -19,6 +21,7 @@
 #include <functional> // std::ref
 #include <algorithm>
 
+using PhotonMap = nn::KDTree<Photon,3,PhotonAxisPosition>;
 
 using namespace std;
 
@@ -82,7 +85,7 @@ RGB Camera::getBRDF(Collision col, Vec3 wi) {
     return dif+spec+refr;
 }
 
-RGB Camera::nextEventEstimation(Collision col, Scene scene, Event e) 
+RGB Camera::nextEventEstimation(Collision col, Scene scene, PhotonMap pm, Event e) 
 {
     Material m = col.obj->material;
     RGB output;
@@ -104,7 +107,8 @@ RGB Camera::nextEventEstimation(Collision col, Scene scene, Event e)
                 RGB spec = m.ks > 0 ? m.spec * (delta(omI, sampleDirSpec(col))) / m.ks : RGB();
                 RGB refr = m.kt > 0 ? m.refr * (delta(omI, sampleDirRefr(col))) / m.kt : RGB();
 
-                RGB matC = getBRDF(col, normalize(shadow.v));
+                size_t nPhotons = search_nearest(pm, col.collision_point, 0.1, (unsigned long) 9999999).size();
+                RGB matC = getBRDF(col, normalize(shadow.v)) * nPhotons;
                 float geoC = col.collision_normal * W_i;
                 if (geoC<0) geoC = 0; //If is negative is pointing the other way -> It should be black
                 RGB lightC = l.power/(float)(pow(distance_to_light,2));
@@ -193,21 +197,21 @@ Ray Camera::nextRay(Collision col, Scene scene, Event e) {
 
 }
 
-RGB Camera::getColor(Ray r, Scene s) {
+RGB Camera::getColor(Ray r, Scene s, PhotonMap pm) {
     Collision c = closest_col(r,s);
     RGB output = RGB(0,0,0);
     if (c.obj != nullptr) {
         Event e = russianRoulette(rand()/(float)(RAND_MAX),c.obj->material);
         //Ld
-        output = output + nextEventEstimation(c,s,e);
+        output = output + nextEventEstimation(c,s,pm,e);
         //Li
         if (e != ABSORPTION) {
             Ray nextR = nextRay(c,s,e);
             if(e==DIFFUSE) {
-                output = output + getBRDF(c, nextR.v) * getColor(nextR,s) * M_PI;
+                output = output + getBRDF(c, nextR.v) * getColor(nextR,s,pm) * M_PI;
             }
             else {
-                output = output + getBRDF(c, nextR.v) * getColor(nextR,s);
+                output = output + getBRDF(c, nextR.v) * getColor(nextR,s,pm);
             }
         }
     }
@@ -215,7 +219,7 @@ RGB Camera::getColor(Ray r, Scene s) {
 } 
 
 
-RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsigned int nRays)
+RGB Camera::renderPixel(Scene scene, PhotonMap pm, unsigned int column, unsigned int row, unsigned int nRays)
 {
     Vec3 pixel = this->f + this->l + this->u; // upper-left pixel
     
@@ -223,7 +227,7 @@ RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsi
     for (int y = 0; y<nRays; y++) {
         Ray ray = Ray(this->o, pixel + pixel_right*(column+(rand()/(float) (RAND_MAX))) + pixel_down*(row+(rand()/(float) (RAND_MAX))));
         // Ray ray = Ray(this->o, normalize(this->f));
-        average_rgb = average_rgb + getColor(ray,scene);
+        average_rgb = average_rgb + getColor(ray,scene, pm);
     }
     //Calculate average
     average_rgb = average_rgb / nRays;
@@ -231,13 +235,13 @@ RGB Camera::renderPixel(Scene scene, unsigned int column, unsigned int row, unsi
     return average_rgb;
 }
 
-void Camera::worker(ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays)
+void Camera::worker(ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays, PhotonMap &pm)
 {
     pair<int, int> n;
     n = jobs.pop();
     while (n.first >= 0 && n.second >= 0) //A value less than 0 marks the end of the list
     {
-        Pixel calculated = {n.first,n.second,renderPixel(scene,n.first,n.second,nRays)};
+        Pixel calculated = {n.first,n.second,renderPixel(scene,pm,n.first,n.second,nRays)};
         result.push(calculated);
         n = jobs.pop();
     }
@@ -245,12 +249,60 @@ void Camera::worker(ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel>
 }
 
 
-Image Camera::render(Scene scene, unsigned int nRays = 1)
+Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
 {
     Image output;
     output.w = this->w;
     output.h = this->h;
     output.color_res = 255;
+    
+    cout << "Calculating photons... "; 
+
+    float sum_lights = 0;
+    for (auto l: scene.lights) {
+        sum_lights = sum_lights +l.power.maxChannel();
+    }
+
+    vector<Photon> photons;
+    
+    for (auto l: scene.lights) {
+        unsigned int limit = nPhoton*(l.power.maxChannel()/sum_lights);
+        RGB color = l.power;
+        for (unsigned int i = 0; i<limit; i++) {
+            Point origin = l.center;
+            bool bounce = true;
+            unsigned int x = 0;
+            while (bounce && x<PHOTONBOUNCES) {
+                float randInclination = acos(2*(rand()/(float) (RAND_MAX)) - 1);
+                float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
+
+                Vec3 dir = Vec3(sin(randInclination) * cos(randAzimuth),
+                                sin(randInclination) * sin(randAzimuth),
+                                cos(randInclination));
+
+                Ray r = Ray(origin, dir);
+
+                Collision c = closest_col(r,scene);
+
+                if (c.obj == nullptr) {
+                    bounce = false;
+                }
+                else {
+                    photons.push_back(Photon(c.collision_point,l.power*4*M_PI/limit));
+                    origin = c.collision_point;
+                    color = color * c.obj->getEmission(c.collision_point);
+                    x++;
+                }
+            }
+        }
+    }
+
+    PhotonMap map = PhotonMap(photons, PhotonAxisPosition());
+
+    cout << photons.size() << " Photons" << endl;
+    cout << "Rendering..." << endl; 
+
+
     ConcurrentQueue<pair<int,int>> jobs;
     ConcurrentQueue<Pixel> result;
 
@@ -276,7 +328,7 @@ Image Camera::render(Scene scene, unsigned int nRays = 1)
     vector<thread> threads;
     for (int i = 0; i<NTHREADS; i++) {
         // threads.push_back(std::thread(&Camera::worker,std::ref(jobs),std::ref(result),std::ref(scene),nRays));
-        threads.push_back(std::thread([&](ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays){ worker(jobs,result,scene,nRays); }, std::ref(jobs),std::ref(result),std::ref(scene),nRays));
+        threads.push_back(std::thread([&](ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays, PhotonMap &pm){ worker(jobs,result,scene,nRays,pm); }, std::ref(jobs),std::ref(result),std::ref(scene), nRays, ref(map)));
     }
 
     //Wait for end
@@ -298,7 +350,9 @@ Image Camera::render(Scene scene, unsigned int nRays = 1)
 
     }
 
-    // output.p[i].push_back(average_rgb);
-
     return output;
+}
+
+vector<const Photon*> Camera::search_nearest(PhotonMap map, Point p, float r, unsigned long maxPhotons){
+    return map.nearest_neighbors(p, maxPhotons, r);
 }

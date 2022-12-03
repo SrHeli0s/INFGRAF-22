@@ -17,6 +17,10 @@ RGB::RGB(float red, float green, float blue)
     this->b = blue;
 }
 
+float RGB::maxChannel() {
+    return max(max(this->r, this->g),this->b);
+}
+
 ostream& operator << (ostream& os, const RGB& obj)
 {
     os << "RGB(" << obj.r << ", " << obj.g << ", " << obj.b << ")";

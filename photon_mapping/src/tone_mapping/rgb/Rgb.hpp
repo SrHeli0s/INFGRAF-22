@@ -9,6 +9,8 @@ class RGB {
     RGB();
     RGB(float r,float g,float b);
 
+    float maxChannel();
+
     const RGB operator+ (float f) const;
     const RGB operator+ (RGB f) const;
     const RGB operator- (float f) const;

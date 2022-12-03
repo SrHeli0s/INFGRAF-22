@@ -56,6 +56,11 @@ const bool Vec3::operator==(Vec3 v) const
     return this->c[0]==v.c[0] && this->c[1]==v.c[1] && this->c[2]==v.c[2];
 }
 
+const float& Vec3::operator[](size_t t) const 
+{
+    return c[t];
+}
+
 ostream& operator << (std::ostream& os, const Vec3& obj)
 {
     os << "Vec3(" << obj.c[0] << ", " << obj.c[1] << ", " << obj.c[2] << ")";

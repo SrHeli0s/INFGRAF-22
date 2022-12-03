@@ -11,7 +11,7 @@ RM = /bin/rm -f  # para limpiar
 CC = g++         # compilador
 #---------------------------------------------------------
 # opciones compilación y enlazado ("linkado")
-CPPFLAGS = -I. -I${SRC} -I -O2 -std=c++11 -g -fmax-errors=1 # opciones compilación
+CPPFLAGS = -I. -I${SRC} -I -O2 -std=c++17 -g -fmax-errors=1 # opciones compilación
 #---------------------------------------------------------
 SRC = ./src
 PROGRAM = a.out
@@ -39,13 +39,14 @@ CAMERA = ${SRC}/render/camera/Camera
 RAY = ${SRC}/render/ray/Ray
 SCENE = ${SRC}/render/scene/Scene
 POINTLIGHT = ${SRC}/render/light/point_light/PointLight
+PHOTON = ${SRC}/photon/Photon
 
 
 all: ${MAIN} 
 #---------------------------------------------------------
 # "linkar"
-${MAIN}:  ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${STL}.o ${SPRITE}.o ${MATERIAL}.o ${MAIN}.cpp
-	${CC} -g ${MAIN}.cpp ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${STL}.o ${SPRITE}.o ${MATERIAL}.o -o ${PROGRAM} ${CPPFLAGS} -pthread
+${MAIN}:  ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${STL}.o ${SPRITE}.o ${MATERIAL}.o ${PHOTON}.o ${MAIN}.cpp
+	${CC} -g ${MAIN}.cpp ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${STL}.o ${SPRITE}.o ${MATERIAL}.o ${PHOTON}.o -o ${PROGRAM} ${CPPFLAGS} -pthread
 #---------------------------------------------------------
 # compilar
 ${POINT}.o: ${POINT}.hpp ${POINT}.cpp
@@ -99,9 +100,11 @@ ${POINTLIGHT}.o: ${POINTLIGHT}.hpp ${POINTLIGHT}.cpp
 
 ${MATERIAL}.o: ${MATERIAL}.hpp ${MATERIAL}.cpp
 	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${MATERIAL}.cpp -o ${MATERIAL}.o
-
+	
+${PHOTON}.o: ${PHOTON}.hpp ${PHOTON}.cpp
+	${CC} -c ${CPPFLAGS} ${FLAGSOCK} ${PHOTON}.cpp -o ${PHOTON}.o
 #---------------------------------------------------------
 # Cuidado con lo que se pone aquí, que se borra sin preguntar
 clean:
-	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${STL}.o ${SPRITE}.o ${MATERIAL}.o
+	$(RM) ${POINT}.o ${VEC3}.o ${SPHERE}.o ${PLANE}.o ${TRIANGLE}.o ${RAY}.o ${POINTLIGHT}.o ${TRANSFORMATION}.o ${RGB}.o ${PPM}.o ${IMAGE}.o ${UTILS}.o ${CAMERA}.o ${SCENE}.o ${STL}.o ${SPRITE}.o ${MATERIAL}.o ${PHOTON}.o
 	$(RM) ${PROGRAM}
