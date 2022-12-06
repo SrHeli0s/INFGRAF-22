@@ -33,7 +33,7 @@ class Camera {
             ABSORPTION = 3
         };
         void worker(ConcurrentQueue<std::pair<int, int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays, PhotonMap &pm);
-        RGB getBRDF(Collision col, Vec3 wi);
+        RGB getBRDF(Collision col, Vec3 wi, PhotonMap pm);
         RGB nextEventEstimation(Collision col, Scene scene, PhotonMap pm, Event e);
         Ray nextRay(Collision col, Scene scene, Event e);
         RGB getColor(Ray r, Scene s, PhotonMap pm);

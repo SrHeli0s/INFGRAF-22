@@ -75,14 +75,24 @@ Camera::Event Camera::russianRoulette(double t, Material m) {
 }
 
 
-RGB Camera::getBRDF(Collision col, Vec3 wi) {
-    Material m = col.obj->material;
+RGB Camera::getBRDF(Collision col, Vec3 wi, PhotonMap pm) {
+    // Material m = col.obj->material;
 
-    RGB dif = m.kd > 0 ? m.dif / M_PI / m.kd : RGB();
-    RGB spec = m.ks > 0 ? m.spec * (delta(wi, sampleDirSpec(col))) / m.ks : RGB();
-    RGB refr = m.kt > 0 ? m.refr * (delta(wi, sampleDirRefr(col))) / m.kt : RGB();
+    // RGB dif = m.kd > 0 ? m.dif / M_PI / m.kd : RGB();
+    // RGB spec = m.ks > 0 ? m.spec * (delta(wi, sampleDirSpec(col))) / m.ks : RGB();
+    // RGB refr = m.kt > 0 ? m.refr * (delta(wi, sampleDirRefr(col))) / m.kt : RGB();
 
-    return dif+spec+refr;
+    // return dif+spec+refr;
+
+    vector<const Photon*> nearPhotons = search_nearest(pm, col.collision_point, 0.1, (unsigned long) 9999999);
+    RGB output = RGB();
+    for (int i = 0; i<nearPhotons.size(); i++) {
+        output = output + nearPhotons[i]->flux;
+    }
+    if (nearPhotons.size() != 0) {
+        return output / nearPhotons.size();
+    }
+    return output;
 }
 
 RGB Camera::nextEventEstimation(Collision col, Scene scene, PhotonMap pm, Event e) 
@@ -107,8 +117,7 @@ RGB Camera::nextEventEstimation(Collision col, Scene scene, PhotonMap pm, Event 
                 RGB spec = m.ks > 0 ? m.spec * (delta(omI, sampleDirSpec(col))) / m.ks : RGB();
                 RGB refr = m.kt > 0 ? m.refr * (delta(omI, sampleDirRefr(col))) / m.kt : RGB();
 
-                size_t nPhotons = search_nearest(pm, col.collision_point, 0.1, (unsigned long) 9999999).size();
-                RGB matC = getBRDF(col, normalize(shadow.v)) * nPhotons;
+                RGB matC = getBRDF(col, normalize(shadow.v),pm);
                 float geoC = col.collision_normal * W_i;
                 if (geoC<0) geoC = 0; //If is negative is pointing the other way -> It should be black
                 RGB lightC = l.power/(float)(pow(distance_to_light,2));
@@ -208,10 +217,10 @@ RGB Camera::getColor(Ray r, Scene s, PhotonMap pm) {
         if (e != ABSORPTION) {
             Ray nextR = nextRay(c,s,e);
             if(e==DIFFUSE) {
-                output = output + getBRDF(c, nextR.v) * getColor(nextR,s,pm) * M_PI;
+                output = output + getBRDF(c, nextR.v,pm) * getColor(nextR,s,pm) * M_PI;
             }
             else {
-                output = output + getBRDF(c, nextR.v) * getColor(nextR,s,pm);
+                output = output + getBRDF(c, nextR.v,pm) * getColor(nextR,s,pm);
             }
         }
     }
@@ -267,12 +276,11 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
     
     for (auto l: scene.lights) {
         unsigned int limit = nPhoton*(l.power.maxChannel()/sum_lights);
-        RGB color = l.power;
         for (unsigned int i = 0; i<limit; i++) {
+            RGB color = l.power;
             Point origin = l.center;
-            bool bounce = true;
             unsigned int x = 0;
-            while (bounce && x<PHOTONBOUNCES) {
+            while (color != RGB(0,0,0) && x<PHOTONBOUNCES) {
                 float randInclination = acos(2*(rand()/(float) (RAND_MAX)) - 1);
                 float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
 
@@ -285,10 +293,10 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
                 Collision c = closest_col(r,scene);
 
                 if (c.obj == nullptr) {
-                    bounce = false;
+                    color = RGB(0,0,0);
                 }
                 else {
-                    photons.push_back(Photon(c.collision_point,l.power*4*M_PI/limit));
+                    photons.push_back(Photon(c.collision_point,color*4*M_PI/limit));
                     origin = c.collision_point;
                     color = color * c.obj->getEmission(c.collision_point);
                     x++;
