@@ -132,7 +132,7 @@ int main() {
 
     
     auto start = chrono::high_resolution_clock::now();
-    Image output = camera.render(sc,10,100);
+    Image output = camera.render(sc,10,500);
     auto stop = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);

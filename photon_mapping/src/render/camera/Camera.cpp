@@ -296,9 +296,9 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
                     color = RGB(0,0,0);
                 }
                 else {
+                    color = color * c.obj->getEmission(c.collision_point);
                     photons.push_back(Photon(c.collision_point,color*4*M_PI/limit));
                     origin = c.collision_point;
-                    color = color * c.obj->getEmission(c.collision_point);
                     x++;
                 }
             }
