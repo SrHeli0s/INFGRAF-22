@@ -16,7 +16,6 @@ class Ray;
 using PhotonMap = nn::KDTree<Photon,3,PhotonAxisPosition>;
 
 const unsigned int NTHREADS = 4;
-const unsigned int PHOTONBOUNCES = 10;
 
 struct Pixel 
 {

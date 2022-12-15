@@ -371,7 +371,6 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
     //Call threads
     vector<thread> threads;
     for (int i = 0; i<NTHREADS; i++) {
-        // threads.push_back(std::thread(&Camera::worker,std::ref(jobs),std::ref(result),std::ref(scene),nRays));
         threads.push_back(std::thread([&](ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays, PhotonMap &pm){ worker(jobs,result,scene,nRays,pm); }, std::ref(jobs),std::ref(result),std::ref(scene), nRays, ref(map)));
     }
 
