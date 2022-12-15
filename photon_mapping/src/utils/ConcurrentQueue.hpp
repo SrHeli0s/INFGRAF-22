@@ -42,6 +42,18 @@ class ConcurrentQueue {
         cond_.notify_one();
     }
 
+    size_t bad_size() {
+        return queue_.size();
+    }
+
+    size_t size() {
+        std::unique_lock<std::mutex> mlock(mutex_);
+        size_t queue_size = queue_.size();
+        mlock.unlock();
+        cond_.notify_one();
+        return queue_size;
+    }
+
     ConcurrentQueue()=default;
     ConcurrentQueue(const ConcurrentQueue&) = delete;            // disable copying
     ConcurrentQueue& operator=(const ConcurrentQueue&) = delete; // disable assignment

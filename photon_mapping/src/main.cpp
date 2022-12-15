@@ -27,8 +27,8 @@ int main() {
     // MATERIALS
     Material metal = Material(RGB(),RGB(0.2,0.2,0.8),RGB(),1);
     Material glass = Material(RGB(),RGB(),RGB(0.8,0.8,0.8),1.5);
-    Material red = Material(RGB(0.5,0,0),RGB(),RGB(),1);
-    Material green = Material(RGB(0,0.5,0),RGB(),RGB(),1);
+    Material red = Material(RGB(0.9,0,0),RGB(),RGB(),1);
+    Material green = Material(RGB(0,0.9,0),RGB(),RGB(),1);
     Plane left = Plane(1,Vec3(1,0,0),red);
     Plane right = Plane(1,Vec3(-1,0,0),green);
     Plane floor = Plane(1,Vec3(0,1,0));
@@ -132,7 +132,7 @@ int main() {
 
     
     auto start = chrono::high_resolution_clock::now();
-    Image output = camera.render(sc,10,500);
+    Image output = camera.render(sc,1,5000);
     auto stop = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
@@ -140,9 +140,15 @@ int main() {
     
     cout << "Adjusting..." << endl;
     Image outputAdjusted = gammaCurve(output,2.2);
+    Image outputAdjusted1 = gammaCurve(output,0.5);
+    Image outputAdjusted2 = gammaCurve(output,4.2);
+    Image outputAdjusted3 = gammaCurve(output,6.2);
     
     cout << "Writing..." << endl;
     p.write("scene.ppm",outputAdjusted);
+    p.write("scene1.ppm",outputAdjusted1);
+    p.write("scene2.ppm",outputAdjusted2);
+    p.write("scene3.ppm",outputAdjusted3);
 
     return 0;
 }

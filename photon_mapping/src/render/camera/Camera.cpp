@@ -20,6 +20,7 @@
 #include <thread> // std::thread
 #include <functional> // std::ref
 #include <algorithm>
+#include <chrono>
 
 using PhotonMap = nn::KDTree<Photon,3,PhotonAxisPosition>;
 
@@ -76,14 +77,6 @@ Camera::Event Camera::russianRoulette(double t, Material m) {
 
 
 RGB Camera::getBRDF(Collision col, Vec3 wi, PhotonMap pm) {
-    // Material m = col.obj->material;
-
-    // RGB dif = m.kd > 0 ? m.dif / M_PI / m.kd : RGB();
-    // RGB spec = m.ks > 0 ? m.spec * (delta(wi, sampleDirSpec(col))) / m.ks : RGB();
-    // RGB refr = m.kt > 0 ? m.refr * (delta(wi, sampleDirRefr(col))) / m.kt : RGB();
-
-    // return dif+spec+refr;
-
     vector<const Photon*> nearPhotons = search_nearest(pm, col.collision_point, 0.1, (unsigned long) 9999999);
     RGB output = RGB();
     for (int i = 0; i<nearPhotons.size(); i++) {
@@ -280,26 +273,68 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
             RGB color = l.power;
             Point origin = l.center;
             unsigned int x = 0;
-            while (color != RGB(0,0,0) && x<PHOTONBOUNCES) {
-                float randInclination = acos(2*(rand()/(float) (RAND_MAX)) - 1);
-                float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
+            float randInclination = acos(2*(rand()/(float) (RAND_MAX)) - 1);
+            float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
 
-                Vec3 dir = Vec3(sin(randInclination) * cos(randAzimuth),
-                                sin(randInclination) * sin(randAzimuth),
-                                cos(randInclination));
+            Vec3 dir = Vec3(sin(randInclination) * cos(randAzimuth),
+                            sin(randInclination) * sin(randAzimuth),
+                            cos(randInclination));
 
-                Ray r = Ray(origin, dir);
+            Ray r = Ray(origin, dir);
 
+            while (color != RGB(0,0,0)) {
                 Collision c = closest_col(r,scene);
 
                 if (c.obj == nullptr) {
                     color = RGB(0,0,0);
                 }
                 else {
-                    color = color * c.obj->getEmission(c.collision_point);
-                    photons.push_back(Photon(c.collision_point,color*4*M_PI/limit));
-                    origin = c.collision_point;
-                    x++;
+                    Event e = russianRoulette(rand()/(float)(RAND_MAX), c.obj->material);
+                    if(e == DIFFUSE) {
+                        color = color * c.obj->getEmission(c.collision_point);
+                        photons.push_back(Photon(c.collision_point,color*4*M_PI/limit));
+                        origin = c.collision_point;
+                        float randInclination = acos(sqrt(1-(rand()/(float) (RAND_MAX))));
+                        float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
+
+                        Vec3 om = Vec3(sin(randInclination) * cos(randAzimuth),
+                                        sin(randInclination) * sin(randAzimuth),
+                                        cos(randInclination));
+                        
+                        Vec3 n = c.collision_normal;
+                        
+                        Vec3 p = perpendicular(n);
+
+                        Transformation t1 = BaseChangeTransform(cross(n,p),n,p,c.collision_point);
+                        Transformation t2 = t1.inverse();
+
+                        Vec3 dir = om.applyTransformation(t2);
+
+                        r = Ray(c.collision_point,normalize(dir));
+                    }
+                    else if (e == SPECULAR) { //Generate next ray of specular        
+                        Material m = c.obj->material;
+
+                        RGB dif = m.kd > 0 ? m.dif / M_PI / m.kd : RGB();
+                        RGB spec = m.ks > 0 ? m.spec * (delta(r.v, sampleDirSpec(c))) / m.ks : RGB();
+                        RGB refr = m.kt > 0 ? m.refr * (delta(r.v, sampleDirRefr(c))) / m.kt : RGB();
+
+                        color = color * (dif+spec+refr);
+                        r = Ray(c.collision_point,sampleDirSpec(c));
+                    }
+                    else if (e == REFRACTION) { //Generate next ray of refraction
+                        Material m = c.obj->material;
+
+                        RGB dif = m.kd > 0 ? m.dif / M_PI / m.kd : RGB();
+                        RGB spec = m.ks > 0 ? m.spec * (delta(r.v, sampleDirSpec(c))) / m.ks : RGB();
+                        RGB refr = m.kt > 0 ? m.refr * (delta(r.v, sampleDirRefr(c))) / m.kt : RGB();
+
+                        color = color * (dif+spec+refr);
+                        r = Ray(c.collision_point, sampleDirRefr(c));
+                    }
+                    else { //ABSORB
+                        color = RGB(0,0,0);
+                    }
                 }
             }
         }
@@ -324,6 +359,7 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
         jobs.push(make_pair(-1,-1));
     }
 
+    size_t ntrabajos = jobs.size();
     //Prepare output.p
     for(int i = 0; i<this->h; i++) {
         vector<RGB> row;
@@ -338,6 +374,16 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
         // threads.push_back(std::thread(&Camera::worker,std::ref(jobs),std::ref(result),std::ref(scene),nRays));
         threads.push_back(std::thread([&](ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays, PhotonMap &pm){ worker(jobs,result,scene,nRays,pm); }, std::ref(jobs),std::ref(result),std::ref(scene), nRays, ref(map)));
     }
+
+    bool running = true;
+    while(running) {
+        cout << "\rDone " << ntrabajos-jobs.bad_size()<< " of " << ntrabajos;
+        cout.flush();
+        this_thread::sleep_for(std::chrono::milliseconds(1000));
+        if(jobs.bad_size() < NTHREADS) running = false;
+    }
+    cout << endl;
+
 
     //Wait for end
     for (auto &th : threads) {
