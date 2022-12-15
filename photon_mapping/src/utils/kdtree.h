@@ -81,7 +81,7 @@ private:
             std::size_t median = (right+left)/2;
             //We find the larger axis
             std::size_t axis = 0; real max_bound = bbmax[0]-bbmin[0];
-            for (std::size_t i = 1;i<N;++i) if ((bbmax[i]-bbmin[i])<max_bound) {
+            for (std::size_t i = 1;i<N;++i) if ((bbmax[i]-bbmin[i])>max_bound) {
                 axis = i; max_bound = bbmax[i]-bbmin[i];
             }
             //Partial ordering over that axis (median contains the median, to the left are smaller, to the right are greater)
