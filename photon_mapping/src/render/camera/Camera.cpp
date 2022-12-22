@@ -77,9 +77,14 @@ Camera::Event Camera::russianRoulette(double t, Material m) {
 
 
 RGB Camera::getBRDF(Collision col, Vec3 wi, PhotonMap pm) {
-    vector<const Photon*> nearPhotons = search_nearest(pm, col.collision_point, 0.1, (unsigned long) 9999999);
+    cout << "THREAD:" << this_thread::get_id() << " HACE SEARCH" << endl;
+    vector<const Photon*> nearPhotons = search_nearest(pm, col.collision_point, 0.1);
+    cout << "THREAD:" << this_thread::get_id() << " RECIBIDO " << nearPhotons.size() << nearPhotons[0] << endl; 
+    cout << *nearPhotons[0] << " " << *nearPhotons[1] << " " << *nearPhotons[2] << endl;
+    
     RGB output = RGB();
     for (int i = 0; i<nearPhotons.size(); i++) {
+        cout << "THREAD:" << this_thread::get_id() << " ITERACION: " << i << " de " << nearPhotons.size() << " " << *nearPhotons[i] << endl;
         output = output + nearPhotons[i]->flux;
     }
     if (nearPhotons.size() != 0) {
@@ -90,7 +95,6 @@ RGB Camera::getBRDF(Collision col, Vec3 wi, PhotonMap pm) {
 
 RGB Camera::nextEventEstimation(Collision col, Scene scene, PhotonMap pm, Event e) 
 {
-    Material m = col.obj->material;
     RGB output;
     if (e == DIFFUSE) { //Generate color of diffuse
         output = RGB(0,0,0);
@@ -237,7 +241,7 @@ RGB Camera::renderPixel(Scene scene, PhotonMap pm, unsigned int column, unsigned
     return average_rgb;
 }
 
-void Camera::worker(ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays, PhotonMap &pm)
+void Camera::worker(ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays, PhotonMap pm)
 {
     pair<int, int> n;
     n = jobs.pop();
@@ -292,6 +296,7 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
                     Event e = russianRoulette(rand()/(float)(RAND_MAX), c.obj->material);
                     if(e == DIFFUSE) {
                         color = color * c.obj->getEmission(c.collision_point);
+                        if(color == RGB(0,0,0)) break;
                         photons.push_back(Photon(c.collision_point,color*4*M_PI/limit));
                         origin = c.collision_point;
                         float randInclination = acos(sqrt(1-(rand()/(float) (RAND_MAX))));
@@ -371,17 +376,18 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
     //Call threads
     vector<thread> threads;
     for (int i = 0; i<NTHREADS; i++) {
-        threads.push_back(std::thread([&](ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays, PhotonMap &pm){ worker(jobs,result,scene,nRays,pm); }, std::ref(jobs),std::ref(result),std::ref(scene), nRays, ref(map)));
+        threads.push_back(std::thread([&](ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays, PhotonMap pm){ worker(jobs,result,scene,nRays,pm); }, std::ref(jobs),std::ref(result),std::ref(scene), nRays, map));
     }
 
-    bool running = true;
-    while(running) {
-        cout << "\rDone " << ntrabajos-jobs.bad_size()<< " of " << ntrabajos;
-        cout.flush();
-        this_thread::sleep_for(std::chrono::milliseconds(1000));
-        if(jobs.bad_size() < NTHREADS) running = false;
-    }
-    cout << endl;
+    // bool running = true;
+    // while(running) {
+    //     size_t tam = jobs.size();
+    //     cout << "\rDone " << ntrabajos-tam<< " of " << ntrabajos;
+    //     cout.flush();
+    //     this_thread::sleep_for(std::chrono::milliseconds(1000));
+    //     if(tam < NTHREADS) running = false;
+    // }
+    // cout << endl;
 
 
     //Wait for end
@@ -406,6 +412,6 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
     return output;
 }
 
-vector<const Photon*> Camera::search_nearest(PhotonMap map, Point p, float r, unsigned long maxPhotons){
-    return map.nearest_neighbors(p, maxPhotons, r);
+vector<const Photon*> Camera::search_nearest(PhotonMap map, Point p, float r){
+    return map.nearest_neighbors(p, 100, r);
 }

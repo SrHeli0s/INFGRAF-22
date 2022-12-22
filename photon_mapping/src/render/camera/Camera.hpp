@@ -31,14 +31,14 @@ class Camera {
             REFRACTION = 2,
             ABSORPTION = 3
         };
-        void worker(ConcurrentQueue<std::pair<int, int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays, PhotonMap &pm);
+        void worker(ConcurrentQueue<std::pair<int, int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays, PhotonMap pm);
         RGB getBRDF(Collision col, Vec3 wi, PhotonMap pm);
         RGB nextEventEstimation(Collision col, Scene scene, PhotonMap pm, Event e);
         Ray nextRay(Collision col, Scene scene, Event e);
         RGB getColor(Ray r, Scene s, PhotonMap pm);
         Vec3 sampleDirRefr(Collision col);
         Event russianRoulette(double t, Material m);
-        vector<const Photon*> search_nearest(PhotonMap map, Point p, float r, unsigned long maxPhotons);
+        vector<const Photon*> search_nearest(PhotonMap map, Point p, float r);
 
         Vec3 pixel_up;
         Vec3 pixel_down;

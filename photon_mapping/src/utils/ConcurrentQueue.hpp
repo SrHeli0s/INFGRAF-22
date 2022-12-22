@@ -42,10 +42,6 @@ class ConcurrentQueue {
         cond_.notify_one();
     }
 
-    size_t bad_size() {
-        return queue_.size();
-    }
-
     size_t size() {
         std::unique_lock<std::mutex> mlock(mutex_);
         size_t queue_size = queue_.size();
