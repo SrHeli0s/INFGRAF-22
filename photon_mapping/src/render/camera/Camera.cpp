@@ -21,8 +21,7 @@
 #include <functional> // std::ref
 #include <algorithm>
 #include <chrono>
-
-using PhotonMap = nn::KDTree<Photon,3,PhotonAxisPosition>;
+#include <list>
 
 using namespace std;
 
@@ -77,14 +76,10 @@ Camera::Event Camera::russianRoulette(double t, Material m) {
 
 
 RGB Camera::getBRDF(Collision col, Vec3 wi, PhotonMap pm) {
-    cout << "THREAD:" << this_thread::get_id() << " HACE SEARCH" << endl;
     vector<const Photon*> nearPhotons = search_nearest(pm, col.collision_point, 0.1);
-    cout << "THREAD:" << this_thread::get_id() << " RECIBIDO " << nearPhotons.size() << nearPhotons[0] << endl; 
-    cout << *nearPhotons[0] << " " << *nearPhotons[1] << " " << *nearPhotons[2] << endl;
     
     RGB output = RGB();
     for (int i = 0; i<nearPhotons.size(); i++) {
-        cout << "THREAD:" << this_thread::get_id() << " ITERACION: " << i << " de " << nearPhotons.size() << " " << *nearPhotons[i] << endl;
         output = output + nearPhotons[i]->flux;
     }
     if (nearPhotons.size() != 0) {
@@ -174,6 +169,7 @@ Ray Camera::nextRay(Collision col, Scene scene, Event e) {
         float randInclination = acos(sqrt(1-(rand()/(float) (RAND_MAX))));
         float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
 
+
         Vec3 om = Vec3(sin(randInclination) * cos(randAzimuth),
                         sin(randInclination) * sin(randAzimuth),
                         cos(randInclination));
@@ -183,9 +179,9 @@ Ray Camera::nextRay(Collision col, Scene scene, Event e) {
         Vec3 p = perpendicular(n);
 
         Transformation t1 = BaseChangeTransform(cross(n,p),n,p,col.collision_point);
-        Transformation t2 = t1.inverse();
+        // Transformation t2 = t1.inverse();
 
-        Vec3 dir = om.applyTransformation(t2);
+        Vec3 dir = om.applyTransformation(t1);
 
         output = Ray(col.collision_point,normalize(dir));
     }
@@ -203,7 +199,7 @@ Ray Camera::nextRay(Collision col, Scene scene, Event e) {
 
 }
 
-RGB Camera::getColor(Ray r, Scene s, PhotonMap pm) {
+RGB Camera::getColor(Ray r, Scene s, PhotonMap& pm) {
     Collision c = closest_col(r,s);
     RGB output = RGB(0,0,0);
     if (c.obj != nullptr) {
@@ -225,7 +221,7 @@ RGB Camera::getColor(Ray r, Scene s, PhotonMap pm) {
 } 
 
 
-RGB Camera::renderPixel(Scene scene, PhotonMap pm, unsigned int column, unsigned int row, unsigned int nRays)
+RGB Camera::renderPixel(Scene scene, PhotonMap &pm, unsigned int column, unsigned int row, unsigned int nRays)
 {
     Vec3 pixel = this->f + this->l + this->u; // upper-left pixel
     
@@ -241,20 +237,6 @@ RGB Camera::renderPixel(Scene scene, PhotonMap pm, unsigned int column, unsigned
     return average_rgb;
 }
 
-void Camera::worker(ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays, PhotonMap pm)
-{
-    pair<int, int> n;
-    n = jobs.pop();
-    while (n.first >= 0 && n.second >= 0) //A value less than 0 marks the end of the list
-    {
-        Pixel calculated = {n.first,n.second,renderPixel(scene,pm,n.first,n.second,nRays)};
-        result.push(calculated);
-        n = jobs.pop();
-    }
-    return;
-}
-
-
 Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
 {
     Image output;
@@ -269,14 +251,13 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
         sum_lights = sum_lights +l.power.maxChannel();
     }
 
-    vector<Photon> photons;
+    list<Photon> photons;
     
     for (auto l: scene.lights) {
         unsigned int limit = nPhoton*(l.power.maxChannel()/sum_lights);
         for (unsigned int i = 0; i<limit; i++) {
             RGB color = l.power;
             Point origin = l.center;
-            unsigned int x = 0;
             float randInclination = acos(2*(rand()/(float) (RAND_MAX)) - 1);
             float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
 
@@ -285,6 +266,7 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
                             cos(randInclination));
 
             Ray r = Ray(origin, dir);
+
 
             while (color != RGB(0,0,0)) {
                 Collision c = closest_col(r,scene);
@@ -298,24 +280,6 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
                         color = color * c.obj->getEmission(c.collision_point);
                         if(color == RGB(0,0,0)) break;
                         photons.push_back(Photon(c.collision_point,color*4*M_PI/limit));
-                        origin = c.collision_point;
-                        float randInclination = acos(sqrt(1-(rand()/(float) (RAND_MAX))));
-                        float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
-
-                        Vec3 om = Vec3(sin(randInclination) * cos(randAzimuth),
-                                        sin(randInclination) * sin(randAzimuth),
-                                        cos(randInclination));
-                        
-                        Vec3 n = c.collision_normal;
-                        
-                        Vec3 p = perpendicular(n);
-
-                        Transformation t1 = BaseChangeTransform(cross(n,p),n,p,c.collision_point);
-                        Transformation t2 = t1.inverse();
-
-                        Vec3 dir = om.applyTransformation(t2);
-
-                        r = Ray(c.collision_point,normalize(dir));
                     }
                     else if (e == SPECULAR) { //Generate next ray of specular        
                         Material m = c.obj->material;
@@ -325,7 +289,6 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
                         RGB refr = m.kt > 0 ? m.refr * (delta(r.v, sampleDirRefr(c))) / m.kt : RGB();
 
                         color = color * (dif+spec+refr);
-                        r = Ray(c.collision_point,sampleDirSpec(c));
                     }
                     else if (e == REFRACTION) { //Generate next ray of refraction
                         Material m = c.obj->material;
@@ -335,83 +298,38 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
                         RGB refr = m.kt > 0 ? m.refr * (delta(r.v, sampleDirRefr(c))) / m.kt : RGB();
 
                         color = color * (dif+spec+refr);
-                        r = Ray(c.collision_point, sampleDirRefr(c));
                     }
                     else { //ABSORB
                         color = RGB(0,0,0);
                     }
+                    r = nextRay(c,scene,e);
                 }
             }
         }
     }
 
     PhotonMap map = PhotonMap(photons, PhotonAxisPosition());
-
+    for (auto &&i : map.elements )
+    {
+        cout << i << endl;
+    }
+    
     cout << photons.size() << " Photons" << endl;
     cout << "Rendering..." << endl; 
 
-
-    ConcurrentQueue<pair<int,int>> jobs;
-    ConcurrentQueue<Pixel> result;
-
-    //Create jobs
-    for(int i = 0; i<this->h; i++) {
-        for(int j = 0; j<this->w; j++) {
-            jobs.push(make_pair(i, j));
-        }
-    }
-    for(int i = 0; i<NTHREADS; i++) {
-        jobs.push(make_pair(-1,-1));
-    }
-
-    size_t ntrabajos = jobs.size();
-    //Prepare output.p
     for(int i = 0; i<this->h; i++) {
         vector<RGB> row;
+        for(int j = 0; j<this->w; j++) {
+            RGB color = renderPixel(scene,map,i,j,nRays);
+            row.push_back(color);
+            output.max_value = color.maxChannel() > output.max_value ? color.maxChannel() : output.max_value;
+        }
         output.p.push_back(row);
-        for(int j = 0; j<this->w; j++) output.p[i].push_back(RGB(0,0,0));
-    }
-
-
-    //Call threads
-    vector<thread> threads;
-    for (int i = 0; i<NTHREADS; i++) {
-        threads.push_back(std::thread([&](ConcurrentQueue<pair<int,int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays, PhotonMap pm){ worker(jobs,result,scene,nRays,pm); }, std::ref(jobs),std::ref(result),std::ref(scene), nRays, map));
-    }
-
-    // bool running = true;
-    // while(running) {
-    //     size_t tam = jobs.size();
-    //     cout << "\rDone " << ntrabajos-tam<< " of " << ntrabajos;
-    //     cout.flush();
-    //     this_thread::sleep_for(std::chrono::milliseconds(1000));
-    //     if(tam < NTHREADS) running = false;
-    // }
-    // cout << endl;
-
-
-    //Wait for end
-    for (auto &th : threads) {
-        th.join();
-    }
-
-    queue<Pixel> qresult = result.getQueue();
-
-    while (!qresult.empty())
-    {
-        Pixel a = qresult.front();
-
-        output.p[a.j][a.i] = a.color;
-        //Set output.maxvalue to the max of average_rgb.r, average_rgb.g, average_rgb.b and output.maxvalue
-        output.max_value = (a.color.r>output.max_value) ? a.color.r : ((a.color.g>output.max_value) ? a.color.g : ((a.color.b>output.max_value) ? a.color.b : output.max_value));
-
-        qresult.pop();
-
     }
 
     return output;
 }
 
 vector<const Photon*> Camera::search_nearest(PhotonMap map, Point p, float r){
-    return map.nearest_neighbors(p, 100, r);
+    return map.nearest_neighbors(p, 100.0, r);
 }

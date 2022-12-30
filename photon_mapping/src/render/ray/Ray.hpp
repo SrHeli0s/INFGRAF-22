@@ -11,7 +11,7 @@ class Plane;
 class Sphere;
 class Primitive;
 
-const float MIN_DISTANCE = pow(10,-1);
+const float MIN_DISTANCE = pow(10,-5);
 
 class Ray {
     public :

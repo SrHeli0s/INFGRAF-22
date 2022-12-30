@@ -17,12 +17,6 @@ using PhotonMap = nn::KDTree<Photon,3,PhotonAxisPosition>;
 
 const unsigned int NTHREADS = 4;
 
-struct Pixel 
-{
-    int i, j;
-    RGB color;
-};
-
 class Camera {
     private:
         enum Event {
@@ -31,11 +25,10 @@ class Camera {
             REFRACTION = 2,
             ABSORPTION = 3
         };
-        void worker(ConcurrentQueue<std::pair<int, int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays, PhotonMap pm);
         RGB getBRDF(Collision col, Vec3 wi, PhotonMap pm);
         RGB nextEventEstimation(Collision col, Scene scene, PhotonMap pm, Event e);
         Ray nextRay(Collision col, Scene scene, Event e);
-        RGB getColor(Ray r, Scene s, PhotonMap pm);
+        RGB getColor(Ray r, Scene s, PhotonMap& pm);
         Vec3 sampleDirRefr(Collision col);
         Event russianRoulette(double t, Material m);
         vector<const Photon*> search_nearest(PhotonMap map, Point p, float r);
@@ -55,7 +48,7 @@ class Camera {
     Camera(Point o, Vec3 u, Vec3 l, Vec3 f, float w, float h);
 
     Image render(Scene scene, unsigned int nRays, unsigned int nPhoton);
-    RGB renderPixel(Scene scene, PhotonMap pm, unsigned int column, unsigned int row, unsigned int nRays = 1);
+    RGB renderPixel(Scene scene, PhotonMap &pm, unsigned int column, unsigned int row, unsigned int nRays = 1);
     
 };
 
