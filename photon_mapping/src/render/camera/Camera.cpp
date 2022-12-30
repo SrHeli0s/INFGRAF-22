@@ -166,9 +166,8 @@ Ray Camera::nextRay(Collision col, Scene scene, Event e) {
 
     Material m = col.obj->material;
     if (e == DIFFUSE) { //Generate next ray of diffuse
-        float randInclination = acos(sqrt(1-(rand()/(float) (RAND_MAX))));
+        float randInclination = acos(sqrt(1.0-(rand()/(float) (RAND_MAX))));
         float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
-
 
         Vec3 om = Vec3(sin(randInclination) * cos(randAzimuth),
                         sin(randInclination) * sin(randAzimuth),
@@ -177,13 +176,41 @@ Ray Camera::nextRay(Collision col, Scene scene, Event e) {
         Vec3 n = col.collision_normal;
         
         Vec3 p = perpendicular(n);
-
-        Transformation t1 = BaseChangeTransform(cross(n,p),n,p,col.collision_point);
+        Vec3 v2 = cross(p, n);
+        Vec3 v3 = cross(v2, n);
+        
+        Transformation t1 = BaseChangeTransform(v2,v3,n,col.collision_point);
         // Transformation t2 = t1.inverse();
 
         Vec3 dir = om.applyTransformation(t1);
 
         output = Ray(col.collision_point,normalize(dir));
+
+
+
+        //=============================================================
+        // Vector3 p = perpendicular(n);
+        // Vector3 v2 = cross(p, n);
+        // Vector3 v3 = cross(v2, n);
+        // Coordinate local2Global(v2, v3, n, x, 1);
+
+        // (   v2.x,   v3.x    n.x     x.x )
+        // (   v2.y    v3.y    n.y     x.y )
+        // (   v2.z    v3.z    n.z     x.z )
+        // (   0       0       0       1   )
+
+
+
+        // Coordinate dir(Vector3(1,0,0), Vector3(0,1,0), Vector3(0,0,1), omega, 0);
+
+        // return local2Global(dir).getPosition();
+        // local2global * dir
+
+        //=============================================================
+
+
+
+
     }
     else if (e == SPECULAR) { //Generate next ray of specular        
         output = Ray(col.collision_point,sampleDirSpec(col));
@@ -309,20 +336,21 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
     }
 
     PhotonMap map = PhotonMap(photons, PhotonAxisPosition());
-    for (auto &&i : map.elements )
-    {
-        cout << i << endl;
-    }
+    // for (auto &&i : map.elements )
+    // {
+    //     cout << i << endl;
+    // }
     
     cout << photons.size() << " Photons" << endl;
     cout << "Rendering..." << endl; 
 
-    for(int i = 0; i<this->h; i++) {
+    for(int i = this->h-1; i>=0; i--) {
         vector<RGB> row;
         for(int j = 0; j<this->w; j++) {
             RGB color = renderPixel(scene,map,i,j,nRays);
             row.push_back(color);
             output.max_value = color.maxChannel() > output.max_value ? color.maxChannel() : output.max_value;
+            cout << "\rProgress: " << (int)((1-(double)((j+i*this->w)/ (double)(this->w*this->h)))*100) << "%               ";
         }
         output.p.push_back(row);
     }
