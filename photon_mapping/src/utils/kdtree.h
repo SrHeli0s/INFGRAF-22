@@ -34,13 +34,13 @@ class KDTree {
 public:
     using real = decltype(std::declval<A>()(std::declval<T>(),std::size_t(0)));
     static constexpr std::size_t dimensions = N;
-    std::vector<T> elements;
    
 private:
     A axis_position;
     using axis_type = std::size_t; //The axis type is std::size_t but we might want to reduce its size in compile time when N<256...
     //elements and nodes are sorted equally so the element pointed by the ith node in node is the ith element in elements 
     std::vector<axis_type> nodes;
+    std::vector<T> elements;
     //Given a node / element in position $i$, its left child is in position 2i+1 and its right child 2i+2
 
     std::array<real,N>& assign(std::array<real,N>& a, const T& t) const {
