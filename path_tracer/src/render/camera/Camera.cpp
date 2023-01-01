@@ -206,6 +206,9 @@ RGB Camera::getColor(Ray r, Scene s) {
             if(e==DIFFUSE) {
                 output = output + getBRDF(c, nextR.v) * getColor(nextR,s) * M_PI;
             }
+            // else if(e == EMMIT) {
+            //     output = output + colorluz
+            // }
             else {
                 output = output + getBRDF(c, nextR.v) * getColor(nextR,s);
             }
