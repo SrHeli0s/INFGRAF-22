@@ -75,9 +75,9 @@ Camera::Event Camera::russianRoulette(double t, Material m) {
 }
 
 
-RGB Camera::getBRDF(Collision col, Vec3 wi, PhotonMap pm) {
+RGB Camera::getBRDF(Collision col, Vec3 wi, PhotonMap &pm) {
     
-    vector<const Photon*> nearPhotons = search_nearest(pm, col.collision_point, 0.1);
+    auto nearPhotons = pm.nearest_neighbors(col.collision_point);
     
     RGB output = RGB();
     for (int i = 0; i<nearPhotons.size(); i++) {
@@ -357,8 +357,4 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
     }
 
     return output;
-}
-
-vector<const Photon*> Camera::search_nearest(PhotonMap map, Point p, float r){
-    return map.nearest_neighbors(p, 100.0, r);
 }

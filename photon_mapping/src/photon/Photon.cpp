@@ -6,16 +6,9 @@
 
 using namespace std;
 
-Photon::Photon() {
-    this->p = Point(0,0,0);
-    this->flux = RGB(0,0,0);
-}
+Photon::Photon(): p(Point(0,0,0)), flux(RGB(0,0,0)) { }
 
-Photon::Photon(Point p, RGB flux)
-{
-    this->p = p;
-    this->flux = flux; //RGB(0,0,0)
-}
+Photon::Photon(Point p, RGB flux): p(p), flux(flux) { }
 
 std::ostream& operator << (std::ostream& os, const Photon& obj) {
     os << "Photon(p=" << obj.p << ", flux=" << obj.flux << ")";
