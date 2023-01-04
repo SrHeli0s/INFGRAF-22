@@ -26,7 +26,8 @@ class Camera {
             DIFFUSE = 0,
             SPECULAR = 1,
             REFRACTION = 2,
-            ABSORPTION = 3
+            ABSORPTION = 3,
+            EMMIT = 4
         };
         void worker(ConcurrentQueue<std::pair<int, int>> &jobs, ConcurrentQueue<Pixel> &result, Scene &scene, unsigned int nRays);
         RGB getBRDF(Collision col, Vec3 wi);
