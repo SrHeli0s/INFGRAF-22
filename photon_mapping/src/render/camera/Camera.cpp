@@ -63,6 +63,7 @@ ostream& operator << (ostream& os, const Camera& obj)
 }
 
 Camera::Event Camera::russianRoulette(double t, Material m) {
+    if(m.ke > 0) return EMMIT;
     if ( t < m.kd ) {
         return DIFFUSE;
     } else if ( t < m.kd + m.ks ) {
@@ -77,6 +78,8 @@ Camera::Event Camera::russianRoulette(double t, Material m) {
 
 RGB Camera::getBRDF(Collision col, Vec3 wi, PhotonMap &pm) {
     
+    if(col.obj->material.ke > 0) return col.obj->material.emission;
+
     auto nearPhotons = pm.nearest_neighbors(col.collision_point);
     
     RGB output = RGB();
@@ -213,6 +216,9 @@ RGB Camera::getColor(Ray r, Scene s, PhotonMap& pm) {
             Ray nextR = nextRay(c,s,e);
             if(e==DIFFUSE) {
                 output = output + getBRDF(c, nextR.v,pm) * getColor(nextR,s,pm) * M_PI;
+            }
+            else if(e == EMMIT) {
+                output = output + getBRDF(c, nextR.v, pm);
             }
             else {
                 output = output + getBRDF(c, nextR.v,pm) * getColor(nextR,s,pm);

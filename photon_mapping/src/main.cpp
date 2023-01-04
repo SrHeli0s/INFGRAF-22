@@ -25,14 +25,15 @@ int main() {
 
     // //========================= SCENE 1 =========================
     // MATERIALS
-    Material metal = Material(RGB(),RGB(0.2,0.2,0.8),RGB(),1);
-    Material glass = Material(RGB(),RGB(),RGB(0.8,0.8,0.8),1.5);
-    Material red = Material(RGB(0.5,0,0),RGB(),RGB(),1);
-    Material green = Material(RGB(0,0.5,0),RGB(),RGB(),1);
+    Material metal = Material(RGB(),RGB(0.2,0.2,0.8),RGB(),RGB(),1);
+    Material glass = Material(RGB(),RGB(),RGB(0.8,0.8,0.8),RGB(),1.5);
+    Material red = Material(RGB(0.5,0,0),RGB(),RGB(),RGB(),1);
+    Material green = Material(RGB(0,0.5,0),RGB(),RGB(),RGB(),1);
+    Material l = LightMat(RGB(1,1,1));
     Plane left = Plane(1,Vec3(1,0,0),red);
     Plane right = Plane(1,Vec3(-1,0,0),green);
     Plane floor = Plane(1,Vec3(0,1,0));
-    Plane ceiling = Plane(1,Vec3(0,-1,0));
+    Plane ceiling = Plane(1,Vec3(0,-1,0),l);
     Plane back = Plane(1,Vec3(0,0,-1));
     
     Sphere A = Sphere(Point(-0.5,-0.7,0.25),Vec3(0,0.6,0),Point(-0.2,-0.7,0.25), metal);
@@ -131,7 +132,7 @@ int main() {
 
     
     auto start = chrono::high_resolution_clock::now();
-    Image output = camera.render(sc,5,100000);
+    Image output = camera.render(sc,5,100);
     auto stop = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);

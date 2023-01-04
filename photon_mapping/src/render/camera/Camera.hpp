@@ -23,7 +23,8 @@ class Camera {
             DIFFUSE = 0,
             SPECULAR = 1,
             REFRACTION = 2,
-            ABSORPTION = 3
+            ABSORPTION = 3,
+            EMMIT = 4
         };
         RGB getBRDF(Collision col, Vec3 wi, PhotonMap& pm);
         RGB nextEventEstimation(Collision col, Scene scene, PhotonMap pm, Event e);

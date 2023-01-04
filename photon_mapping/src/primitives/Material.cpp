@@ -14,21 +14,23 @@ Material::Material()
     this->kt = 0;
     this->spec = RGB();
     this->ri = 1;
+    this->emission = RGB();
     this->ke = 0;
 }
-Material::Material(RGB diffuse, RGB specular, RGB refraction, float ri=1) 
+Material::Material(RGB diffuse, RGB specular, RGB refraction, RGB emission, float ri) 
 {
     this->dif = diffuse;
     this->spec = specular;
     this->refr = refraction;
-    this->kd = max(diffuse.r,max(diffuse.g,diffuse.b));
-    this->ks = max(specular.r,max(specular.g,specular.b));
-    this->kt = max(refraction.r,max(refraction.g,refraction.b));
+    this->emission = emission;
+    this->kd = diffuse.maxChannel();
+    this->ks = specular.maxChannel();
+    this->kt = refraction.maxChannel();
+    this->ke = emission.maxChannel();
     this->ri = ri;
-    this->ke = 0;
 }
 
-Material::Material(float kd, float ks, float kt, float ke, RGB diffuse, RGB specular, RGB refraction, float ri=1)
+Material::Material(float kd, float ks, float kt, float ke, RGB diffuse, RGB specular, RGB refraction, RGB emission, float ri)
 {
     this->kd = kd;
     this->ks = ks;
@@ -37,6 +39,7 @@ Material::Material(float kd, float ks, float kt, float ke, RGB diffuse, RGB spec
     this->dif = diffuse;
     this->spec = specular;
     this->refr = refraction;
+    this->emission = emission;
     this->ri = ri;
 
     if ((this->kd + this->ks + this->kt) > 1) {
@@ -55,4 +58,9 @@ ostream& operator << (ostream& os, const Material& obj) {
        << ", ke=" << obj.ke << ")";
     
     return os;
+}
+
+Material LightMat(RGB color)
+{
+    return Material(RGB(),RGB(),RGB(),color);
 }
