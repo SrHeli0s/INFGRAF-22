@@ -164,7 +164,7 @@ Ray Camera::nextRay(Collision col, Scene scene, Event e) {
 
     Material m = col.obj->material;
     if (e == DIFFUSE) { //Generate next ray of diffuse
-        float randInclination = acos(sqrt(1-(rand()/(float) (RAND_MAX))));
+        float randInclination = acos(sqrt(1.0-(rand()/(float) (RAND_MAX))));
         float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
 
         Vec3 om = Vec3(sin(randInclination) * cos(randAzimuth),
@@ -174,11 +174,13 @@ Ray Camera::nextRay(Collision col, Scene scene, Event e) {
         Vec3 n = col.collision_normal;
         
         Vec3 p = perpendicular(n);
+        Vec3 v2 = cross(p, n);
+        Vec3 v3 = cross(v2, n);
+        
+        Transformation t1 = BaseChangeTransform(v2,v3,n,col.collision_point);
+        // Transformation t2 = t1.inverse();
 
-        Transformation t1 = BaseChangeTransform(cross(n,p),n,p,col.collision_point);
-        Transformation t2 = t1.inverse();
-
-        Vec3 dir = om.applyTransformation(t2);
+        Vec3 dir = om.applyTransformation(t1);
 
         output = Ray(col.collision_point,normalize(dir));
     }

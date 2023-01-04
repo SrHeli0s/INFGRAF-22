@@ -186,32 +186,6 @@ Ray Camera::nextRay(Collision col, Scene scene, Event e) {
         Vec3 dir = om.applyTransformation(t1);
 
         output = Ray(col.collision_point,normalize(dir));
-
-
-
-        //=============================================================
-        // Vector3 p = perpendicular(n);
-        // Vector3 v2 = cross(p, n);
-        // Vector3 v3 = cross(v2, n);
-        // Coordinate local2Global(v2, v3, n, x, 1);
-
-        // (   v2.x,   v3.x    n.x     x.x )
-        // (   v2.y    v3.y    n.y     x.y )
-        // (   v2.z    v3.z    n.z     x.z )
-        // (   0       0       0       1   )
-
-
-
-        // Coordinate dir(Vector3(1,0,0), Vector3(0,1,0), Vector3(0,0,1), omega, 0);
-
-        // return local2Global(dir).getPosition();
-        // local2global * dir
-
-        //=============================================================
-
-
-
-
     }
     else if (e == SPECULAR) { //Generate next ray of specular        
         output = Ray(col.collision_point,sampleDirSpec(col));

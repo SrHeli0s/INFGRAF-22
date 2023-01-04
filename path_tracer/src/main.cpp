@@ -135,7 +135,7 @@ int main() {
     
     cout << "Renderizando..." << endl;
     auto start = chrono::high_resolution_clock::now();
-    Image output = camera.render(sc,10);
+    Image output = camera.render(sc,100);
     auto stop = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
