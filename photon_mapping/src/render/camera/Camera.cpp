@@ -325,10 +325,10 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
     cout << photons.size() << " Photons" << endl;
     cout << "Rendering..." << endl; 
 
-    for(int i = this->h-1; i>=0; i--) {
+    for(int i = 0; i<this->h; i++) {
         vector<RGB> row;
         for(int j = 0; j<this->w; j++) {
-            RGB color = renderPixel(scene,map,i,j,nRays);
+            RGB color = renderPixel(scene,map,j,i,nRays);
             row.push_back(color);
             output.max_value = color.maxChannel() > output.max_value ? color.maxChannel() : output.max_value;
             cout << "\rProgress: " << (int)((1-(double)((j+i*this->w)/ (double)(this->w*this->h)))*100) << "%               ";
