@@ -56,11 +56,28 @@ Scene getS2() {
     return sc;
 }
 
+Scene getS3() {
+    Scene sc = Scene();
+    Material red = Material(RGB(0.5,0,0),RGB(),RGB(),RGB(),1);
+    Material green = Material(RGB(0,0.5,0),RGB(),RGB(),RGB(),1);
+    //Camera
+    sc.cam = Camera(Point(-3.5,0,-3.5),Vec3(0,1,0),Vec3(-1,0,0),Vec3(1,0,1),256,256);
+    //Planes
+    sc.addP(Plane(5,Vec3(0,0,-1))); //Back
+    //Sprites
+    sc.addP(STL("../resources/test.stl",Point(1,-1,0),0.1,red));
+    sc.addP(STL("../resources/test.stl",Point(0,-1.5,2),0.25,green));
+    //Light
+    sc.addL(PointLight(Point(1.5,0.5,-3.5),RGB(1,1,1)));
+
+    return sc;
+}
+
 
 int main() {
     srand(time(NULL));
 
-    Scene sc = getS2();
+    Scene sc = getS3();
 
     
     auto start = chrono::high_resolution_clock::now();
