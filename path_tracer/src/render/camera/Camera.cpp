@@ -78,7 +78,7 @@ RGB Camera::getBRDF(Collision col, Vec3 wi) {
 
     if(m.ke > 0) return m.emission;
 
-    RGB dif = m.kd > 0 ? m.dif / M_PI / m.kd : RGB();
+    RGB dif = m.kd > 0 ? col.obj->getDiffusion(col.collision_point) / M_PI / m.kd : RGB();
     RGB spec = m.ks > 0 ? m.spec * (delta(wi, sampleDirSpec(col))) / m.ks : RGB();
     RGB refr = m.kt > 0 ? m.refr * (delta(wi, sampleDirRefr(col))) / m.kt : RGB();
 

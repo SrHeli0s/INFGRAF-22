@@ -60,7 +60,7 @@ Scene getS2() {
 int main() {
     srand(time(NULL));
 
-    Scene sc = getS1();
+    Scene sc = getS2();
 
     
     auto start = chrono::high_resolution_clock::now();

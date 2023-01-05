@@ -9,5 +9,5 @@ class Primitive {
         Material material;
 
     virtual std::vector<Collision> intersect(Ray r) = 0;
-    virtual RGB getEmission(Point p) { return material.dif; }
+    virtual RGB getDiffusion(Point p) { return material.dif; }
 };

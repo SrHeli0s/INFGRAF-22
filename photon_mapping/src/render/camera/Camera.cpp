@@ -285,14 +285,14 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
                 else {
                     Event e = russianRoulette(rand()/(float)(RAND_MAX), c.obj->material);
                     if(e == DIFFUSE) {
-                        color = color * c.obj->getEmission(c.collision_point);
+                        color = color * c.obj->getDiffusion(c.collision_point);
                         if(color == RGB(0,0,0)) break;
                         photons.push_back(Photon(c.collision_point,color*4*M_PI/limit));
                     }
                     else if (e == SPECULAR) { //Generate next ray of specular        
                         Material m = c.obj->material;
 
-                        RGB dif = m.kd > 0 ? m.dif / M_PI / m.kd : RGB();
+                        RGB dif = m.kd > 0 ? c.obj->getDiffusion(c.collision_point) / M_PI / m.kd : RGB();
                         RGB spec = m.ks > 0 ? m.spec * (delta(r.v, sampleDirSpec(c))) / m.ks : RGB();
                         RGB refr = m.kt > 0 ? m.refr * (delta(r.v, sampleDirRefr(c))) / m.kt : RGB();
 
@@ -301,7 +301,7 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
                     else if (e == REFRACTION) { //Generate next ray of refraction
                         Material m = c.obj->material;
 
-                        RGB dif = m.kd > 0 ? m.dif / M_PI / m.kd : RGB();
+                        RGB dif = m.kd > 0 ? c.obj->getDiffusion(c.collision_point) / M_PI / m.kd : RGB();
                         RGB spec = m.ks > 0 ? m.spec * (delta(r.v, sampleDirSpec(c))) / m.ks : RGB();
                         RGB refr = m.kt > 0 ? m.refr * (delta(r.v, sampleDirRefr(c))) / m.kt : RGB();
 

@@ -47,7 +47,7 @@ bool Sprite::insideSprite(Point p) {
     return false;
 }
 
-RGB Sprite::getEmission(Point p) {
+RGB Sprite::getDiffusion(Point p) {
     int x = a * (p-center) * scale;
     int y = b * (p-center) * scale;
     if (insideSprite(p)) return img.p[x][img.h-y];
@@ -63,7 +63,7 @@ vector<Collision> Sprite::intersect(Ray r) {
     
     Point contact = r.p+(r.v*distance);
     //TODO: Is this transparency check correct?
-    if (distance>MIN_DISTANCE && insideSprite(contact) && (getEmission(contact)*(img.max_value/img.color_res))!=transparent)
+    if (distance>MIN_DISTANCE && insideSprite(contact) && (getDiffusion(contact)*(img.max_value/img.color_res))!=transparent)
         output.push_back({
             make_shared<Sprite>(*this),
             contact,

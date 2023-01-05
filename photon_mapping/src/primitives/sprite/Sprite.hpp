@@ -23,7 +23,7 @@ class Sprite : public Primitive {
     Sprite(Point center, Vec3 normal, Vec3 up, const char* path, float scale, RGB transparent_color);
 
     std::vector<Collision> intersect(Ray r) override;
-    RGB getEmission(Point p) override;
+    RGB getDiffusion(Point p) override;
 
     bool insideSprite(Point p);
 };
