@@ -331,7 +331,7 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
             RGB color = renderPixel(scene,map,j,i,nRays);
             row.push_back(color);
             output.max_value = color.maxChannel() > output.max_value ? color.maxChannel() : output.max_value;
-            cout << "\rProgress: " << (int)((1-(double)((j+i*this->w)/ (double)(this->w*this->h)))*100) << "%               ";
+            cout << "\rProgress: " << (int)(((double)((j+i*this->w) / (double)(this->w*this->h)))*100) << "%               ";
         }
         output.p.push_back(row);
     }
