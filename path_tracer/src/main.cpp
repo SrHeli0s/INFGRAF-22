@@ -74,6 +74,27 @@ Scene getS3() {
     return sc;
 }
 
+Scene getS4() {
+    Scene sc = Scene();
+    Material red = Material(RGB(0.5,0,0),RGB(),RGB(),RGB(),1);
+    Material green = Material(RGB(0,0.5,0),RGB(),RGB(),RGB(),1);
+    Material luz = LightMat(RGB(1,1,1));
+    //Camera
+    sc.cam = Camera(Point(0,-3.5,0),Vec3(0,0,1),Vec3(-1,0,0),Vec3(0,1,0),256,256);
+    //Planes
+    sc.addP(Plane(10,Vec3(0,-1,0))); //Back
+    sc.addP(Plane(5,Vec3(1,0,0),green));      //left
+    sc.addP(Plane(5,Vec3(-1,0,0),green));   //right
+    sc.addP(Plane(5,Vec3(0,5,0),luz));   //right
+    //Sprites
+    sc.addP(STL("../resources/Suzanne.stl",Point(0,0,0),1,red));
+    //Light
+    sc.addL(PointLight(Point(0,-3,0),RGB(1,1,1)));
+    // sc.addP(Plane(5,Vec3(0,-1,0),luz)); //Ceiling
+
+    return sc;
+}
+
 void gammaAndWrite(Image x, float n, string name) {
     PPM p = PPM();
     Image adjusted = gammaCurve(x,n);
@@ -83,61 +104,61 @@ void gammaAndWrite(Image x, float n, string name) {
 int main() {
     srand(time(NULL));
 
-    Scene sc = getS1();
+    Scene sc = getS4();
 
     
+    // auto start = chrono::high_resolution_clock::now();
+    // Image output1 = sc.cam.render(sc,1);
+    // auto stop = chrono::high_resolution_clock::now();
+    // auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    // cout << "Time: " << duration.count() << " ms" <<endl;
+
+    // start = chrono::high_resolution_clock::now();
+    // Image output2 = sc.cam.render(sc,2);
+    // stop = chrono::high_resolution_clock::now();
+    // duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    // cout << "Time: " << duration.count() << " ms" <<endl;
+
+    // start = chrono::high_resolution_clock::now();
+    // Image output4 = sc.cam.render(sc,4);
+    // stop = chrono::high_resolution_clock::now();
+    // duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    // cout << "Time: " << duration.count() << " ms" <<endl;
+
+    // start = chrono::high_resolution_clock::now();
+    // Image output8 = sc.cam.render(sc,8);
+    // stop = chrono::high_resolution_clock::now();
+    // duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    // cout << "Time: " << duration.count() << " ms" <<endl;
+
+    // start = chrono::high_resolution_clock::now();
+    // Image output16 = sc.cam.render(sc,16);
+    // stop = chrono::high_resolution_clock::now();
+    // duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    // cout << "Time: " << duration.count() << " ms" <<endl;
+
+    // start = chrono::high_resolution_clock::now();
+    // Image output32 = sc.cam.render(sc,32);
+    // stop = chrono::high_resolution_clock::now();
+    // duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    // cout << "Time: " << duration.count() << " ms" <<endl;
+
+    // start = chrono::high_resolution_clock::now();
+    // Image output64 = sc.cam.render(sc,64);
+    // stop = chrono::high_resolution_clock::now();
+    // duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    // cout << "Time: " << duration.count() << " ms" <<endl;
+
+    // start = chrono::high_resolution_clock::now();
+    // Image output128 = sc.cam.render(sc,128);
+    // stop = chrono::high_resolution_clock::now();
+    // duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    // cout << "Time: " << duration.count() << " ms" <<endl;
+
     auto start = chrono::high_resolution_clock::now();
-    Image output1 = sc.cam.render(sc,1);
+    Image output256 = sc.cam.render(sc,256);
     auto stop = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    cout << "Time: " << duration.count() << " ms" <<endl;
-
-    start = chrono::high_resolution_clock::now();
-    Image output2 = sc.cam.render(sc,2);
-    stop = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    cout << "Time: " << duration.count() << " ms" <<endl;
-
-    start = chrono::high_resolution_clock::now();
-    Image output4 = sc.cam.render(sc,4);
-    stop = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    cout << "Time: " << duration.count() << " ms" <<endl;
-
-    start = chrono::high_resolution_clock::now();
-    Image output8 = sc.cam.render(sc,8);
-    stop = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    cout << "Time: " << duration.count() << " ms" <<endl;
-
-    start = chrono::high_resolution_clock::now();
-    Image output16 = sc.cam.render(sc,16);
-    stop = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    cout << "Time: " << duration.count() << " ms" <<endl;
-
-    start = chrono::high_resolution_clock::now();
-    Image output32 = sc.cam.render(sc,32);
-    stop = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    cout << "Time: " << duration.count() << " ms" <<endl;
-
-    start = chrono::high_resolution_clock::now();
-    Image output64 = sc.cam.render(sc,64);
-    stop = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    cout << "Time: " << duration.count() << " ms" <<endl;
-
-    start = chrono::high_resolution_clock::now();
-    Image output128 = sc.cam.render(sc,128);
-    stop = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    cout << "Time: " << duration.count() << " ms" <<endl;
-
-    start = chrono::high_resolution_clock::now();
-    Image output256 = sc.cam.render(sc,256);
-    stop = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
     cout << "Time: " << duration.count() << " ms" <<endl;
 
     
@@ -151,17 +172,17 @@ int main() {
                                 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.0 };
     for (auto i : gammas) {
 
-        gammaAndWrite(output1,i,"1ray");
-        gammaAndWrite(output2,i,"2ray");
-        gammaAndWrite(output4,i,"4ray");
-        gammaAndWrite(output8,i,"8ray");
-        gammaAndWrite(output16,i,"16ray");
-        gammaAndWrite(output32,i,"32ray");
-        gammaAndWrite(output64,i,"64ray");
-        gammaAndWrite(output128,i,"128ray");
+        // gammaAndWrite(output1,i,"1ray");
+        // gammaAndWrite(output2,i,"2ray");
+        // gammaAndWrite(output4,i,"4ray");
+        // gammaAndWrite(output8,i,"8ray");
+        // gammaAndWrite(output16,i,"16ray");
+        // gammaAndWrite(output32,i,"32ray");
+        // gammaAndWrite(output64,i,"64ray");
+        // gammaAndWrite(output128,i,"128ray");
         gammaAndWrite(output256,i,"256ray");
     }
-        
+    cout << (char)7 << endl;
     
 
     return 0;
