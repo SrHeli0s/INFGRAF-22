@@ -15,6 +15,7 @@
 #include <iostream>
 #include <chrono>
 #include <time.h>
+#include <cstring>
 using namespace std;
 
 Scene getS1() {
@@ -73,34 +74,96 @@ Scene getS3() {
     return sc;
 }
 
+void gammaAndWrite(Image x, float n, string name) {
+    PPM p = PPM();
+    Image adjusted = gammaCurve(x,n);
+    p.write((name+"_"+to_string(n)+".ppm").c_str(),adjusted);
+}
 
 int main() {
     srand(time(NULL));
 
-    Scene sc = getS3();
+    Scene sc = getS1();
 
     
     auto start = chrono::high_resolution_clock::now();
-    Image output = sc.cam.render(sc,10);
+    Image output1 = sc.cam.render(sc,1);
     auto stop = chrono::high_resolution_clock::now();
-
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
     cout << "Time: " << duration.count() << " ms" <<endl;
-    
-    cout << "Adjusting..." << endl;
-    Image outputAdjusted = gammaCurve(output,2.2);
-    Image outputAdjusted1 = gammaCurve(output,0.5);
-    Image outputAdjusted2 = gammaCurve(output,4.2);
-    Image outputAdjusted3 = gammaCurve(output,6.2);
-    
-    cout << "Writing..." << endl;
 
-    PPM p = PPM();
+    start = chrono::high_resolution_clock::now();
+    Image output2 = sc.cam.render(sc,2);
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    cout << "Time: " << duration.count() << " ms" <<endl;
 
-    p.write("scene.ppm",outputAdjusted);
-    p.write("scene1.ppm",outputAdjusted1);
-    p.write("scene2.ppm",outputAdjusted2);
-    p.write("scene3.ppm",outputAdjusted3);
+    start = chrono::high_resolution_clock::now();
+    Image output4 = sc.cam.render(sc,4);
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    cout << "Time: " << duration.count() << " ms" <<endl;
+
+    start = chrono::high_resolution_clock::now();
+    Image output8 = sc.cam.render(sc,8);
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    cout << "Time: " << duration.count() << " ms" <<endl;
+
+    start = chrono::high_resolution_clock::now();
+    Image output16 = sc.cam.render(sc,16);
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    cout << "Time: " << duration.count() << " ms" <<endl;
+
+    start = chrono::high_resolution_clock::now();
+    Image output32 = sc.cam.render(sc,32);
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    cout << "Time: " << duration.count() << " ms" <<endl;
+
+    start = chrono::high_resolution_clock::now();
+    Image output64 = sc.cam.render(sc,64);
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    cout << "Time: " << duration.count() << " ms" <<endl;
+
+    start = chrono::high_resolution_clock::now();
+    Image output128 = sc.cam.render(sc,128);
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    cout << "Time: " << duration.count() << " ms" <<endl;
+
+    start = chrono::high_resolution_clock::now();
+    Image output256 = sc.cam.render(sc,256);
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    cout << "Time: " << duration.count() << " ms" <<endl;
+
+    
+    
+    
+    cout << "Adjusting and writing..." << endl;
+
+    std::vector<float> gammas = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,
+                                1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0,
+                                2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0,
+                                3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.0 };
+    for (auto i : gammas) {
+
+        gammaAndWrite(output1,i,"1ray");
+        gammaAndWrite(output2,i,"2ray");
+        gammaAndWrite(output4,i,"4ray");
+        gammaAndWrite(output8,i,"8ray");
+        gammaAndWrite(output16,i,"16ray");
+        gammaAndWrite(output32,i,"32ray");
+        gammaAndWrite(output64,i,"64ray");
+        gammaAndWrite(output128,i,"128ray");
+        gammaAndWrite(output256,i,"256ray");
+    }
+        
+    
 
     return 0;
 }
+

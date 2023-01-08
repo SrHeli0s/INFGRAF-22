@@ -17,6 +17,12 @@
 #include <time.h>
 using namespace std;
 
+void gammaAndWrite(Image x, float n, string name) {
+    PPM p = PPM();
+    Image adjusted = gammaCurve(x,n);
+    p.write((name+"_"+to_string(n)+".ppm").c_str(),adjusted);
+}
+
 Scene getS1() {
     Scene sc = Scene();
     Material red = Material(RGB(0.5,0,0),RGB(),RGB(),RGB(),1);
@@ -77,30 +83,24 @@ Scene getS3() {
 int main() {
     srand(time(NULL));
 
-    Scene sc = getS3();
+    Scene sc = getS1();
 
     
     auto start = chrono::high_resolution_clock::now();
-    Image output = sc.cam.render(sc,5,100);
+    Image output1 = sc.cam.render(sc,5,100);
     auto stop = chrono::high_resolution_clock::now();
-
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
     cout << "Time: " << duration.count() << " ms" <<endl;
-    
-    cout << "Adjusting..." << endl;
-    Image outputAdjusted = gammaCurve(output,2.2);
-    Image outputAdjusted1 = gammaCurve(output,0.5);
-    Image outputAdjusted2 = gammaCurve(output,4.2);
-    Image outputAdjusted3 = gammaCurve(output,6.2);
-    
-    cout << "Writing..." << endl;
 
-    PPM p = PPM();
+    cout << "Adjusting and writing..." << endl;
 
-    p.write("scene.ppm",outputAdjusted);
-    p.write("scene1.ppm",outputAdjusted1);
-    p.write("scene2.ppm",outputAdjusted2);
-    p.write("scene3.ppm",outputAdjusted3);
+    std::vector<float> gammas = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,
+                                1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0,
+                                2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0,
+                                3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.0 };
+    for (auto i : gammas) {
+        gammaAndWrite(output1,i,"test");
+    }
 
     return 0;
 }
