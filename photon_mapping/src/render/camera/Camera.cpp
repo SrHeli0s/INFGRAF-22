@@ -209,20 +209,16 @@ RGB Camera::getColor(Ray r, Scene s, PhotonMap& pm) {
     RGB output = RGB(0,0,0);
     if (c.obj != nullptr) {
         Event e = russianRoulette(rand()/(float)(RAND_MAX),c.obj->material);
-        //Ld
-        output = output + nextEventEstimation(c,s,pm,e);
-        //Li
-        if (e != ABSORPTION) {
-            Ray nextR = nextRay(c,s,e);
-            if(e==DIFFUSE) {
-                output = output + getBRDF(c, nextR.v,pm) * getColor(nextR,s,pm) * M_PI;
-            }
-            else if(e == EMMIT) {
-                output = output + getBRDF(c, nextR.v, pm);
-            }
-            else {
-                output = output + getBRDF(c, nextR.v,pm) * getColor(nextR,s,pm);
-            }
+        
+        Ray nextR = nextRay(c,s,e);
+        if(e==DIFFUSE) {
+            output = output + getBRDF(c, nextR.v,pm) * getColor(nextR,s,pm) * M_PI;
+        }
+        else if(e == EMMIT || e == ABSORPTION) {
+            output = output + getBRDF(c, nextR.v, pm);
+        }
+        else {
+            output = output + getBRDF(c, nextR.v,pm) * getColor(nextR,s,pm);
         }
     }
     return output;
