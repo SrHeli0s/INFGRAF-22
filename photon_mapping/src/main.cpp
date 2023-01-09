@@ -25,11 +25,11 @@ void gammaAndWrite(Image x, float n, string name) {
 
 Scene getS1() {
     Scene sc = Scene();
-    Material red = Material(RGB(0.5,0,0),RGB(),RGB(),RGB(),1);
-    Material green = Material(RGB(0,0.5,0),RGB(),RGB(),RGB(),1);
+    Material red = Material(RGB(0.8,0,0),RGB(),RGB(),RGB(),1);
+    Material green = Material(RGB(0,0.8,0),RGB(),RGB(),RGB(),1);
     Material luz = LightMat(RGB(1,1,1));
-    Material metal = Material(RGB(),RGB(0.2,0.2,0.8),RGB(),RGB(),1);
-    Material glass = Material(RGB(),RGB(),RGB(0.8,0.8,0.8),RGB(),1.5);
+    Material metal = Material(RGB(),RGB(0.2,0.2,0.9),RGB(),RGB(),1);
+    Material glass = Material(RGB(),RGB(),RGB(0.9,0.9,0.9),RGB(),1.5);
     //Camera
     sc.cam = Camera(Point(0,0,-3.5),Vec3(0,1,0),Vec3(-1,0,0),Vec3(0,0,3),255,255);
     //Planes
@@ -87,7 +87,7 @@ int main() {
 
     
     auto start = chrono::high_resolution_clock::now();
-    Image output1 = sc.cam.render(sc,10,1000000);
+    Image output1 = sc.cam.render(sc,8,1000000);
     auto stop = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
     cout << "Time: " << duration.count() << " ms" <<endl;

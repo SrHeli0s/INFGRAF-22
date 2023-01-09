@@ -13,6 +13,7 @@
 #include "../../tone_mapping/rgb/Rgb.hpp"
 #include "../../photon/Photon.hpp"
 #include "../../utils/kdtree.h"
+#include <cmath>
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -80,59 +81,21 @@ RGB Camera::getBRDF(Collision col, Vec3 wi, PhotonMap &pm) {
     
     if(col.obj->material.ke > 0) return col.obj->material.emission;
 
-    auto nearPhotons = pm.nearest_neighbors(col.collision_point);
-    
+    auto nearPhotons = pm.nearest_neighbors(col.collision_point,50);
+
+    float maxDist = -INFINITY;
+    for (auto photon : nearPhotons) {
+        Vec3 a = col.collision_point - photon->p;
+        maxDist = max(mod(a), maxDist);
+    }
+
     RGB output = RGB();
     for (int i = 0; i<nearPhotons.size(); i++) {
-        output = output + nearPhotons[i]->flux;
+        output = output + (nearPhotons[i]->flux/ (M_PI * maxDist * maxDist));
     }
     if (nearPhotons.size() != 0) {
         return output / nearPhotons.size();
     }
-    return output;
-}
-
-RGB Camera::nextEventEstimation(Collision col, Scene scene, PhotonMap pm, Event e) 
-{
-    RGB output;
-    if (e == DIFFUSE) { //Generate color of diffuse
-        output = RGB(0,0,0);
-        for (auto l: scene.lights) {
-            float distance_to_light = (mod(l.center - col.collision_point));
-            Vec3 W_i = (l.center-col.collision_point)/distance_to_light;
-            //Calculate shadows
-            Ray shadow = Ray(col.collision_point,W_i);
-            Collision closest = closest_col(shadow,scene);
-            
-            RGB color = RGB(0,0,0);
-            if (col.obj != nullptr) {
-                Material m = col.obj->material;
-                Vec3 omI = normalize(shadow.v);
-                //Calculate contributions
-                RGB dif = m.kd > 0 ? m.dif / M_PI / m.kd : RGB();
-                RGB spec = m.ks > 0 ? m.spec * (delta(omI, sampleDirSpec(col))) / m.ks : RGB();
-                RGB refr = m.kt > 0 ? m.refr * (delta(omI, sampleDirRefr(col))) / m.kt : RGB();
-
-                RGB matC = getBRDF(col, normalize(shadow.v),pm);
-                float geoC = col.collision_normal * W_i;
-                if (geoC<0) geoC = 0; //If is negative is pointing the other way -> It should be black
-                RGB lightC = l.power/(float)(pow(distance_to_light,2));
-                if (closest.distance>distance_to_light) {                 
-                    output = output + lightC*matC*geoC;
-                }
-            }
-        }
-    }
-    else if (e == SPECULAR) { //Generate color of specular
-        output = RGB(0,0,0);
-    }
-    else if (e == REFRACTION) {
-        output = RGB(0,0,0);
-    }
-    else { //ABSORB
-        output = RGB(0,0,0);
-    }
-
     return output;
 }
 
@@ -212,23 +175,14 @@ RGB Camera::getColor(Ray r, Scene s, PhotonMap& pm) {
         
         Ray nextR = nextRay(c,s,e);
         if(e == DIFFUSE) {
-            output = output + getBRDF(c, nextR.v,pm) * getColor(nextR,s,pm) * M_PI;
+            output = output + getBRDF(c, nextR.v,pm) * M_PI;
         }
-        else if(e == EMMIT || e == ABSORPTION) {
-            output = output + getBRDF(c, nextR.v, pm);
-        }
-        else {
-            Material m = c.obj->material;
-
-            RGB dif = m.kd > 0 ? c.obj->getDiffusion(c.collision_point) / M_PI / m.kd : RGB();
-            RGB spec = m.ks > 0 ? m.spec * (delta(r.v, sampleDirSpec(c))) / m.ks : RGB();
-            RGB refr = m.kt > 0 ? m.refr * (delta(r.v, sampleDirRefr(c))) / m.kt : RGB();
-
-            output = output + (dif+spec+refr) * getColor(nextR,s,pm);
+        else if (e == SPECULAR || e == REFRACTION) {
+            output = getColor(nextR,s,pm);
         }
     }
     return output;
-} 
+}
 
 
 RGB Camera::renderPixel(Scene scene, PhotonMap &pm, unsigned int column, unsigned int row, unsigned int nRays)
@@ -291,21 +245,17 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
                         if(color == RGB(0,0,0)) break;
                         photons.push_back(Photon(c.collision_point,color*4*M_PI/limit));
                     }
-                    else if (e == SPECULAR) { //Generate next ray of specular        
-                        Material m = c.obj->material;
-
-                        RGB dif = m.kd > 0 ? c.obj->getDiffusion(c.collision_point) / M_PI / m.kd : RGB();
-                        RGB spec = m.ks > 0 ? m.spec * (delta(r.v, sampleDirSpec(c))) / m.ks : RGB();
-                        RGB refr = m.kt > 0 ? m.refr * (delta(r.v, sampleDirRefr(c))) / m.kt : RGB();
+                    else if (e == SPECULAR) {
+                        RGB dif = c.obj->material.kd > 0 ? c.obj->getDiffusion(c.collision_point) / M_PI / c.obj->material.kd : RGB();
+                        RGB spec = c.obj->material.ks > 0 ? c.obj->material.spec * (delta(r.v, sampleDirSpec(c))) / c.obj->material.ks : RGB();
+                        RGB refr = c.obj->material.kt > 0 ? c.obj->material.refr * (delta(r.v, sampleDirRefr(c))) / c.obj->material.kt : RGB();
 
                         color = color * (dif+spec+refr);
                     }
-                    else if (e == REFRACTION) { //Generate next ray of refraction
-                        Material m = c.obj->material;
-
-                        RGB dif = m.kd > 0 ? c.obj->getDiffusion(c.collision_point) / M_PI / m.kd : RGB();
-                        RGB spec = m.ks > 0 ? m.spec * (delta(r.v, sampleDirSpec(c))) / m.ks : RGB();
-                        RGB refr = m.kt > 0 ? m.refr * (delta(r.v, sampleDirRefr(c))) / m.kt : RGB();
+                    else if (e == REFRACTION) {
+                        RGB dif = c.obj->material.kd > 0 ? c.obj->getDiffusion(c.collision_point) / M_PI / c.obj->material.kd : RGB();
+                        RGB spec = c.obj->material.ks > 0 ? c.obj->material.spec * (delta(r.v, sampleDirSpec(c))) / c.obj->material.ks : RGB();
+                        RGB refr = c.obj->material.kt > 0 ? c.obj->material.refr * (delta(r.v, sampleDirRefr(c))) / c.obj->material.kt : RGB();
 
                         color = color * (dif+spec+refr);
                     }
