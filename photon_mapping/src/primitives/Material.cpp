@@ -7,8 +7,8 @@ using namespace std;
 
 Material::Material()
 {
-    this->kd = 1;
-    this->dif = RGB(0.2,0.2,0.2);
+    this->kd = 0.7;
+    this->dif = RGB(0.7,0.7,0.7);
     this->ks = 0;
     this->refr = RGB();
     this->kt = 0;

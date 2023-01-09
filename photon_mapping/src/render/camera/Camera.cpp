@@ -211,14 +211,20 @@ RGB Camera::getColor(Ray r, Scene s, PhotonMap& pm) {
         Event e = russianRoulette(rand()/(float)(RAND_MAX),c.obj->material);
         
         Ray nextR = nextRay(c,s,e);
-        if(e==DIFFUSE) {
+        if(e == DIFFUSE) {
             output = output + getBRDF(c, nextR.v,pm) * getColor(nextR,s,pm) * M_PI;
         }
         else if(e == EMMIT || e == ABSORPTION) {
             output = output + getBRDF(c, nextR.v, pm);
         }
         else {
-            output = output + getBRDF(c, nextR.v,pm) * getColor(nextR,s,pm);
+            Material m = c.obj->material;
+
+            RGB dif = m.kd > 0 ? c.obj->getDiffusion(c.collision_point) / M_PI / m.kd : RGB();
+            RGB spec = m.ks > 0 ? m.spec * (delta(r.v, sampleDirSpec(c))) / m.ks : RGB();
+            RGB refr = m.kt > 0 ? m.refr * (delta(r.v, sampleDirRefr(c))) / m.kt : RGB();
+
+            output = output + (dif+spec+refr) * getColor(nextR,s,pm);
         }
     }
     return output;
