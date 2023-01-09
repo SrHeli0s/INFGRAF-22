@@ -9,6 +9,8 @@
 
 const float MAX_ERROR = pow(10,-6);
 
+class Scene;
+
 class Sphere : public Primitive{
     public:
         Point center;
@@ -23,7 +25,7 @@ class Sphere : public Primitive{
     Point surfacePoint(float inclination, float azimuth);
 
     std::vector<Collision> intersect(Ray r) override;
-    
+    Point getRandomPoint(Scene sc) override;
 };
 
 std::ostream& operator << (std::ostream& os, const Sphere& obj);

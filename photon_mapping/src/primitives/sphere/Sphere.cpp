@@ -76,6 +76,16 @@ vector<Collision> Sphere::intersect(Ray r) {
     return output;
 }
 
+Point Sphere::getRandomPoint(Scene sc) {
+    float randInclination = acos(2*(rand()/(float) (RAND_MAX)) - 1);
+    float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
+
+    Vec3 dir = Vec3(sin(randInclination) * cos(randAzimuth),
+                    sin(randInclination) * sin(randAzimuth),
+                    cos(randInclination));
+    return center + dir*radius;
+}
+
 std::ostream& operator << (std::ostream& os, const Sphere& obj) {
     os << "Sphere(center=" << obj.center 
        << ", axis=" << obj.axis 

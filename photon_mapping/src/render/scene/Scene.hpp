@@ -20,6 +20,7 @@ class Scene {
         Camera cam;
         vector<shared_ptr<Primitive>> objs;
         vector<PointLight> lights;
+        vector<shared_ptr<Primitive>> area_lights;
 
     Scene();
 
@@ -30,4 +31,10 @@ class Scene {
     void addP(STL p);
     void addP(Sprite p);
     void addL(PointLight p);
+    void addL(const shared_ptr<Primitive> p);
+    void addL(Sphere p);
+    void addL(Plane p);
+    void addL(Triangle p);
+    void addL(STL p);
+    void addL(Sprite p);
 };

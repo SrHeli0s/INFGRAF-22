@@ -180,6 +180,9 @@ RGB Camera::getColor(Ray r, Scene s, PhotonMap& pm) {
         else if (e == SPECULAR || e == REFRACTION) {
             output = getColor(nextR,s,pm);
         }
+        else if (e==EMMIT) {
+            output = c.obj->material.emission;
+        }
     }
     return output;
 }
@@ -214,6 +217,9 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
     for (auto l: scene.lights) {
         sum_lights = sum_lights +l.power.maxChannel();
     }
+    for (auto l: scene.area_lights) {
+        sum_lights = sum_lights +l->material.emission.maxChannel();
+    }
 
     list<Photon> photons;
     
@@ -222,6 +228,56 @@ Image Camera::render(Scene scene, unsigned int nRays, unsigned int nPhoton)
         for (unsigned int i = 0; i<limit; i++) {
             RGB color = l.power;
             Point origin = l.center;
+            float randInclination = acos(2*(rand()/(float) (RAND_MAX)) - 1);
+            float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
+
+            Vec3 dir = Vec3(sin(randInclination) * cos(randAzimuth),
+                            sin(randInclination) * sin(randAzimuth),
+                            cos(randInclination));
+
+            Ray r = Ray(origin, dir);
+
+
+            while (color != RGB(0,0,0)) {
+                Collision c = closest_col(r,scene);
+
+                if (c.obj == nullptr) {
+                    color = RGB(0,0,0);
+                }
+                else {
+                    Event e = russianRoulette(rand()/(float)(RAND_MAX), c.obj->material);
+                    if(e == DIFFUSE) {
+                        color = color * c.obj->getDiffusion(c.collision_point);
+                        if(color == RGB(0,0,0)) break;
+                        photons.push_back(Photon(c.collision_point,color*4*M_PI/limit));
+                    }
+                    else if (e == SPECULAR) {
+                        RGB dif = c.obj->material.kd > 0 ? c.obj->getDiffusion(c.collision_point) / M_PI / c.obj->material.kd : RGB();
+                        RGB spec = c.obj->material.ks > 0 ? c.obj->material.spec * (delta(r.v, sampleDirSpec(c))) / c.obj->material.ks : RGB();
+                        RGB refr = c.obj->material.kt > 0 ? c.obj->material.refr * (delta(r.v, sampleDirRefr(c))) / c.obj->material.kt : RGB();
+
+                        color = color * (dif+spec+refr);
+                    }
+                    else if (e == REFRACTION) {
+                        RGB dif = c.obj->material.kd > 0 ? c.obj->getDiffusion(c.collision_point) / M_PI / c.obj->material.kd : RGB();
+                        RGB spec = c.obj->material.ks > 0 ? c.obj->material.spec * (delta(r.v, sampleDirSpec(c))) / c.obj->material.ks : RGB();
+                        RGB refr = c.obj->material.kt > 0 ? c.obj->material.refr * (delta(r.v, sampleDirRefr(c))) / c.obj->material.kt : RGB();
+
+                        color = color * (dif+spec+refr);
+                    }
+                    else { //ABSORB
+                        color = RGB(0,0,0);
+                    }
+                    r = nextRay(c,scene,e);
+                }
+            }
+        }
+    }
+    for (auto l: scene.area_lights) {
+        unsigned int limit = nPhoton*(l->material.emission.maxChannel()/sum_lights);
+        for (unsigned int i = 0; i<limit; i++) {
+            RGB color = l->material.emission;
+            Point origin = l->getRandomPoint(scene);
             float randInclination = acos(2*(rand()/(float) (RAND_MAX)) - 1);
             float randAzimuth = 2*M_PI*(rand()/(float) (RAND_MAX));
 

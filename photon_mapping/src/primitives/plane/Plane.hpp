@@ -5,6 +5,7 @@
 #include "../../tone_mapping/rgb/Rgb.hpp"
 #include "../Primitive.hpp"
 
+class Scene;
 
 class Plane : public Primitive {
     public:
@@ -16,7 +17,7 @@ class Plane : public Primitive {
     Plane(float c, Vec3 normal, Material material);
 
     std::vector<Collision> intersect(Ray r) override;
-
+    Point getRandomPoint(Scene sc) override;
 };
 
 std::ostream& operator << (std::ostream& os, const Plane& obj);

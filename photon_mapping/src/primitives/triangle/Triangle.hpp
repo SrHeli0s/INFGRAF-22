@@ -6,6 +6,7 @@
 #include "../../tone_mapping/rgb/Rgb.hpp"
 #include "../Primitive.hpp"
 
+class Scene;
 
 class Triangle : public Primitive {
     public:
@@ -19,7 +20,7 @@ class Triangle : public Primitive {
     Triangle(Point a, Point b, Point c, Material material);
 
     std::vector<Collision> intersect(Ray r) override;
-
+    Point getRandomPoint(Scene sc) override;
 };
 
 std::ostream& operator << (std::ostream& os, const Triangle& obj);

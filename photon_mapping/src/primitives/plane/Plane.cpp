@@ -43,6 +43,13 @@ vector<Collision> Plane::intersect(Ray r) {
     return output;
 }
 
+Point Plane::getRandomPoint(Scene sc) {
+    Vec3 p1 = normalize(perpendicular(normal));
+    Vec3 p2 = normalize(cross(p1,normal));
+    Point center = Point(0,0,0) + normal*c;
+    return center + p1*(rand()/RAND_MAX) + p2*(rand()/RAND_MAX);
+}
+
 std::ostream& operator << (std::ostream& os, const Plane& obj) {
     os << "Plane(c=" << obj.c << ", normal=" << obj.normal << ", material=" << obj.material << ")";
 

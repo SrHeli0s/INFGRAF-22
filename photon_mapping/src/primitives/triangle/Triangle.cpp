@@ -81,3 +81,14 @@ std::ostream& operator << (std::ostream& os, const Triangle& obj) {
 
     return os;
 }
+
+Point Triangle::getRandomPoint(Scene sc) {
+    Point output;
+    float r1 = (rand()/RAND_MAX);
+    float r2 = (rand()/RAND_MAX);
+
+    output.c[0] = (1 - sqrt(r1)) * v1.c[0] + (sqrt(r1) * (1 - r2)) * v2.c[0] + (sqrt(r1) * r2) * v3.c[0];
+    output.c[1] = (1 - sqrt(r1)) * v1.c[1] + (sqrt(r1) * (1 - r2)) * v2.c[1] + (sqrt(r1) * r2) * v3.c[1];
+    output.c[2] = (1 - sqrt(r1)) * v1.c[2] + (sqrt(r1) * (1 - r2)) * v2.c[2] + (sqrt(r1) * r2) * v3.c[2];
+    return output;
+}

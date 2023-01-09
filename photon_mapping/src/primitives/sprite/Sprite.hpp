@@ -6,6 +6,7 @@
 #include "../../tone_mapping/image/Image.hpp"
 #include "../Primitive.hpp"
 
+class Scene;
 
 class Sprite : public Primitive {
     private:
@@ -24,6 +25,7 @@ class Sprite : public Primitive {
 
     std::vector<Collision> intersect(Ray r) override;
     RGB getDiffusion(Point p) override;
+    Point getRandomPoint(Scene sc) override;
 
     bool insideSprite(Point p);
 };

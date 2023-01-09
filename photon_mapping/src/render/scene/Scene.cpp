@@ -37,3 +37,27 @@ void Scene::addP(Sprite p){
 void Scene::addL(PointLight p){
     lights.push_back(p);    
 }
+
+void Scene::addL(const shared_ptr<Primitive> p) {
+    area_lights.push_back(p);
+}
+
+void Scene::addL(Sphere p){
+    area_lights.push_back(make_shared<Sphere>(p));
+}
+
+void Scene::addL(Plane p){
+    area_lights.push_back(make_shared<Plane>(p));
+}
+
+void Scene::addL(Triangle p){
+    area_lights.push_back(make_shared<Triangle>(p));
+}
+
+void Scene::addL(STL p){
+    area_lights.push_back(make_shared<STL>(p));
+}
+
+void Scene::addL(Sprite p){
+    area_lights.push_back(make_shared<Sprite>(p));
+}

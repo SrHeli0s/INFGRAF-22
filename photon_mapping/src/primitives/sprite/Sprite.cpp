@@ -74,3 +74,7 @@ vector<Collision> Sprite::intersect(Ray r) {
     
     return output;
 }
+
+Point Sprite::getRandomPoint(Scene sc) {
+    return center;
+}

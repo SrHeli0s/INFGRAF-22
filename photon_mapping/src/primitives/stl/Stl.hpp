@@ -6,15 +6,19 @@
 #include "../Primitive.hpp"
 
 class Triangle;
+class Scene;
 
 class STL : public Primitive {
     public:
         std::vector<Triangle> tris;
+        Point center;
+    
         
     STL();
     STL(const char* path, Point center, float scale, Material material);
 
     std::vector<Collision> intersect(Ray r) override;
+    Point getRandomPoint(Scene sc) override;
 
     private:
         std::vector<float> coordsSTL;
