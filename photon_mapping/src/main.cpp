@@ -36,7 +36,7 @@ Scene getS1() {
     sc.addP(Plane(1,Vec3(1,0,0),red));      //left
     sc.addP(Plane(1,Vec3(-1,0,0),green));   //right
     sc.addP(Plane(1,Vec3(0,1,0)));          //floor
-    sc.addP(Plane(1,Vec3(0,-1,0),luz));     //ceiling
+    sc.addP(Plane(1,Vec3(0,-1,0)));     //ceiling
     sc.addP(Plane(1,Vec3(0,0,-1)));         //back
     //Spheres
     sc.addP(Sphere(Point(-0.5,-0.7,0.25),Vec3(0,0.6,0),Point(-0.2,-0.7,0.25),metal));
@@ -84,13 +84,13 @@ Scene getS4() {
     Material red = Material(RGB(0.5,0,0),RGB(),RGB(),RGB(),1);
     Material green = Material(RGB(0,0.5,0),RGB(),RGB(),RGB(),1);
     Material luz = LightMat(RGB(1,1,1));
+    Material glass = Material(RGB(),RGB(),RGB(0.9,0.9,0.9),RGB(),1.5);
     //Camera
     sc.cam = Camera(Point(0,-3.5,0),Vec3(0,0,1),Vec3(-1,0,0),Vec3(0,1,0),256,256);
     //Planes
     sc.addP(Plane(10,Vec3(0,-1,0))); //Back
-    sc.addP(Plane(5,Vec3(1,0,0),green));      //left
-    sc.addP(Plane(5,Vec3(-1,0,0),green));   //right
-    sc.addP(Plane(5,Vec3(0,5,0),luz));   //right
+    sc.addP(Plane(5,Vec3(1,0,0)));      //left
+    sc.addP(Plane(5,Vec3(-1,0,0)));   //right
     //Sprites
     sc.addP(STL("../resources/Suzanne.stl",Point(0,0,0),1,red));
     //Light
@@ -104,11 +104,11 @@ Scene getS4() {
 int main() {
     srand(time(NULL));
 
-    Scene sc = getS1();
+    Scene sc = getS4();
 
     
     auto start = chrono::high_resolution_clock::now();
-    Image output1 = sc.cam.render(sc,16,10000000);
+    Image output1 = sc.cam.render(sc,32,10000000);
     auto stop = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
     cout << "Time: " << duration.count() << " ms" <<endl;
