@@ -130,7 +130,6 @@ int main() {
         gammaAndWrite(output1,i,"test");
     }
 
-    cout << (char)7 << endl;
 
     return 0;
 }

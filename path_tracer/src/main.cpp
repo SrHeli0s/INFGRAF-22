@@ -106,55 +106,6 @@ int main() {
 
     Scene sc = getS4();
 
-    
-    // auto start = chrono::high_resolution_clock::now();
-    // Image output1 = sc.cam.render(sc,1);
-    // auto stop = chrono::high_resolution_clock::now();
-    // auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    // cout << "Time: " << duration.count() << " ms" <<endl;
-
-    // start = chrono::high_resolution_clock::now();
-    // Image output2 = sc.cam.render(sc,2);
-    // stop = chrono::high_resolution_clock::now();
-    // duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    // cout << "Time: " << duration.count() << " ms" <<endl;
-
-    // start = chrono::high_resolution_clock::now();
-    // Image output4 = sc.cam.render(sc,4);
-    // stop = chrono::high_resolution_clock::now();
-    // duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    // cout << "Time: " << duration.count() << " ms" <<endl;
-
-    // start = chrono::high_resolution_clock::now();
-    // Image output8 = sc.cam.render(sc,8);
-    // stop = chrono::high_resolution_clock::now();
-    // duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    // cout << "Time: " << duration.count() << " ms" <<endl;
-
-    // start = chrono::high_resolution_clock::now();
-    // Image output16 = sc.cam.render(sc,16);
-    // stop = chrono::high_resolution_clock::now();
-    // duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    // cout << "Time: " << duration.count() << " ms" <<endl;
-
-    // start = chrono::high_resolution_clock::now();
-    // Image output32 = sc.cam.render(sc,32);
-    // stop = chrono::high_resolution_clock::now();
-    // duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    // cout << "Time: " << duration.count() << " ms" <<endl;
-
-    // start = chrono::high_resolution_clock::now();
-    // Image output64 = sc.cam.render(sc,64);
-    // stop = chrono::high_resolution_clock::now();
-    // duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    // cout << "Time: " << duration.count() << " ms" <<endl;
-
-    // start = chrono::high_resolution_clock::now();
-    // Image output128 = sc.cam.render(sc,128);
-    // stop = chrono::high_resolution_clock::now();
-    // duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    // cout << "Time: " << duration.count() << " ms" <<endl;
-
     auto start = chrono::high_resolution_clock::now();
     Image output256 = sc.cam.render(sc,256);
     auto stop = chrono::high_resolution_clock::now();
@@ -171,18 +122,8 @@ int main() {
                                 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0,
                                 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.0 };
     for (auto i : gammas) {
-
-        // gammaAndWrite(output1,i,"1ray");
-        // gammaAndWrite(output2,i,"2ray");
-        // gammaAndWrite(output4,i,"4ray");
-        // gammaAndWrite(output8,i,"8ray");
-        // gammaAndWrite(output16,i,"16ray");
-        // gammaAndWrite(output32,i,"32ray");
-        // gammaAndWrite(output64,i,"64ray");
-        // gammaAndWrite(output128,i,"128ray");
         gammaAndWrite(output256,i,"256ray");
     }
-    cout << (char)7 << endl;
     
 
     return 0;
