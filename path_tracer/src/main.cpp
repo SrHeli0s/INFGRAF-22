@@ -80,11 +80,18 @@ Scene getS3() {
     Material green = Material(RGB(0,1,0),RGB(),RGB(),RGB(),1);
     Material luz = LightMat(RGB(1,1,1));
     Material suelo = Material(RGB(1,0.05,1),RGB(),RGB(),RGB(),1);
+    Material negro = Material(RGB(0,0,0),RGB(),RGB(),RGB(),1);
+    Material glass = Material(RGB(),RGB(),RGB(0.8,0.8,0.8),RGB(),1.5);
     //Camera
-    Vec3 f = Vec3(0,-1,0.3);
-    sc.cam = Camera(Point(0,0,0),cross(f,Vec3(1,0,0)),Vec3(1,0,0),f,512,256);
-    sc.addP(STL("../resources/soloTerreno.stl",Point(-0.5,-1,-1.6),0.1,suelo));
-    sc.addP(STL("../resources/casa.stl",Point(-0.5,-1,-1.6),0.1,Material()));
+    Vec3 f = Vec3(0,-1,0.7);
+    sc.cam = Camera(Point(0,0,0),cross(f,Vec3(1,0,0)),Vec3(1,0,0),f,256,256);
+    sc.addP(STL("../resources/soloTerreno.stl",Point(-1.4,-1.2,-1.4),0.1,suelo));
+    sc.addP(STL("../resources/casa.stl",Point(-1.4,-1.2,-1.4),0.1,Material()));
+    sc.addP(Sphere(Point(40,-100,70),Vec3(40,0,0),Point(0,-120,0), luz));
+    sc.addP(Sphere(Point(-30,-100,150),Vec3(20,0,0),Point(0,-110,0), luz)); //derecha arriba
+    sc.addP(Plane(1000,Vec3(-1,0,0),luz));         //back
+    sc.addP(Plane(500,Vec3(-1,0.5,0),negro));         //back
+
     //Light
     sc.addL(PointLight(Point(0,0,0),RGB(1,1,1)));
 
@@ -97,7 +104,7 @@ Scene getS4() {
     Material green = Material(RGB(0,0.9,0),RGB(),RGB(),RGB(),1);
     Material luz = LightMat(RGB(1,1,1));
     //Camera
-    sc.cam = Camera(Point(0,-3.5,0),Vec3(0,0,1),Vec3(-1,0,0),Vec3(0,1,0),256,256);
+    sc.cam = Camera(Point(0,-3.5,0),Vec3(0,0,1),Vec3(-1,0,0),Vec3(0,1,0),512,512);
     //Planes
     sc.addP(Plane(10,Vec3(0,-1,0))); //Back
     sc.addP(Plane(5,Vec3(1,0,0),green));      //left
@@ -124,7 +131,7 @@ int main() {
     Scene sc = getS3();
 
     auto start = chrono::high_resolution_clock::now();
-    Image output = sc.cam.render(sc,1);
+    Image output = sc.cam.render(sc,64);
     auto stop = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
     cout << "Time: " << duration.count() << " ms" <<endl;
