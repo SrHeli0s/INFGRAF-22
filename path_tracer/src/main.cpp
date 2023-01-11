@@ -57,27 +57,44 @@ Scene getS2() {
     return sc;
 }
 
+// Scene getS3() {
+//     Scene sc = Scene();
+//     Material red = Material(RGB(0.5,0,0),RGB(),RGB(),RGB(),1);
+//     Material green = Material(RGB(0,0.5,0),RGB(),RGB(),RGB(),1);
+//     //Camera
+//     sc.cam = Camera(Point(-3.5,0,-3.5),Vec3(0,1,0),Vec3(-1,0,0),Vec3(1,0,1),256,256);
+//     //Planes
+//     sc.addP(Plane(5,Vec3(0,0,-1))); //Back
+//     //Sprites
+//     sc.addP(STL("../resources/test.stl",Point(1,-1,0),0.1,red));
+//     sc.addP(STL("../resources/test.stl",Point(0,-1.5,2),0.25,green));
+//     //Light
+//     sc.addL(PointLight(Point(1.5,0.5,-3.5),RGB(1,1,1)));
+
+//     return sc;
+// }
+
 Scene getS3() {
     Scene sc = Scene();
-    Material red = Material(RGB(0.5,0,0),RGB(),RGB(),RGB(),1);
-    Material green = Material(RGB(0,0.5,0),RGB(),RGB(),RGB(),1);
+    Material red = Material(RGB(1,0,0),RGB(),RGB(),RGB(),1);
+    Material green = Material(RGB(0,1,0),RGB(),RGB(),RGB(),1);
+    Material luz = LightMat(RGB(1,1,1));
+    Material suelo = Material(RGB(1,0.05,1),RGB(),RGB(),RGB(),1);
     //Camera
-    sc.cam = Camera(Point(-3.5,0,-3.5),Vec3(0,1,0),Vec3(-1,0,0),Vec3(1,0,1),256,256);
-    //Planes
-    sc.addP(Plane(5,Vec3(0,0,-1))); //Back
-    //Sprites
-    sc.addP(STL("../resources/test.stl",Point(1,-1,0),0.1,red));
-    sc.addP(STL("../resources/test.stl",Point(0,-1.5,2),0.25,green));
+    Vec3 f = Vec3(0,-1,0.3);
+    sc.cam = Camera(Point(0,0,0),cross(f,Vec3(1,0,0)),Vec3(1,0,0),f,512,256);
+    sc.addP(STL("../resources/soloTerreno.stl",Point(-0.5,-1,-1.6),0.1,suelo));
+    sc.addP(STL("../resources/casa.stl",Point(-0.5,-1,-1.6),0.1,Material()));
     //Light
-    sc.addL(PointLight(Point(1.5,0.5,-3.5),RGB(1,1,1)));
+    sc.addL(PointLight(Point(0,0,0),RGB(1,1,1)));
 
     return sc;
 }
 
 Scene getS4() {
     Scene sc = Scene();
-    Material red = Material(RGB(0.5,0,0),RGB(),RGB(),RGB(),1);
-    Material green = Material(RGB(0,0.5,0),RGB(),RGB(),RGB(),1);
+    Material red = Material(RGB(0.9,0,0),RGB(),RGB(),RGB(),1);
+    Material green = Material(RGB(0,0.9,0),RGB(),RGB(),RGB(),1);
     Material luz = LightMat(RGB(1,1,1));
     //Camera
     sc.cam = Camera(Point(0,-3.5,0),Vec3(0,0,1),Vec3(-1,0,0),Vec3(0,1,0),256,256);
@@ -104,10 +121,10 @@ void gammaAndWrite(Image x, float n, string name) {
 int main() {
     srand(time(NULL));
 
-    Scene sc = getS4();
+    Scene sc = getS3();
 
     auto start = chrono::high_resolution_clock::now();
-    Image output256 = sc.cam.render(sc,256);
+    Image output = sc.cam.render(sc,1);
     auto stop = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
     cout << "Time: " << duration.count() << " ms" <<endl;
@@ -117,12 +134,10 @@ int main() {
     
     cout << "Adjusting and writing..." << endl;
 
-    std::vector<float> gammas = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,
-                                1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0,
-                                2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0,
+    std::vector<float> gammas = { 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0,
                                 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.0 };
     for (auto i : gammas) {
-        gammaAndWrite(output256,i,"256ray");
+        gammaAndWrite(output,i,"256ray");
     }
     
 
